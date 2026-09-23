@@ -26,7 +26,7 @@
     const multi = q.type === "multi";
     const need = q.answer.length;
     return '<fieldset class="q' + (locked ? (sameSet(chosen, q.answer) ? ' right' : ' wrong') : '') + '">' +
-      '<legend class="plain">' + U.esc(q.q) + (multi ? ' <span class="chip">Choose ' + need + '</span>' : '') + '</legend>' +
+      '<legend class="plain">' + q.q +  /* bank text is trusted, authored HTML (code, pre) */ (multi ? ' <span class="chip">Choose ' + need + '</span>' : '') + '</legend>' +
       '<div class="q-meta">' + TRACK[q.track] + (q.domain ? ' · ' + q.domain + ' ' + U.esc(DOM[q.domain].name) : '') + (q.task ? ' · task ' + q.task : '') + ' · taught in ' + q.week + '</div>' +
       q.options.map((o, i) => {
         let cls = "opt";
@@ -35,7 +35,7 @@
         return '<label class="' + cls + '"><input type="' + (multi ? 'checkbox' : 'radio') + '" name="' + name + '" value="' + i + '"' +
           (chosen.includes(i) ? ' checked' : '') + (locked ? ' disabled' : '') + '> <span>' + U.esc(o) + '</span></label>';
       }).join("") +
-      (locked ? '<p class="explain"><b>' + (sameSet(chosen, q.answer) ? "Correct." : "Not quite.") + '</b> ' + U.esc(q.why) + '</p>' : '') +
+      (locked ? '<p class="explain"><b>' + (sameSet(chosen, q.answer) ? "Correct." : "Not quite.") + '</b> ' + q.why + '</p>' : '') +
     '</fieldset>';
   }
   const readChosen = (root, name) => [...root.querySelectorAll('input[name="' + name + '"]:checked')].map(x => Number(x.value));
