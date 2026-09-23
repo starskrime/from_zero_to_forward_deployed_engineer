@@ -549,6 +549,7 @@ body.modal-open { overflow: hidden; }
 .part-h { margin: 30px 0 12px; font-size: 18px; padding-left: 10px; border-left: 4px solid var(--border-strong); }
 .part-core-h { border-color: var(--ph-blue); }
 .part-deep-h { border-color: var(--ph-slate); }
+.part-cert-h { border-color: var(--ph-purple); }
 .part-ent-h { border-color: var(--ph-green); }
 .quiz.mini { max-width: 760px; }
 [hidden] { display: none !important; }

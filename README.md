@@ -124,7 +124,8 @@ Every project meets the same portfolio standard: **README · design decisions ·
 | 0B | APIs, Data & SQL | Lesson published | — |
 | 0C | How LLMs Actually Work | Lesson published | — |
 | W1 | Agentic AI Foundations · **P1 Mortgage Lead Qualifier** | Lesson published | — |
-| W2–W23 | See the Plan page | Published ahead of each week | — |
+| W2 | RAG I · **P2 IT-Support Knowledge Assistant (core)** · certification track starts | Lesson published | — |
+| W3–W23 | See the Plan page | Published ahead of each week | — |
 
 Lesson packs are published ahead of each week. Portfolio repositories will be linked here as they ship.
 

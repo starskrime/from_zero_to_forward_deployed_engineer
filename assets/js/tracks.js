@@ -37,6 +37,7 @@
     ccActions:    { k: "doc", t: "Claude Code: GitHub Actions", u: "https://code.claude.com/docs/en/github-actions" },
     apiTools:     { k: "doc", t: "Claude API: tool use overview", u: "https://platform.claude.com/docs/en/agents-and-tools/tool-use/overview" },
     apiDefTools:  { k: "doc", t: "Claude API: defining tools & tool_choice", u: "https://platform.claude.com/docs/en/agents-and-tools/tool-use/define-tools" },
+    apiMessages:  { k: "doc", t: "Claude API: working with the Messages API", u: "https://platform.claude.com/docs/en/build-with-claude/working-with-messages" },
     apiStop:      { k: "doc", t: "Claude API: handling stop reasons", u: "https://platform.claude.com/docs/en/build-with-claude/handling-stop-reasons" },
     apiStruct:    { k: "doc", t: "Claude API: structured outputs", u: "https://platform.claude.com/docs/en/build-with-claude/structured-outputs" },
     apiBatch:     { k: "doc", t: "Claude API: batch processing", u: "https://platform.claude.com/docs/en/build-with-claude/batch-processing" },
@@ -66,7 +67,8 @@
     gcStrategy:   { k: "article", t: "Google Cloud: How to build an effective AI strategy (value vs feasibility)", u: "https://cloud.google.com/transform/how-to-build-an-effective-ai-strategy" },
     nanda:        { k: "article", t: "Report coverage: the \"GenAI divide\" (why pilots fail)", u: "https://virtualizationreview.com/articles/2025/08/19/mit-report-finds-most-ai-business-investments-fail-reveals-genai-divide.aspx" },
     msGraph:      { k: "doc", t: "Microsoft Graph overview (M365, SharePoint)", u: "https://learn.microsoft.com/en-us/graph/overview" },
-    msConnectors: { k: "doc", t: "Microsoft 365 Copilot connectors", u: "https://learn.microsoft.com/en-us/microsoftsearch/connectors-overview" },
+    msConnectors: { k: "doc", t: "Microsoft 365 Copilot connectors", u: "https://learn.microsoft.com/en-us/microsoft-365/copilot/connectors/overview" },
+    secTrim:      { k: "doc", t: "Azure AI Search: security trimming (permission-aware retrieval)", u: "https://learn.microsoft.com/en-us/azure/search/search-security-trimming-for-azure-search" },
     snowCortex:   { k: "doc", t: "Snowflake Cortex AI", u: "https://docs.snowflake.com/en/user-guide/snowflake-cortex/overview" },
     sfAgents:     { k: "doc", t: "Salesforce Agentforce developer guide", u: "https://developer.salesforce.com/docs/einstein/genai/guide/get-started-agents.html" },
     snowDev:      { k: "doc", t: "ServiceNow Developer Program", u: "https://developer.servicenow.com/dev.do" },
@@ -152,7 +154,7 @@
 
   /* ---------- Track B: certification focus per week (from W2) ---------- */
   const certWeeks = {
-    W2:  { focus: "Orientation + the Claude Messages API", tasks: ["1.1"], links: ["certGuide", "cApi", "apiStop", "apiTools"],
+    W2:  { focus: "Orientation + the Claude Messages API", tasks: ["1.1"], links: ["certGuide", "cApi", "apiMessages", "apiStop", "apiTools"],
            note: "Read the exam guide end to end. Start the official Claude API course. Build a raw agent loop that stops on stop_reason, not on text." },
     W3:  { focus: "Prompt precision and few-shot examples", tasks: ["4.1", "4.2"], links: ["apiPrompt", "claudePrompt", "cApi"] },
     W4:  { focus: "Agentic loops and coordinator–subagent design", tasks: ["1.1", "1.2", "1.3"], links: ["sdkLoop", "sdkSub", "cSubagents", "anthResearch", "claudeAgentSdk"] },
@@ -189,7 +191,7 @@
     "0B": { theme: "TypeScript essentials I (appears in almost half of FDE postings)", links: ["tsHandbook"] },
     "0C": { theme: "The enterprise AI landscape: why most pilots fail, and how to pick use cases", links: ["oaiEnterprise", "oaiUseCases", "nanda", "a16zDemos", "gcStrategy"] },
     W1:  { theme: "TypeScript essentials II: calling Claude and OpenAI from TypeScript", links: ["tsClaude", "tsHandbook"] },
-    W2:  { theme: "Enterprise data and connectors: Microsoft 365 / SharePoint, Snowflake", links: ["msGraph", "msConnectors", "snowCortex"] },
+    W2:  { theme: "Enterprise data and connectors: Microsoft 365 / SharePoint, permission-aware retrieval, Snowflake", links: ["msGraph", "msConnectors", "snowCortex", "secTrim"] },
     W3:  { theme: "Evals as the acceptance contract with a customer", links: ["anthEvals", "hamelFaq", "apiTests"] },
     W4:  { theme: "Identity I: OAuth 2.0, OIDC and single sign-on (SAML)", links: ["oauth", "saml"] },
     W5:  { theme: "Human-in-the-loop and AI user experience", links: ["hax", "pair", "anthAgents"] },
@@ -217,6 +219,7 @@
   F.weeks.find(w => w.id === "0B").lesson = "lessons/week-0B.html";
   F.weeks.find(w => w.id === "0C").lesson = "lessons/week-0C.html";
   F.weeks.find(w => w.id === "W1").lesson = "lessons/week-W1.html";
+  F.weeks.find(w => w.id === "W2").lesson = "lessons/week-W2.html";
   F.weeks.forEach(w => {
     if (certWeeks[w.id]) w.cert = certWeeks[w.id];
     if (deepWeeks[w.id]) w.deep = deepWeeks[w.id];

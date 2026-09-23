@@ -67,6 +67,8 @@ window.FDE = (function () {
     pReflexion:   { k: "paper", t: "Paper: Reflexion (2023)", u: "https://arxiv.org/abs/2303.11366" },
 
     /* RAG & search */
+    ragScratch:   { k: "video", t: "LangChain: RAG From Scratch (video series)", u: "https://www.youtube.com/playlist?list=PLfaIDFEXuae2LXbO1_PKyVJiQ23ZztA0x" },
+    chunking:     { k: "article", t: "Pinecone: Chunking strategies for LLM applications", u: "https://www.pinecone.io/learn/chunking-strategies/" },
     pRAG:         { k: "paper", t: "Paper: Retrieval-Augmented Generation (2020)", u: "https://arxiv.org/abs/2005.11401" },
     pLostMiddle:  { k: "paper", t: "Paper: Lost in the Middle (2023)", u: "https://arxiv.org/abs/2307.03172" },
     anthContextual: { k: "article", t: "Anthropic: Contextual Retrieval", u: "https://www.anthropic.com/news/contextual-retrieval" },
@@ -317,10 +319,11 @@ window.FDE = (function () {
         "Chunking strategies and their trade-offs",
         "Embeddings: OpenAI vs open-source (BGE via FastEmbed)",
         "Vector stores: Chroma, FAISS, Qdrant",
-        "LangChain LCEL: retriever → prompt → model → parser"
+        "Grounded answers: citations checked in code, and \"I don't know\"",
+        "The same pipeline in LangChain (retriever → prompt → model → parser)"
       ],
-      tools: ["OpenAI embeddings", "FastEmbed / BGE", "Chroma", "FAISS", "Qdrant", "LangChain"],
-      links: ["pRAG", "oaiEmbed", "fastembed", "bge", "chroma", "faiss", "qdrant", "langchain"],
+      tools: ["pypdf", "OpenAI embeddings", "FastEmbed / BGE", "Chroma", "FAISS", "Qdrant", "LangChain"],
+      links: ["pRAG", "ragScratch", "chunking", "oaiEmbed", "fastembed", "bge", "chroma", "faiss", "qdrant", "langchain"],
       weekend: "Build the P2 core: ingest tickets and PDFs, answer with citations.",
       project: "P2" },
     { id: "W3", phase: "p1", rhythm: "learn", title: "RAG-Powered Knowledge Agents II",
