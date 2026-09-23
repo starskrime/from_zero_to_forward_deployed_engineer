@@ -174,7 +174,7 @@
     "0A": "Deep practice: extra Python drills and the video of the week",
     "0B": "Deep practice: SQL drills and API exercises",
     "0C": "Deep practice: Karpathy's deep dive video, transformer visualizers and public leaderboards",
-    W1:  "Deep practice: re-implement the ReAct loop a second time, from memory",
+    W1:  "Deep practice: the ReAct and Reflexion papers, design patterns, and the loop rebuilt from memory on Claude's API",
     W18: "Company formats: Anthropic-style technical use-case screen",
     W19: "Company formats: OpenAI-style one-week take-home (start)",
     W20: "Company formats: take-home (finish) and project deep dive",
@@ -216,6 +216,7 @@
   F.weeks.find(w => w.id === "0A").lesson = "lessons/week-0A.html";
   F.weeks.find(w => w.id === "0B").lesson = "lessons/week-0B.html";
   F.weeks.find(w => w.id === "0C").lesson = "lessons/week-0C.html";
+  F.weeks.find(w => w.id === "W1").lesson = "lessons/week-W1.html";
   F.weeks.forEach(w => {
     if (certWeeks[w.id]) w.cert = certWeeks[w.id];
     if (deepWeeks[w.id]) w.deep = deepWeeks[w.id];

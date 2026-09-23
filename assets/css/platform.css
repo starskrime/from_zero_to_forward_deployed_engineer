@@ -382,6 +382,7 @@ pre .o { color: #aab3c2; }            /* output */
 .compare th, .compare td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--border); vertical-align: top; }
 .compare th { font-size: 12px; text-transform: uppercase; letter-spacing: .05em; color: var(--ink-3); }
 .compare td:first-child { font-weight: 600; white-space: nowrap; }
+.compare.wrap td:first-child { white-space: normal; font-weight: 400; }
 
 figure.diagram { margin: 16px 0 20px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; }
 figure.diagram svg { width: 100%; height: auto; display: block; }

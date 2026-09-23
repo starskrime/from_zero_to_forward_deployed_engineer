@@ -1,0 +1,10 @@
+lead_id,full_name,email,loan_amount,credit_score,annual_income,property_state,loan_type,created_at,zip,city
+L-1001,Maria Gonzalez,maria.gonzalez@example.com,385000,742,118000,TX,purchase,2026-09-01,75024,Plano
+L-1002,James Carter,james.carter@example.com,212500,688,76000,OK,refinance,2026-09-01,73102,Oklahoma City
+L-1007,Daniel Kim,daniel.kim@example.com,330000,734,105000,TX,purchase,2026-09-04,78701,Austin
+L-1009,Marcus Johnson,marcus.johnson@example.com,415000,756,131000,GA,refinance,2026-09-05,30303,Atlanta
+L-1014,Hannah Schmidt,hannah.schmidt@example.com,365000,745,112000,TX,refinance,2026-09-07,77002,Houston
+L-1015,Lucas Silva,lucas.silva@example.com,280000,702,83000,NV,purchase,2026-09-08,00000,
+L-1016,Nadia Aliyeva,nadia.aliyeva@example.com,405000,768,128000,TX,purchase,2026-09-08,75001,Addison
+L-1018,Chloe Martin,chloe.martin@example.com,318000,729,96000,DC,refinance,2026-09-09,20001,Washington
+L-1019,Ryan O'Connor,ryan.oconnor@example.com,262000,684,69000,MA,purchase,2026-09-10,02108,Boston

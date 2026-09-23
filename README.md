@@ -123,7 +123,8 @@ Every project meets the same portfolio standard: **README · design decisions ·
 | 0A | Python for Real Applications I | Lesson published | — |
 | 0B | APIs, Data & SQL | Lesson published | — |
 | 0C | How LLMs Actually Work | Lesson published | — |
-| W1–W23 | See the Plan page | Published ahead of each week | — |
+| W1 | Agentic AI Foundations · **P1 Mortgage Lead Qualifier** | Lesson published | — |
+| W2–W23 | See the Plan page | Published ahead of each week | — |
 
 Lesson packs are published ahead of each week. Portfolio repositories will be linked here as they ship.
 

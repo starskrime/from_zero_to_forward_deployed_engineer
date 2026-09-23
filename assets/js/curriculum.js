@@ -304,8 +304,8 @@ window.FDE = (function () {
         "Function calling and structured JSON output",
         "Short-term vs long-term memory"
       ],
-      tools: ["OpenAI API", "Pydantic", "SQLite"],
-      links: ["anthAgents", "react", "pCoT", "wengAgents", "oaiTools", "oaiStruct", "oaiAgentGuide"],
+      tools: ["OpenAI Responses API", "Pydantic", "SQLite", "pytest"],
+      links: ["anthAgents", "vBuildAgents", "oaiTools", "oaiStruct", "anthTools", "react", "pCoT", "pReflexion", "wengAgents", "oaiAgentGuide"],
       weekend: "Build P1: the mortgage lead qualifier agent (it reads the database you built in 0B).",
       project: "P1" },
     { id: "W2", phase: "p1", rhythm: "learn", title: "RAG-Powered Knowledge Agents I",
