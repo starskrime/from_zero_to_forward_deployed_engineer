@@ -175,6 +175,23 @@
           <li><b>requirements.txt doesn't record your Python version.</b> Code with <code>dict | None</code> annotations runs on 3.10 and later but fails at import on 3.9. Put the minimum version in the README (this program uses 3.11+), and when a teammate's setup fails, ask for <code>python3 --version</code> first.</li>
         </ul>
       </div>
+
+      <div class="callout tip" style="max-width:760px">
+        <b>The modern alternative: uv (recognize it; this course keeps venv + pip)</b>
+        <p style="margin:4px 0 8px">This program uses <code>venv</code> and <code>pip</code> because they ship with Python and exist in every customer environment. Many newer projects and AI SDK examples use <b>uv</b> instead: one fast tool that replaces pip, venv, pip-tools and pyenv. When a customer's repository has a <code>pyproject.toml</code> and a <code>uv.lock</code>, you'll need to read it:</p>
+        <table class="compare" style="margin:0 0 8px">
+          <thead><tr><th>What you did today</th><th>The uv way</th></tr></thead>
+          <tbody>
+            <tr><td><code>python3 -m venv .venv</code></td><td><code>uv venv</code></td></tr>
+            <tr><td><code>pip install -r requirements.txt</code></td><td><code>uv pip install -r requirements.txt</code> (uses the <code>.venv</code> in the folder, no activation needed)</td></tr>
+            <tr><td><code>pip freeze &gt; requirements.txt</code></td><td><code>uv pip freeze &gt; requirements.txt</code></td></tr>
+            <tr><td>Start a project and record its dependencies</td><td><code>uv init</code>, then <code>uv add python-dotenv</code>: writes <code>pyproject.toml</code> and a <code>uv.lock</code> lockfile, and creates <code>.venv</code></td></tr>
+            <tr><td>Set up someone else's project</td><td><code>uv sync</code> (installs exactly what <code>uv.lock</code> pins)</td></tr>
+            <tr><td>Activate, then run</td><td><code>uv run python -m lead_intake …</code> (runs inside the project's environment without activating)</td></tr>
+          </tbody>
+        </table>
+        <p style="margin:0">Two differences worth knowing: <code>uv remove rich</code> also removes the packages rich pulled in (no orphans, unlike <code>pip uninstall</code>), and <code>uv.lock</code> pins every dependency automatically. <a href="https://docs.astral.sh/uv/" target="_blank" rel="noopener">uv docs ↗</a> · <a href="https://docs.astral.sh/uv/pip/" target="_blank" rel="noopener">uv's pip interface ↗</a></p>
+      </div>
       <div class="exercise">
         <div class="ex-head"><span class="ex-tag">Exercise 1</span><h4>Set up your workbench</h4><span class="chip">~30 min</span></div>
         <div class="prose">
