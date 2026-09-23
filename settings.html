@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>FDE Settings</title>
+  <meta name="description" content="Your name, start date, pace and progress backup.">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%2316191f'/%3E%3Ctext x='16' y='21' font-family='Arial' font-weight='800' font-size='11' fill='white' text-anchor='middle'%3EFDE%3C/text%3E%3C/svg%3E">
+  <link rel="stylesheet" href="assets/css/platform.css">
+</head>
+<body>
+  <header id="site-header"></header>
+  <main class="wrap">
+    <div class="eyebrow">Settings</div>
+    <h1>Your program</h1>
+    <p class="muted" style="max-width:640px">Everything here is stored only in this browser. Changing your pace or start date moves the calendar; your completed sessions stay as they are.</p>
+
+    <div class="grid grid-2" style="margin-top:20px;align-items:start">
+      <form class="card settings-form" id="settings-form">
+        <h3>Profile & pace</h3>
+        <div id="pf"></div>
+        <p class="form-error" id="pf-error" hidden>Please enter your name.</p>
+        <button class="btn btn-primary" type="submit">Save changes</button>
+      </form>
+
+      <div class="card">
+        <h3>Backup & reset</h3>
+        <p class="small muted">Progress lives in this browser. To move to another computer or browser, export a backup file here and import it there.</p>
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <button class="btn btn-ghost" type="button" id="s-export">Export my progress</button>
+          <label class="btn btn-ghost" for="s-import">Import progress</label>
+          <input id="s-import" type="file" accept="application/json" hidden>
+        </div>
+        <hr style="border:0;border-top:1px solid var(--border);margin:20px 0">
+        <h3>Start over</h3>
+        <p class="small muted">Deletes your name, pace and all progress from this browser. Export a backup first if you might want it back.</p>
+        <button class="btn btn-ghost danger" type="button" id="s-reset">Reset everything…</button>
+        <div id="reset-confirm" hidden style="margin-top:10px">
+          <p class="small" style="margin:0 0 8px"><b>Are you sure?</b> This can't be undone.</p>
+          <button class="btn btn-ghost danger" type="button" id="s-reset-yes">Yes, delete my progress</button>
+          <button class="btn btn-link" type="button" id="s-reset-no">Cancel</button>
+        </div>
+      </div>
+    </div>
+  </main>
+  <footer id="site-footer"></footer>
+  <script src="assets/js/curriculum.js"></script>
+  <script src="assets/js/tracks.js"></script>
+  <script src="assets/js/store.js"></script>
+  <script src="assets/js/ui.js"></script>
+  <script>
+  (function () {
+    const U = window.UI, S = window.Store;
+    U.header("settings"); U.footer();
+    const form = document.getElementById("settings-form");
+    const box = document.getElementById("pf");
+    box.innerHTML = U.profileFormHTML(S.get().profile);
+    U.bindProfileForm(form);
+    form.addEventListener("submit", e => {
+      e.preventDefault();
+      const p = U.readProfileForm(form);
+      if (!p.name) { document.getElementById("pf-error").hidden = false; return; }
+      document.getElementById("pf-error").hidden = true;
+      S.update(s => { s.profile = p; });
+      U.toast("Saved. Your calendar now finishes " + U.fmt(U.programEnd(), { month: "short", day: "numeric", year: "numeric" }) + ".");
+    });
+    document.getElementById("s-export").addEventListener("click", S.exportFile);
+    document.getElementById("s-import").addEventListener("change", e => {
+      const f = e.target.files[0]; if (!f) return;
+      S.importFile(f).then(() => location.reload()).catch(() => U.toast("That file isn't a valid progress export."));
+    });
+    const conf = document.getElementById("reset-confirm");
+    document.getElementById("s-reset").addEventListener("click", () => { conf.hidden = false; });
+    document.getElementById("s-reset-no").addEventListener("click", () => { conf.hidden = true; });
+    document.getElementById("s-reset-yes").addEventListener("click", () => { S.reset(); location.href = "index.html"; });
+  })();
+  </script>
+</body>
+</html>
