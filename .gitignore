@@ -1,0 +1,12 @@
+# Your own work lives in code/ (each project is its own GitHub repo)
+code/
+
+# Personal exports from the platform
+fde-progress-*.json
+reflection-week-*.html
+
+# OS and editor files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
