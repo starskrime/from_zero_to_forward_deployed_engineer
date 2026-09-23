@@ -377,6 +377,12 @@ pre .o { color: #aab3c2; }            /* output */
 .callout.warn { background: var(--warn-soft); border-color: transparent; }
 .callout.warn b:first-child { color: var(--warn); }
 .callout.tip b:first-child { color: var(--accent); }
+.callout.reality { background: var(--ph-orange-soft); border-color: transparent; border-left: 3px solid var(--ph-orange); }
+.callout.reality b:first-child { color: var(--ph-orange); }
+.callout.reality li { margin-bottom: 4px; }
+.q legend pre { margin: 10px 0 2px; font-weight: 400; white-space: pre; overflow-x: auto; max-width: 100%; }
+.exercise.drill { border-left: 3px solid var(--ph-orange); }
+.exercise.interview .chip { font-size: 11px; }
 
 .compare { width: 100%; border-collapse: collapse; font-size: 14px; margin: 8px 0 16px; }
 .compare th, .compare td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--border); vertical-align: top; }
