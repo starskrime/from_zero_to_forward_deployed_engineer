@@ -28,10 +28,14 @@ window.FDE = (function () {
     /* How LLMs work */
     vKarpathyIntro: { k: "video", t: "Karpathy: Intro to Large Language Models (1h)", u: "https://www.youtube.com/watch?v=zjkBMFhNj_g" },
     vKarpathyDeep:  { k: "video", t: "Karpathy: Deep Dive into LLMs like ChatGPT", u: "https://www.youtube.com/watch?v=7xTGNNLPyMI" },
-    v3b1bGPT:       { k: "video", t: "3Blue1Brown: But what is a GPT? Visual intro to transformers", u: "https://www.youtube.com/watch?v=wjZofJX0v4M" },
+    v3b1bGPT:       { k: "video", t: "3Blue1Brown: Transformers, the tech behind LLMs", u: "https://www.youtube.com/watch?v=wjZofJX0v4M" },
     v3b1bAttn:      { k: "video", t: "3Blue1Brown: Attention in transformers", u: "https://www.youtube.com/watch?v=eMlx5fFNoYc" },
     vStanfordLLM:   { k: "video", t: "Stanford CS229: Building Large Language Models", u: "https://www.youtube.com/watch?v=9vM4p9NN0Ts" },
     tokenizer:      { k: "tool", t: "OpenAI tokenizer (see how text becomes tokens)", u: "https://platform.openai.com/tokenizer" },
+    vLLMBrief:      { k: "video", t: "3Blue1Brown: Large Language Models explained briefly (8 min)", u: "https://www.youtube.com/watch?v=LPZh9BOjkQs" },
+    trExplainer:    { k: "tool", t: "Transformer Explainer (GPT-2 in your browser)", u: "https://poloclub.github.io/transformer-explainer/" },
+    sampling:       { k: "article", t: "Chip Huyen: temperature, top-k, top-p", u: "https://huyenchip.com/2024/01/16/sampling.html" },
+    oaiHalluc:      { k: "article", t: "OpenAI: Why language models hallucinate", u: "https://openai.com/index/why-language-models-hallucinate/" },
     pAttention:     { k: "paper", t: "Paper: Attention Is All You Need (2017)", u: "https://arxiv.org/abs/1706.03762" },
 
     /* Model providers */
@@ -283,8 +287,8 @@ window.FDE = (function () {
         "Cost and latency math: tokens → dollars → seconds",
         "Prompting fundamentals; a first look at prompt injection"
       ],
-      tools: ["OpenAI API", "Claude API", "Gemini API", "tiktoken"],
-      links: ["vKarpathyIntro", "v3b1bGPT", "v3b1bAttn", "tokenizer", "pAttention", "openai", "claudeApi", "gemini", "claudePrompt"],
+      tools: ["OpenAI API", "Claude API", "Gemini API", "tiktoken", "async SDK clients"],
+      links: ["vLLMBrief", "vKarpathyIntro", "vKarpathyDeep", "v3b1bGPT", "v3b1bAttn", "trExplainer", "tokenizer", "sampling", "oaiHalluc", "pAttention", "openai", "claudeApi", "gemini", "claudePrompt", "owasp"],
       weekend: "Build a Model Comparison Bench: run the same prompts across providers and report quality, latency, tokens and cost.",
       project: null },
 

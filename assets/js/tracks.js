@@ -63,6 +63,7 @@
     tsClaude:     { k: "doc", t: "Claude TypeScript SDK", u: "https://github.com/anthropics/anthropic-sdk-typescript" },
     oaiEnterprise:{ k: "article", t: "OpenAI: AI in the Enterprise (PDF)", u: "https://cdn.openai.com/business-guides-and-resources/ai-in-the-enterprise.pdf" },
     oaiUseCases:  { k: "article", t: "OpenAI: Identifying and scaling AI use cases (PDF)", u: "https://cdn.openai.com/business-guides-and-resources/identifying-and-scaling-ai-use-cases.pdf" },
+    gcStrategy:   { k: "article", t: "Google Cloud: How to build an effective AI strategy (value vs feasibility)", u: "https://cloud.google.com/transform/how-to-build-an-effective-ai-strategy" },
     nanda:        { k: "article", t: "Report coverage: the \"GenAI divide\" (why pilots fail)", u: "https://virtualizationreview.com/articles/2025/08/19/mit-report-finds-most-ai-business-investments-fail-reveals-genai-divide.aspx" },
     msGraph:      { k: "doc", t: "Microsoft Graph overview (M365, SharePoint)", u: "https://learn.microsoft.com/en-us/graph/overview" },
     msConnectors: { k: "doc", t: "Microsoft 365 Copilot connectors", u: "https://learn.microsoft.com/en-us/microsoftsearch/connectors-overview" },
@@ -172,7 +173,7 @@
   const deepWeeks = {
     "0A": "Deep practice: extra Python drills and the video of the week",
     "0B": "Deep practice: SQL drills and API exercises",
-    "0C": "Deep practice: Karpathy's deep dive video and provider comparisons",
+    "0C": "Deep practice: Karpathy's deep dive video, transformer visualizers and public leaderboards",
     W1:  "Deep practice: re-implement the ReAct loop a second time, from memory",
     W18: "Company formats: Anthropic-style technical use-case screen",
     W19: "Company formats: OpenAI-style one-week take-home (start)",
@@ -186,7 +187,7 @@
   const entWeeks = {
     "0A": { theme: "The FDE role and business model", links: ["palantirDelta", "palantirDay", "a16zMoat", "fdeRole", "svpgFde", "peHeats"] },
     "0B": { theme: "TypeScript essentials I (appears in almost half of FDE postings)", links: ["tsHandbook"] },
-    "0C": { theme: "The enterprise AI landscape: why most pilots fail, and how to pick use cases", links: ["oaiEnterprise", "oaiUseCases", "nanda", "a16zDemos"] },
+    "0C": { theme: "The enterprise AI landscape: why most pilots fail, and how to pick use cases", links: ["oaiEnterprise", "oaiUseCases", "nanda", "a16zDemos", "gcStrategy"] },
     W1:  { theme: "TypeScript essentials II: calling Claude and OpenAI from TypeScript", links: ["tsClaude", "tsHandbook"] },
     W2:  { theme: "Enterprise data and connectors: Microsoft 365 / SharePoint, Snowflake", links: ["msGraph", "msConnectors", "snowCortex"] },
     W3:  { theme: "Evals as the acceptance contract with a customer", links: ["anthEvals", "hamelFaq", "apiTests"] },
@@ -214,6 +215,7 @@
 
   F.weeks.find(w => w.id === "0A").lesson = "lessons/week-0A.html";
   F.weeks.find(w => w.id === "0B").lesson = "lessons/week-0B.html";
+  F.weeks.find(w => w.id === "0C").lesson = "lessons/week-0C.html";
   F.weeks.forEach(w => {
     if (certWeeks[w.id]) w.cert = certWeeks[w.id];
     if (deepWeeks[w.id]) w.deep = deepWeeks[w.id];
