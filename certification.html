@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Claude Architect Prep</title>
+  <meta name="description" content="Preparation track for the Claude Certified Architect – Foundations exam: domains, tasks, scenarios, schedule and resources.">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%2316191f'/%3E%3Ctext x='16' y='21' font-family='Arial' font-weight='800' font-size='11' fill='white' text-anchor='middle'%3EFDE%3C/text%3E%3C/svg%3E">
+  <link rel="stylesheet" href="assets/css/platform.css">
+</head>
+<body>
+  <header id="site-header"></header>
+  <main class="wrap">
+    <div class="eyebrow">Track B · Certification</div>
+    <h1>Claude Certified Architect – Foundations</h1>
+    <p class="muted" style="max-width:760px">A proctored exam that checks whether you can make sound design trade-offs when building production systems with Claude: agent architecture, tools and MCP, Claude Code configuration, prompting and structured output, and context management. This track prepares you for it from Week 2, alongside the core program.</p>
+
+    <div class="callout warn" style="max-width:760px"><b>Eligibility</b>According to the official FAQ, the exam is open to people at Claude Partner Network organizations, who register with a company email address; personal email addresses are not accepted. The preparation material in this track is free and public, so anyone can use it.</div>
+
+    <section class="section">
+      <div class="grid grid-2" style="align-items:start">
+        <div class="card"><h3>Exam at a glance</h3><table class="compare" id="facts"></table>
+          <p class="small muted" style="margin:0">From the official exam guide and FAQ. Always check the official pages before booking; details can change.</p></div>
+        <div class="card"><h3>Domains and your readiness</h3>
+          <p class="small muted">Weight in the exam, and your practice accuracy per domain (from the Practice page).</p>
+          <div id="domains"></div>
+          <a class="btn btn-primary" href="practice.html#mock" style="margin-top:12px">Take a mock exam</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head"><h2>Study schedule</h2><span class="small muted">When each part of the exam is covered in your program</span></div>
+      <div class="card" style="padding:0"><div class="table-wrap"><table class="ptable" id="schedule"></table></div></div>
+    </section>
+
+    <section class="section">
+      <div class="section-head"><h2>All 30 exam tasks</h2><span class="small muted">In our own words, grouped by domain, with the week each one is taught</span></div>
+      <div class="grid grid-2" id="tasks"></div>
+    </section>
+
+    <section class="section">
+      <div class="grid grid-2" style="align-items:start">
+        <div class="card"><h3>The six exam scenarios</h3>
+          <p class="small muted">Each exam uses 4 of these, chosen at random. Every question sits inside a scenario.</p>
+          <table class="compare" id="scenarios"></table></div>
+        <div class="card"><h3>How to think on exam day</h3>
+          <ul class="learn-list">
+            <li>Several answers will look reasonable. Pick the <b>proportionate fix for the root cause</b>, not the biggest change.</li>
+            <li>For critical rules, prefer <b>programmatic enforcement</b> (hooks, gates) over prompt instructions.</li>
+            <li>Before adding a routing layer, check whether <b>better tool descriptions</b> would solve it.</li>
+            <li><b>Explicit criteria and a few targeted examples</b> beat vague instructions, sentiment, and self-reported confidence.</li>
+            <li><b>Independent reviewers</b> and <b>focused multi-pass review</b> beat self-review and one giant prompt.</li>
+            <li>Watch for "multiple response" questions: each one tells you how many answers to pick.</li>
+          </ul>
+          <h3 style="margin-top:18px">Out of scope</h3>
+          <p class="small" id="oos" style="color:var(--ink-2)"></p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="grid grid-2" style="align-items:start">
+        <div class="card"><h3>Official free courses</h3><div class="links" id="courses"></div></div>
+        <div class="card"><h3>Official exam pages</h3><div class="links" id="docs"></div>
+          <p class="small muted" style="margin:12px 0 0">Practice questions on this platform are original, written from the public exam guide. They are not real exam items; the real exam is under NDA.</p></div>
+      </div>
+    </section>
+  </main>
+  <footer id="site-footer"></footer>
+  <script src="assets/js/curriculum.js"></script>
+  <script src="assets/js/tracks.js"></script>
+  <script src="assets/js/store.js"></script>
+  <script src="assets/js/ui.js"></script>
+  <script src="assets/js/questions.js"></script>
+  <script>
+  (function () {
+    const F = window.FDE, U = window.UI, S = window.Store, C = F.cert;
+    U.header("cert"); U.footer();
+
+    document.getElementById("facts").innerHTML = '<tbody>' + C.facts.map(f => '<tr><td>' + U.esc(f[0]) + '</td><td>' + U.esc(f[1]) + '</td></tr>').join("") + '</tbody>';
+
+    // readiness per domain from practice history
+    const pr = S.get().practice || {};
+    document.getElementById("domains").innerHTML = C.domains.map(d => {
+      const qs = window.QBANK.filter(q => q.domain === d.id);
+      let seen = 0, right = 0;
+      qs.forEach(q => { const r = pr[q.id]; if (r) { seen += r.seen; right += r.correct; } });
+      const acc = seen ? Math.round(right / seen * 100) : null;
+      return '<div class="dom-row"><div class="dom-top"><b>' + d.id + ' · ' + U.esc(d.name) + '</b><span>' + d.weight + '%</span></div>' +
+        '<div class="bar"><span style="width:' + d.weight * 3.7 + '%;background:var(--ph-purple)"></span></div>' +
+        '<div class="small muted">' + (acc === null ? 'Not practiced yet' : 'Your accuracy: <b>' + acc + '%</b> over ' + seen + ' answers' + (acc >= 72 ? ' · on target' : ' · target 72%+')) + '</div></div>';
+    }).join("");
+
+    // schedule
+    const rows = F.weeks.filter(w => w.cert || w.id === "B2");
+    document.getElementById("schedule").innerHTML = '<thead><tr><th>Week</th><th>Dates</th><th>Focus</th><th>Exam tasks</th></tr></thead><tbody>' +
+      rows.map(w => { const i = U.weekIndex(w.id);
+        return '<tr><td><a href="plan.html#week-' + w.id + '"><b>' + w.id + '</b></a></td><td class="small">' + U.weekRange(i) + '</td>' +
+          '<td>' + U.esc(w.cert ? w.cert.focus : "Take the exam") + (w.cert && w.cert.mock ? ' <span class="chip">Mock ' + w.cert.mock + '</span>' : '') + '</td>' +
+          '<td class="small">' + (w.cert && w.cert.tasks.length ? w.cert.tasks.join(", ") : (w.id === "B2" ? "Exam day" : "Review")) + '</td></tr>'; }).join("") + '</tbody>';
+
+    // tasks by domain
+    const weekOf = {};
+    F.weeks.forEach(w => { if (w.cert) w.cert.tasks.forEach(t => { if (!weekOf[t]) weekOf[t] = w.id; }); });
+    document.getElementById("tasks").innerHTML = C.domains.map(d =>
+      '<div class="card"><h3>' + d.id + ' · ' + U.esc(d.name) + ' <span class="chip">' + d.weight + '%</span></h3><ul class="task-list">' +
+      C.tasks.filter(t => t[0][0] === d.id[1]).map(t => '<li><span class="tnum">' + t[0] + '</span><span>' + U.esc(t[1]) +
+        (weekOf[t[0]] ? ' <a class="small" href="plan.html#week-' + weekOf[t[0]] + '">' + weekOf[t[0]] + '</a>' : '') + '</span></li>').join("") +
+      '</ul></div>').join("");
+
+    document.getElementById("scenarios").innerHTML = '<thead><tr><th>Scenario</th><th>Domains</th></tr></thead><tbody>' +
+      C.scenarios.map(s => '<tr><td>' + U.esc(s[0]) + '</td><td class="small">' + s[1] + '</td></tr>').join("") + '</tbody>';
+    document.getElementById("oos").textContent = C.outOfScope + " (Several of these are still taught in the core track, because FDEs need them.)";
+    document.getElementById("courses").innerHTML = C.courses.map(k => U.link(k)).join("");
+    document.getElementById("docs").innerHTML = C.docs.map(k => U.link(k)).join("");
+  })();
+  </script>
+</body>
+</html>
