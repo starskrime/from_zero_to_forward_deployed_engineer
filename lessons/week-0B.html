@@ -1,0 +1,1018 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Week 0B · APIs, Data &amp; SQL</title>
+  <meta name="description" content="Week 0B: HTTP and httpx, Pydantic validation, pytest, async, SQLite and SQL, pandas, pull requests, plus TypeScript essentials for FDEs.">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%2316191f'/%3E%3Ctext x='16' y='21' font-family='Arial' font-weight='800' font-size='11' fill='white' text-anchor='middle'%3EFDE%3C/text%3E%3C/svg%3E">
+  <link rel="stylesheet" href="../assets/css/platform.css">
+</head>
+<body data-week="0B">
+<header id="site-header"></header>
+
+<main class="wrap">
+<div class="lesson-layout">
+
+  <aside class="toc" aria-label="Lesson contents">
+    <div class="toc-group"><p>Week 0B</p><a href="#overview">Overview</a></div>
+    <div class="toc-group">
+      <p>Weekdays</p>
+      <a href="#d1" data-toc="d1">Day 1 · HTTP + APIs</a>
+      <a href="#d2" data-toc="d2">Day 2 · Pydantic</a>
+      <a href="#d3" data-toc="d3">Day 3 · Tests + async</a>
+      <a href="#d4" data-toc="d4">Day 4 · SQL + PRs</a>
+      <a href="#d5" data-toc="d5">Day 5 · Readiness</a>
+    </div>
+    <div class="toc-group">
+      <p>Weekend</p>
+      <a href="#w1" data-toc="w1">Weekend 1 · Build v2</a>
+      <a href="#w2" data-toc="w2">Weekend 2 · Test + merge</a>
+      <a href="#journal">Journal</a>
+    </div>
+  </aside>
+
+  <article>
+
+    <!-- ---------- OVERVIEW ---------- -->
+    <section class="lesson-hero" id="overview">
+      <div class="eyebrow">Week 0B · Foundations · <span id="week-dates"></span></div>
+      <h1>APIs, Data &amp; SQL</h1>
+      <p class="lead">Every agent you build from Week 1 onward calls web APIs, validates what comes back, stores results, and needs tests. This week you learn those skills in plain Python: <b>httpx</b> for APIs, <b>Pydantic</b> for validation, <b>pytest</b> for tests, <b>async</b> for speed, <b>SQLite</b> for storage, and <b>pull requests</b> for shipping safely. On the enterprise track you start <b>TypeScript</b>, which shows up in almost half of FDE job postings.</p>
+      <div class="week-progress"><div class="bar"><span id="week-bar" style="width:0"></span></div><span class="small muted" id="week-bar-text"></span></div>
+
+      <div class="prose" style="margin-top:24px">
+        <h3>This week's three tracks</h3>
+        <table class="compare">
+          <thead><tr><th>Track</th><th>Hours</th><th>This week</th></tr></thead>
+          <tbody>
+            <tr><td><span class="part-tag" style="color:var(--ph-blue)">Core</span></td><td>22h</td><td>httpx, Pydantic, pytest, async, SQLite, pull requests; ship <b>Lead Intake CLI v2</b></td></tr>
+            <tr data-track="cert"><td><span class="part-tag" style="color:var(--ph-slate)">Deep practice</span></td><td>6.5h</td><td>SQL from zero with interactive lessons, SQL-injection awareness, pandas</td></tr>
+            <tr data-track="ent"><td><span class="part-tag" style="color:var(--ph-green)">Enterprise</span></td><td>6.5h</td><td>TypeScript essentials I: types, unions, async, and a tiny tested module</td></tr>
+          </tbody>
+        </table>
+
+        <h3>Coverage map: everything the weekend project needs</h3>
+        <table class="compare coverage">
+          <thead><tr><th>The weekend project needs…</th><th>Learned</th><th>Practiced in</th></tr></thead>
+          <tbody>
+            <tr><td>HTTP basics; httpx GET, status codes, timeouts, retries</td><td><span class="day-pill">Day 1</span></td><td>Exercise 1</td></tr>
+            <tr><td>Pydantic models, field constraints, validators, ValidationError</td><td><span class="day-pill">Day 2</span></td><td>Exercise 2</td></tr>
+            <tr><td>pytest: asserts, <code>pytest.raises</code>, parametrize, <code>tmp_path</code>, mocking HTTP</td><td><span class="day-pill">Day 3</span></td><td>Exercise 3</td></tr>
+            <tr><td>async / await with <code>asyncio.gather</code> and a concurrency limit</td><td><span class="day-pill">Day 3</span></td><td>Exercise 4</td></tr>
+            <tr><td>SQLite: tables, parameterized inserts, GROUP BY queries</td><td><span class="day-pill">Day 4</span></td><td>Exercise 5</td></tr>
+            <tr><td>git branches and pull requests</td><td><span class="day-pill">Day 4</span></td><td>Exercise 5</td></tr>
+            <tr><td>Everything from Week 0A: package layout, logging, argparse, .env</td><td><span class="day-pill">0A</span></td><td>Lead Intake CLI v1</td></tr>
+          </tbody>
+        </table>
+        <div class="callout tip"><b>New sample file</b>This week uses <a href="week-0B/leads_v2.csv" download>⬇ leads_v2.csv</a>: the same 20 leads plus a <code>zip</code> column. Save it into <code>code/lead-intake/data/</code>. Notice that <code>02108</code> starts with a zero, which is one reason ZIP codes must stay strings.</div>
+      </div>
+    </section>
+
+    <!-- ================= DAY 1 ================= -->
+    <section class="day" id="d1" data-day="d1">
+      <div class="day-kicker">Day 1 · Monday on the Full-time pace · 4 hours</div>
+      <div class="day-head">
+        <h2>HTTP and calling web APIs</h2>
+        <label class="day-done check"><input type="checkbox" data-check="lessonDays|0B-d1"> Session done</label>
+      </div>
+      <ul class="parts session-plan">
+        <li class="part part-core"><span class="part-tag">Core · 2h</span>How HTTP works; httpx; status codes, timeouts, retries + Exercise 1</li>
+        <li class="part part-deep" data-track="cert"><span class="part-tag">Deep practice · 1h</span>SQL from zero: interactive lessons 1–4</li>
+        <li class="part part-ent" data-track="ent"><span class="part-tag">Enterprise · 1h</span>TypeScript I: why it matters, setup, basic types</li>
+      </ul>
+
+      <h3 class="part-h part-core-h">Core · HTTP and httpx</h3>
+      <div class="prose">
+        <h4>1. HTTP in one picture</h4>
+        <p>Every API call is a <b>request</b> (a method like GET or POST, a URL, headers, and sometimes a body) followed by a <b>response</b> (a status code, headers, and a body, usually JSON). LLM APIs, CRMs and ticketing systems all work this way.</p>
+        <table class="compare">
+          <thead><tr><th>Status</th><th>Meaning</th><th>What your code should do</th></tr></thead>
+          <tbody>
+            <tr><td>200–299</td><td>Success</td><td>Read the body</td></tr>
+            <tr><td>400</td><td>Bad request (your input is wrong)</td><td>Don't retry; fix the input and report it</td></tr>
+            <tr><td>401 / 403</td><td>Not authenticated / not allowed</td><td>Don't retry; check the key or permissions</td></tr>
+            <tr><td>404</td><td>Not found</td><td>Often a valid answer: "this doesn't exist"</td></tr>
+            <tr><td>429</td><td>Too many requests (rate limit)</td><td>Wait, then retry (respect <code>Retry-After</code>)</td></tr>
+            <tr><td>500–599</td><td>Server error</td><td>Retry a few times with growing waits</td></tr>
+          </tbody>
+        </table>
+
+        <h4>2. Calling an API with httpx</h4>
+<pre><code><span class="p">(.venv) $ </span>pip install httpx</code></pre>
+<pre><code>import httpx
+
+with httpx.Client(timeout=5.0) as client:          <span class="c"># always set a timeout</span>
+    resp = client.get("https://api.zippopotam.us/us/75024")
+    print(resp.status_code)                        <span class="c"># 200</span>
+    data = resp.json()                             <span class="c"># dict parsed from JSON</span>
+    print(data["places"][0]["place name"])         <span class="c"># Plano</span></code></pre>
+        <p>The ZIP-code API returns this JSON (no key needed):</p>
+<pre class="no-copy"><code>{"country": "United States", "country abbreviation": "US", "post code": "75024",
+ "places": [{"place name": "Plano", "longitude": "-96.7843", "latitude": "33.0752",
+             "state": "Texas", "state abbreviation": "TX"}]}</code></pre>
+
+        <h4>3. Failing well: raise_for_status, timeouts, retries</h4>
+<pre><code>resp = client.get(url)
+if resp.status_code == 404:
+    return None                     <span class="c"># a real answer: no such ZIP</span>
+resp.raise_for_status()             <span class="c"># raises httpx.HTTPStatusError for any other 4xx/5xx</span></code></pre>
+        <p>Networks fail. Retry only what can succeed on a second try: timeouts, connection errors (<code>httpx.TransportError</code>) and 5xx responses. Wait longer each time (0.5s, 1s, 2s…), which is called <b>exponential backoff</b>. Never retry a 400: it will fail the same way.</p>
+        <div class="callout tip"><b>Why this matters for agents</b>LLM APIs return 429 and 5xx errors under load. Every agent you build needs exactly this retry logic. In Week 6 you'll also design tools that report errors this clearly back to the model.</div>
+      </div>
+
+      <div class="exercise">
+        <div class="ex-head"><span class="ex-tag">Exercise 1</span><h4>A ZIP lookup client with retries</h4><span class="chip">~50 min</span></div>
+        <div class="prose">
+          <p>In <code>code/week-0B/ex1-zip/zipclient.py</code>, write <code>lookup_zip(client, zip_code, retries=3)</code>:</p>
+          <ol>
+            <li>GET <code>https://api.zippopotam.us/us/{zip}</code> with a 5-second timeout.</li>
+            <li>Return <code>None</code> for 404, and <code>{"city": ..., "state": ...}</code> for a hit.</li>
+            <li>Retry transport errors and 5xx responses up to <code>retries</code> times with exponential backoff, logging a WARNING each time; re-raise after the last attempt. Never retry other 4xx errors.</li>
+            <li>Try it on <code>75024</code>, <code>02108</code> and <code>00000</code>.</li>
+          </ol>
+          <p class="expected"><b>Check:</b> <code>75024</code> → <code>{"city": "Plano", "state": "TX"}</code>; <code>00000</code> → <code>None</code>. On Day 3 you'll test it without the internet.</p>
+        </div>
+        <div class="hints" data-hints="0B-ex1">
+          <div class="hint" data-level="Concept">Pass the <code>client</code> in rather than creating it inside. That makes the function reusable (one connection pool) and testable (you can pass a fake client later). Wrap the request in a <code>for attempt in range(...)</code> loop; <code>try</code> the call, and in <code>except</code> decide whether this error is worth retrying.</div>
+          <div class="hint" data-level="Pseudocode">for attempt 1..retries: try: resp = get; if 404 → None; raise_for_status; return parsed → except TransportError or HTTPStatusError: retryable = transport error or status ≥ 500; if last attempt or not retryable → raise; log warning; sleep(0.5 × 2^(attempt-1))</div>
+          <div class="hint" data-level="Snippet">
+<pre><code>except (httpx.TransportError, httpx.HTTPStatusError) as e:
+    is_server_error = isinstance(e, httpx.HTTPStatusError) and e.response.status_code >= 500
+    if attempt == retries or not (isinstance(e, httpx.TransportError) or is_server_error):
+        raise</code></pre></div>
+          <div class="hint solution" data-level="Full solution">
+<pre><code>import logging
+import time
+
+import httpx
+
+logger = logging.getLogger(__name__)
+BASE_URL = "https://api.zippopotam.us/us/"
+
+
+def lookup_zip(client: httpx.Client, zip_code: str, retries: int = 3) -> dict | None:
+    """Return {"city", "state"} for a US ZIP, None if the ZIP doesn't exist.
+    Retries network errors and 5xx responses; raises after the last attempt."""
+    for attempt in range(1, retries + 1):
+        try:
+            resp = client.get(BASE_URL + zip_code, timeout=5.0)
+            if resp.status_code == 404:
+                return None
+            resp.raise_for_status()
+            place = resp.json()["places"][0]
+            return {"city": place["place name"], "state": place["state abbreviation"]}
+        except (httpx.TransportError, httpx.HTTPStatusError) as e:
+            is_server_error = isinstance(e, httpx.HTTPStatusError) and e.response.status_code >= 500
+            if attempt == retries or not (isinstance(e, httpx.TransportError) or is_server_error):
+                raise
+            logger.warning("Attempt %s for %s failed (%s); retrying", attempt, zip_code, e)
+            time.sleep(0.5 * 2 ** (attempt - 1))
+    return None
+
+
+if __name__ == "__main__":
+    with httpx.Client() as client:
+        for z in ["75024", "02108", "00000"]:
+            print(z, lookup_zip(client, z))</code></pre></div>
+        </div>
+        <div class="ex-foot"><label class="done-toggle check"><input type="checkbox" data-check="exercises|0B-ex1"> <span class="check-text">Exercise 1 done</span></label></div>
+      </div>
+
+      <div class="readings">
+        <div class="reading"><span class="kind must">Read</span><div><a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/Overview" target="_blank" rel="noopener">MDN: Overview of HTTP ↗</a><p>Requests, responses, methods, headers. The clearest free explanation.</p></div></div>
+        <div class="reading"><span class="kind must">Read</span><div><a href="https://www.python-httpx.org/quickstart/" target="_blank" rel="noopener">HTTPX QuickStart ↗</a><p>Requests, query parameters, JSON, status codes, timeouts.</p></div></div>
+        <div class="reading"><span class="kind">Reference</span><div><a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Status" target="_blank" rel="noopener">MDN: HTTP status codes ↗</a></div></div>
+      </div>
+
+      <div data-track="cert">
+        <h3 class="part-h part-deep-h">Deep practice · SQL from zero (1 of 3)</h3>
+        <div class="prose"><p>SQL is how you'll query CRMs, warehouses and your own agents' data, and it returns in the Week 19 text-to-SQL interview topic. Work through the interactive lessons in your browser; each has exercises that check your query instantly.</p></div>
+        <div class="readings">
+          <div class="reading"><span class="kind must">Do</span><div><a href="https://sqlbolt.com/lesson/select_queries_introduction" target="_blank" rel="noopener">SQLBolt lessons 1–4 ↗</a><p>SELECT, WHERE with constraints, filtering text, sorting and LIMIT.</p></div></div>
+        </div>
+      </div>
+
+      <div data-track="ent">
+        <h3 class="part-h part-ent-h">Enterprise · TypeScript I: why, setup, basic types</h3>
+        <div class="prose">
+          <p>Customer front-ends, many SDKs, and a lot of agent tooling are written in TypeScript. You don't need to become a front-end engineer, but you need to read it, debug it and write small modules in it. TypeScript is JavaScript plus <b>types</b>, much like Python's type hints, except the checker is built in.</p>
+          <ol>
+            <li>Install the <b>LTS</b> version of Node.js from <a href="https://nodejs.org/en/download" target="_blank" rel="noopener">nodejs.org</a>. Check with <code>node --version</code>.</li>
+            <li>Recent Node versions run <code>.ts</code> files directly by stripping the types, so there's no build step for small scripts: <code>node lead.ts</code>.</li>
+            <li>In <code>code/week-0B/ts/lead.ts</code>, write <code>parseCreditScore(raw: string): number</code> that throws an <code>Error</code> for empty input, non-whole numbers, and values outside 300–850, just like your Python version.</li>
+          </ol>
+<pre><code>function parseCreditScore(raw: string): number {
+  if (raw.trim() === "") throw new Error("credit_score is missing");
+  const score = Number(raw);
+  if (!Number.isInteger(score)) throw new Error(`not a whole number: ${raw}`);
+  if (score &lt; 300 || score > 850) throw new Error(`credit_score ${score} is outside 300-850`);
+  return score;
+}</code></pre>
+        </div>
+        <div class="readings">
+          <div class="reading"><span class="kind must">Read</span><div><a href="https://www.typescriptlang.org/docs/handbook/typescript-in-5-minutes.html" target="_blank" rel="noopener">TypeScript for JavaScript Programmers ↗</a><p>The fastest official intro.</p></div></div>
+          <div class="reading"><span class="kind must">Read</span><div><a href="https://www.typescriptlang.org/docs/handbook/2/basic-types.html" target="_blank" rel="noopener">TypeScript Handbook: The Basics ↗</a></div></div>
+          <div class="reading"><span class="kind">Reference</span><div><a href="https://nodejs.org/en/learn/typescript/run-natively" target="_blank" rel="noopener">Node.js: running TypeScript natively ↗</a><p>Which Node versions support it, and its limits.</p></div></div>
+        </div>
+      </div>
+
+      <div class="prose"><h3>Mini-quiz</h3></div>
+      <div class="quiz mini" data-quiz="0B-d1"></div>
+      <script type="application/json" data-quiz-for="0B-d1">[
+        {"id":"a","q":"An API returns 400 Bad Request. Should your code retry?","options":["Yes, three times","No: the request itself is wrong, so it will fail the same way; fix the input and report it","Only at night","Yes, with a longer timeout"],"answer":1,"why":"Retry only what can succeed on a second try: timeouts, connection errors, 429 and 5xx."},
+        {"id":"b","q":"Why does <code>lookup_zip</code> take the client as a parameter instead of creating one inside?","options":["It's required by httpx","It reuses one connection pool and lets tests pass in a fake client","It makes the code shorter","To avoid timeouts"],"answer":1,"why":"Passing dependencies in makes code reusable and testable, which is Day 3's topic."},
+        {"id":"c","q":"Why do FDEs need to read TypeScript?","options":["Python is being retired","Customer apps, SDKs and much agent tooling are written in it, and many FDE postings ask for it","It's required for SQL","It replaces JSON"],"answer":1,"why":"You'll debug and extend customers' TypeScript code, not only your own Python."}
+      ]</script>
+    </section>
+
+    <!-- ================= DAY 2 ================= -->
+    <section class="day" id="d2" data-day="d2">
+      <div class="day-kicker">Day 2 · Tuesday on the Full-time pace · 4 hours</div>
+      <div class="day-head">
+        <h2>Validating data with Pydantic</h2>
+        <label class="day-done check"><input type="checkbox" data-check="lessonDays|0B-d2"> Session done</label>
+      </div>
+      <ul class="parts session-plan">
+        <li class="part part-core"><span class="part-tag">Core · 2h</span>Type hints, Pydantic models, constraints, validators + Exercise 2</li>
+        <li class="part part-deep" data-track="cert"><span class="part-tag">Deep practice · 1h</span>SQL from zero: lessons 5–8 (joins)</li>
+        <li class="part part-ent" data-track="ent"><span class="part-tag">Enterprise · 1h</span>TypeScript II: interfaces, unions and literal types</li>
+      </ul>
+
+      <h3 class="part-h part-core-h">Core · Pydantic</h3>
+      <div class="prose">
+        <p>Last week you wrote about 60 lines of validation by hand. Pydantic lets you <b>declare</b> the shape and rules of your data as a class, and it does the converting, checking and error reporting for you. It's used everywhere in the agent world: FastAPI, the OpenAI and Claude SDKs, LangChain, and structured LLM output (Week 1).</p>
+<pre><code><span class="p">(.venv) $ </span>pip install pydantic</code></pre>
+<pre><code>from datetime import date
+from typing import Literal
+
+from pydantic import BaseModel, ConfigDict, Field, ValidationError, field_validator
+
+
+class Lead(BaseModel):
+    model_config = ConfigDict(str_strip_whitespace=True)   <span class="c"># trim every string</span>
+
+    lead_id: str = Field(min_length=1)
+    credit_score: int = Field(ge=300, le=850)       <span class="c"># "742" is converted to 742</span>
+    loan_amount: float = Field(gt=0, le=5_000_000)
+    loan_type: Literal["purchase", "refinance"]     <span class="c"># only these two values</span>
+    created_at: date                                <span class="c"># "2026-09-31" is rejected</span>
+    zip: str = Field(pattern=r"^\d{5}$")            <span class="c"># stays a string: keeps "02108"</span>
+
+    @field_validator("loan_type", mode="before")    <span class="c"># runs BEFORE type checking</span>
+    @classmethod
+    def lower_loan_type(cls, v):
+        return v.strip().lower() if isinstance(v, str) else v
+
+
+try:
+    lead = Lead(lead_id="L-1", credit_score="905", loan_amount="385000",
+                loan_type="Purchase", created_at="2026-09-01", zip="75024")
+except ValidationError as e:
+    for err in e.errors():
+        print(err["loc"][0], "→", err["msg"])      <span class="c"># credit_score → Input should be less than or equal to 850</span></code></pre>
+        <ul>
+          <li><b>Constraints</b> go in <code>Field(...)</code>: <code>ge</code>/<code>le</code> (≥/≤), <code>gt</code>, <code>min_length</code>, <code>pattern</code>.</li>
+          <li><b>Custom rules</b> go in a <code>@field_validator</code> that raises <code>ValueError</code>. Pydantic collects <i>all</i> errors, not just the first.</li>
+          <li><code>e.errors()</code> gives a list of dicts with <code>loc</code> (which field) and <code>msg</code>, ready for your report.</li>
+          <li><code>lead.model_dump(mode="json")</code> turns the model back into JSON-ready data (dates become strings).</li>
+          <li>Some rules need context from other rows, like duplicate IDs. Those stay outside the model.</li>
+        </ul>
+      </div>
+
+      <div class="exercise">
+        <div class="ex-head"><span class="ex-tag">Exercise 2</span><h4>Replace 0A's hand-written rules with a Lead model</h4><span class="chip">~60 min</span></div>
+        <div class="prose">
+          <p>In <code>code/week-0B/ex2-models/models.py</code>, write a <code>Lead</code> model with all 10 fields and last week's rules (email check, US state set, loan types, ranges, real dates, 5-digit ZIP). Then write a short script that reads <code>leads_v2.csv</code>, validates every row with the model, tracks duplicate IDs with a set, and prints the valid/invalid counts and an error count per field.</p>
+          <p class="expected"><b>Check:</b> <code>9 valid, 11 invalid</code> with errors per field: loan_amount 3, credit_score 2, and 1 each for created_at, email, full_name, lead_id, loan_type, property_state. The same answer as last week, in far less code.</p>
+        </div>
+        <div class="hints" data-hints="0B-ex2">
+          <div class="hint" data-level="Concept">Create each model from a CSV row with <code>Lead(**row)</code>: the dict's keys become arguments. Catch <code>ValidationError</code> and loop over <code>e.errors()</code> to count fields. Normalize case (email lower, state upper, loan type lower) inside validators.</div>
+          <div class="hint" data-level="Snippet">
+<pre><code>@field_validator("property_state")
+@classmethod
+def state_is_known(cls, v: str) -> str:
+    v = v.upper()
+    if v not in US_STATES:
+        raise ValueError(f"{v!r} is not a US state code")
+    return v</code></pre></div>
+          <div class="hint solution" data-level="Full solution">
+<pre><code>from datetime import date
+from typing import Literal
+
+from pydantic import BaseModel, ConfigDict, Field, field_validator
+
+US_STATES = {
+    "AL", "AK", "AZ", "AR", "CA", "CO", "CT", "DE", "FL", "GA", "HI", "ID", "IL", "IN", "IA", "KS", "KY",
+    "LA", "ME", "MD", "MA", "MI", "MN", "MS", "MO", "MT", "NE", "NV", "NH", "NJ", "NM", "NY", "NC", "ND",
+    "OH", "OK", "OR", "PA", "RI", "SC", "SD", "TN", "TX", "UT", "VT", "VA", "WA", "WV", "WI", "WY", "DC",
+}
+
+
+class Lead(BaseModel):
+    model_config = ConfigDict(str_strip_whitespace=True)
+
+    lead_id: str = Field(min_length=1)
+    full_name: str = Field(min_length=1)
+    email: str
+    loan_amount: float = Field(gt=0, le=5_000_000)
+    credit_score: int = Field(ge=300, le=850)
+    annual_income: float = Field(ge=0)
+    property_state: str
+    loan_type: Literal["purchase", "refinance"]
+    created_at: date
+    zip: str = Field(pattern=r"^\d{5}$")
+
+    @field_validator("email")
+    @classmethod
+    def email_looks_valid(cls, v: str) -> str:
+        if "@" not in v or "." not in v.split("@")[-1]:
+            raise ValueError("email must contain @ and a domain with a dot")
+        return v.lower()
+
+    @field_validator("property_state")
+    @classmethod
+    def state_is_known(cls, v: str) -> str:
+        v = v.upper()
+        if v not in US_STATES:
+            raise ValueError(f"{v!r} is not a US state code")
+        return v
+
+    @field_validator("loan_type", mode="before")
+    @classmethod
+    def lower_loan_type(cls, v):
+        return v.strip().lower() if isinstance(v, str) else v</code></pre>
+<pre><code><span class="c"># check_models.py</span>
+import csv
+from pydantic import ValidationError
+from models import Lead
+
+valid = invalid = 0
+per_field: dict[str, int] = {}
+seen: set[str] = set()
+with open("leads_v2.csv", newline="", encoding="utf-8") as f:
+    for row in csv.DictReader(f):
+        try:
+            lead = Lead(**row)
+        except ValidationError as e:
+            invalid += 1
+            for err in e.errors():
+                per_field[err["loc"][0]] = per_field.get(err["loc"][0], 0) + 1
+            continue
+        if lead.lead_id in seen:
+            invalid += 1
+            per_field["lead_id"] = per_field.get("lead_id", 0) + 1
+            continue
+        seen.add(lead.lead_id)
+        valid += 1
+print(valid, "valid,", invalid, "invalid", dict(sorted(per_field.items())))</code></pre></div>
+        </div>
+        <div class="ex-foot"><label class="done-toggle check"><input type="checkbox" data-check="exercises|0B-ex2"> <span class="check-text">Exercise 2 done</span></label></div>
+      </div>
+
+      <div class="readings">
+        <div class="reading"><span class="kind must">Read</span><div><a href="https://pydantic.dev/docs/validation/latest/concepts/models/" target="_blank" rel="noopener">Pydantic: Models ↗</a><p>Basic usage, validation, <code>model_dump</code>.</p></div></div>
+        <div class="reading"><span class="kind must">Read</span><div><a href="https://pydantic.dev/docs/validation/latest/concepts/fields/" target="_blank" rel="noopener">Pydantic: Fields ↗</a><p>Constraints such as <code>ge</code>, <code>le</code>, <code>pattern</code>.</p></div></div>
+        <div class="reading"><span class="kind">Skim</span><div><a href="https://pydantic.dev/docs/validation/latest/concepts/validators/" target="_blank" rel="noopener">Pydantic: Validators ↗</a><p>"before" vs "after" field validators.</p></div></div>
+      </div>
+
+      <div data-track="cert">
+        <h3 class="part-h part-deep-h">Deep practice · SQL from zero (2 of 3)</h3>
+        <div class="readings">
+          <div class="reading"><span class="kind must">Do</span><div><a href="https://sqlbolt.com/lesson/select_queries_review" target="_blank" rel="noopener">SQLBolt lessons 5–8 ↗</a><p>Review, multi-table queries with JOIN, OUTER JOINs, and NULLs. Joins are the part most people find hardest; take your time.</p></div></div>
+        </div>
+      </div>
+
+      <div data-track="ent">
+        <h3 class="part-h part-ent-h">Enterprise · TypeScript II: interfaces and unions</h3>
+        <div class="prose">
+          <p>An <b>interface</b> describes the shape of an object (like a Pydantic model without the runtime checks). A <b>union of literal types</b> restricts a value to a fixed set, like Python's <code>Literal</code>. Add these to <code>lead.ts</code> and run it with <code>node lead.ts</code>:</p>
+<pre><code>type LoanType = "purchase" | "refinance";
+
+interface Lead {
+  leadId: string;
+  creditScore: number;
+  loanType: LoanType;
+  zip: string;
+}
+
+function parseLoanType(raw: string): LoanType {
+  const v = raw.trim().toLowerCase();
+  if (v === "purchase" || v === "refinance") return v;   <span class="c">// TypeScript narrows v to LoanType here</span>
+  throw new Error(`unknown loan type: ${raw}`);
+}
+
+const lead: Lead = { leadId: "L-1001", creditScore: parseCreditScore("742"),
+                     loanType: parseLoanType("Purchase"), zip: "75024" };
+console.log(lead);</code></pre>
+          <div class="callout warn"><b>Important difference</b>TypeScript types are checked while you write code and then <i>erased</i>. At run time nothing validates the data. If a value comes from an API, you still need runtime checks, which is why functions like <code>parseLoanType</code> exist.</div>
+        </div>
+        <div class="readings">
+          <div class="reading"><span class="kind must">Read</span><div><a href="https://www.typescriptlang.org/docs/handbook/2/everyday-types.html" target="_blank" rel="noopener">TypeScript Handbook: Everyday Types ↗</a><p>Especially "Interfaces", "Union Types" and "Literal Types".</p></div></div>
+        </div>
+      </div>
+
+      <div class="prose"><h3>Mini-quiz</h3></div>
+      <div class="quiz mini" data-quiz="0B-d2"></div>
+      <script type="application/json" data-quiz-for="0B-d2">[
+        {"id":"a","q":"A CSV gives <code>credit_score=\"742\"</code> to a Pydantic field typed <code>int</code>. What happens by default?","options":["ValidationError: it's a string","It's converted to the int 742","It stays a string","It becomes None"],"answer":1,"why":"Pydantic's default (lax) mode converts clean numeric strings; \"\" or \"abc\" still fail."},
+        {"id":"b","q":"Why is <code>zip</code> declared as <code>str</code> with a pattern rather than <code>int</code>?","options":["Strings are faster","ZIP codes can start with 0 (\"02108\"), which an int would destroy; they're identifiers, not numbers","Pydantic can't validate ints","To save memory"],"answer":1,"why":"Anything you don't do math on (ZIPs, phone numbers, IDs) should stay a string."},
+        {"id":"c","q":"A TypeScript interface says <code>creditScore: number</code>. An API returns <code>\"742\"</code> as a string. What happens at run time?","options":["TypeScript throws an error","Nothing checks it: types are erased at run time, so you need your own parsing","It's converted automatically","The program won't start"],"answer":1,"why":"TypeScript types exist only while you write code; runtime data still needs validation."}
+      ]</script>
+    </section>
+
+    <!-- ================= DAY 3 ================= -->
+    <section class="day" id="d3" data-day="d3">
+      <div class="day-kicker">Day 3 · Wednesday on the Full-time pace · 4 hours</div>
+      <div class="day-head">
+        <h2>Tests with pytest, and doing many calls at once</h2>
+        <label class="day-done check"><input type="checkbox" data-check="lessonDays|0B-d3"> Session done</label>
+      </div>
+      <ul class="parts session-plan">
+        <li class="part part-core"><span class="part-tag">Core · 2h</span>pytest (1h) + async / await (1h), Exercises 3 and 4</li>
+        <li class="part part-deep" data-track="cert"><span class="part-tag">Deep practice · 1h</span>SQL from zero: lessons 9–12 (expressions, aggregates)</li>
+        <li class="part part-ent" data-track="ent"><span class="part-tag">Enterprise · 1h</span>TypeScript III: async / await and fetch</li>
+      </ul>
+
+      <h3 class="part-h part-core-h">Core · pytest</h3>
+      <div class="prose">
+<pre><code><span class="p">(.venv) $ </span>pip install pytest
+<span class="p">(.venv) $ </span>pytest -q              <span class="c"># finds tests/test_*.py and runs every test_* function</span></code></pre>
+<pre><code><span class="c"># tests/test_models.py</span>
+import pytest
+from pydantic import ValidationError
+from models import Lead
+
+GOOD = dict(lead_id="L-1", full_name="Ada Lovelace", email="ada@example.com", loan_amount="300000",
+            credit_score="740", annual_income="90000", property_state="tx", loan_type="Purchase",
+            created_at="2026-09-01", zip="75024")
+
+
+def test_valid_lead_is_normalized():
+    lead = Lead(**GOOD)
+    assert lead.property_state == "TX"          <span class="c"># plain assert: pytest shows a helpful diff on failure</span>
+
+
+@pytest.mark.parametrize("field,value", [      <span class="c"># one test, many cases</span>
+    ("credit_score", "905"), ("credit_score", ""), ("loan_amount", "-5"),
+    ("email", "ada@example"), ("created_at", "2026-09-31"), ("zip", "7502"),
+])
+def test_invalid_values_are_rejected(field, value):
+    with pytest.raises(ValidationError) as exc:   <span class="c"># the test passes only if this raises</span>
+        Lead(**{**GOOD, field: value})
+    assert exc.value.errors()[0]["loc"][0] == field</code></pre>
+        <h4>Testing code that calls an API, without the internet</h4>
+        <p>Tests must be fast and never depend on someone else's server. httpx lets you swap the network for a function that returns fake responses:</p>
+<pre><code>import httpx
+from zipclient import lookup_zip
+
+
+def fake_api(request: httpx.Request) -> httpx.Response:
+    if request.url.path.endswith("/75024"):
+        return httpx.Response(200, json={"places": [{"place name": "Plano", "state abbreviation": "TX"}]})
+    return httpx.Response(404, json={})
+
+
+def test_lookup_zip_found_and_missing():
+    client = httpx.Client(transport=httpx.MockTransport(fake_api))
+    assert lookup_zip(client, "75024") == {"city": "Plano", "state": "TX"}
+    assert lookup_zip(client, "00000") is None</code></pre>
+        <p>This is why Exercise 1 took the client as a parameter. For files, pytest gives each test a fresh temporary folder: add a <code>tmp_path</code> argument and write there.</p>
+      </div>
+
+      <div class="exercise">
+        <div class="ex-head"><span class="ex-tag">Exercise 3</span><h4>Test your model and your client</h4><span class="chip">~45 min</span></div>
+        <div class="prose">
+          <p>Create <code>tests/</code> next to your Exercise 1 and 2 code (copy them into one folder, <code>code/week-0B/ex3-tests/</code>). Write:</p>
+          <ol>
+            <li>A test that a good lead is normalized (state uppercase, loan type lowercase, score is an int).</li>
+            <li>A parametrized test with at least 8 invalid cases, one per rule, checking the error points to the right field.</li>
+            <li>A <code>MockTransport</code> test for <code>lookup_zip</code>: found, not found, and a 500 that recovers on the second try. (Hint: count calls in your fake function.)</li>
+            <li>A <code>tmp_path</code> test that writes and reads back a JSON file.</li>
+          </ol>
+          <p class="expected"><b>Done when:</b> <code>pytest -q</code> shows 12 or more passing tests and runs in well under a second with Wi-Fi turned off.</p>
+        </div>
+        <div class="hints" data-hints="0B-ex3">
+          <div class="hint" data-level="Concept">For "500 then success", keep a counter in a list or dict outside the fake function (<code>calls = {"n": 0}</code>) and return 500 on the first call, 200 on the second. To avoid slow sleeps in tests, pass <code>retries</code> and consider making the backoff time a parameter too.</div>
+          <div class="hint" data-level="Snippet">
+<pre><code>def test_retries_then_succeeds():
+    calls = {"n": 0}
+    def flaky(request):
+        calls["n"] += 1
+        if calls["n"] == 1:
+            return httpx.Response(500)
+        return httpx.Response(200, json={"places": [{"place name": "Plano", "state abbreviation": "TX"}]})
+    client = httpx.Client(transport=httpx.MockTransport(flaky))
+    assert lookup_zip(client, "75024")["city"] == "Plano"
+    assert calls["n"] == 2</code></pre></div>
+        </div>
+        <div class="ex-foot"><label class="done-toggle check"><input type="checkbox" data-check="exercises|0B-ex3"> <span class="check-text">Exercise 3 done</span></label></div>
+      </div>
+
+      <h3 class="part-h part-core-h">Core · async / await</h3>
+      <div class="prose">
+        <p>Looking up 1,000 ZIP codes one at a time spends almost all its time <i>waiting</i> on the network. <b>async</b> lets one program wait on many requests at once. Agents use this to call several tools or models in parallel.</p>
+<pre><code>import asyncio
+import httpx
+
+
+async def lookup_one(client: httpx.AsyncClient, sem: asyncio.Semaphore, zip_code: str):
+    async with sem:                                   <span class="c"># at most N requests in flight</span>
+        resp = await client.get(f"https://api.zippopotam.us/us/{zip_code}", timeout=5.0)
+        ...
+
+
+async def lookup_many(zips: list[str], limit: int = 5) -> dict:
+    sem = asyncio.Semaphore(limit)                    <span class="c"># be polite: don't flood the API</span>
+    async with httpx.AsyncClient() as client:
+        results = await asyncio.gather(*(lookup_one(client, sem, z) for z in set(zips)))
+    return dict(results)
+
+
+print(asyncio.run(lookup_many(["75024", "02108", "00000"])))</code></pre>
+        <ul>
+          <li><code>async def</code> makes a function a <b>coroutine</b>; <code>await</code> pauses it while it waits, so other coroutines can run.</li>
+          <li><code>asyncio.gather</code> runs many coroutines at once and returns their results in order.</li>
+          <li>A <b>Semaphore</b> caps how many run at the same time, which keeps you under the API's rate limit.</li>
+          <li><code>asyncio.run(...)</code> starts everything from normal (non-async) code.</li>
+        </ul>
+      </div>
+
+      <div class="exercise">
+        <div class="ex-head"><span class="ex-tag">Exercise 4</span><h4>Look up many ZIPs at once</h4><span class="chip">~35 min</span></div>
+        <div class="prose">
+          <p>Finish <code>lookup_one</code> and <code>lookup_many</code> (returning <code>{zip: {"city", "state"} or None}</code>). Accept an optional <code>transport</code> argument and pass it to <code>AsyncClient</code>, so you can test it with <code>MockTransport</code>. Write one test that looks up <code>["75024", "00000", "75024"]</code> and checks duplicates are only fetched once.</p>
+          <p class="expected"><b>Check:</b> the result is <code>{"75024": {"city": "Plano", "state": "TX"}, "00000": None}</code>.</p>
+        </div>
+        <div class="hints" data-hints="0B-ex4">
+          <div class="hint" data-level="Concept">Each <code>lookup_one</code> returns a <code>(zip, result)</code> tuple, so <code>dict(results)</code> builds the mapping. <code>set(zips)</code> removes duplicates before any request is made. In the test, call <code>asyncio.run(lookup_many(..., transport=httpx.MockTransport(fake_api)))</code>.</div>
+          <div class="hint solution" data-level="Full solution">
+<pre><code>import asyncio
+
+import httpx
+
+BASE_URL = "https://api.zippopotam.us/us/"
+
+
+async def lookup_one(client: httpx.AsyncClient, sem: asyncio.Semaphore, zip_code: str) -> tuple[str, dict | None]:
+    async with sem:
+        resp = await client.get(BASE_URL + zip_code, timeout=5.0)
+        if resp.status_code == 404:
+            return zip_code, None
+        resp.raise_for_status()
+        place = resp.json()["places"][0]
+        return zip_code, {"city": place["place name"], "state": place["state abbreviation"]}
+
+
+async def lookup_many(zips: list[str], limit: int = 5, transport=None) -> dict[str, dict | None]:
+    sem = asyncio.Semaphore(limit)
+    async with httpx.AsyncClient(transport=transport) as client:
+        results = await asyncio.gather(*(lookup_one(client, sem, z) for z in set(zips)))
+    return dict(results)</code></pre></div>
+        </div>
+        <div class="ex-foot"><label class="done-toggle check"><input type="checkbox" data-check="exercises|0B-ex4"> <span class="check-text">Exercise 4 done</span></label></div>
+      </div>
+
+      <div class="readings">
+        <div class="reading"><span class="kind must">Read</span><div><a href="https://docs.pytest.org/en/stable/getting-started.html" target="_blank" rel="noopener">pytest: Get Started ↗</a></div></div>
+        <div class="reading"><span class="kind must">Read</span><div><a href="https://docs.pytest.org/en/stable/how-to/parametrize.html" target="_blank" rel="noopener">pytest: parametrize ↗</a> · <a href="https://docs.pytest.org/en/stable/how-to/tmp_path.html" target="_blank" rel="noopener">tmp_path ↗</a></div></div>
+        <div class="reading"><span class="kind must">Read</span><div><a href="https://www.python-httpx.org/advanced/transports/" target="_blank" rel="noopener">HTTPX: Transports (see "Mock transports") ↗</a> · <a href="https://www.python-httpx.org/async/" target="_blank" rel="noopener">HTTPX: Async support ↗</a></div></div>
+        <div class="reading"><span class="kind">Watch</span><div><a href="https://www.youtube.com/watch?v=Yq3M8Yj-uX0" target="_blank" rel="noopener">PyCon US 2024 tutorial: def test_crash_course_with_pytest() ↗</a><p>A long, hands-on conference tutorial. Watch the first hour this week and the rest when you need it.</p></div></div>
+        <div class="reading"><span class="kind">Reference</span><div><a href="https://docs.python.org/3/library/asyncio-task.html" target="_blank" rel="noopener">Python docs: Coroutines and Tasks ↗</a></div></div>
+      </div>
+
+      <div data-track="cert">
+        <h3 class="part-h part-deep-h">Deep practice · SQL from zero (3 of 3)</h3>
+        <div class="readings">
+          <div class="reading"><span class="kind must">Do</span><div><a href="https://sqlbolt.com/lesson/select_queries_with_expressions" target="_blank" rel="noopener">SQLBolt lessons 9–12 ↗</a><p>Expressions, aggregates (COUNT, AVG), GROUP BY, HAVING, and the order a query runs in. Tomorrow you'll use all of these on your own data.</p></div></div>
+        </div>
+      </div>
+
+      <div data-track="ent">
+        <h3 class="part-h part-ent-h">Enterprise · TypeScript III: async and fetch</h3>
+        <div class="prose">
+          <p>TypeScript's <code>async</code>/<code>await</code> works almost exactly like Python's. <code>fetch</code> is built into Node. Write <code>zip.ts</code> and run it with <code>node zip.ts</code>:</p>
+<pre><code>interface Place { "place name": string; "state abbreviation": string }
+interface ZipResponse { places: Place[] }
+
+async function lookupZip(zip: string): Promise&lt;{ city: string; state: string } | null&gt; {
+  const resp = await fetch(`https://api.zippopotam.us/us/${zip}`);
+  if (resp.status === 404) return null;
+  if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+  const data = (await resp.json()) as ZipResponse;     <span class="c">// "as" is a promise to the checker, not a runtime check</span>
+  const p = data.places[0];
+  return { city: p["place name"], state: p["state abbreviation"] };
+}
+
+const results = await Promise.all(["75024", "00000"].map(lookupZip));   <span class="c">// like asyncio.gather</span>
+console.log(results);</code></pre>
+          <table class="compare">
+            <thead><tr><th>Python</th><th>TypeScript</th></tr></thead>
+            <tbody>
+              <tr><td><code>async def f() -&gt; X</code></td><td><code>async function f(): Promise&lt;X&gt;</code></td></tr>
+              <tr><td><code>asyncio.gather(...)</code></td><td><code>Promise.all([...])</code></td></tr>
+              <tr><td><code>dict | None</code></td><td><code>{...} | null</code></td></tr>
+              <tr><td><code>raise ValueError(...)</code></td><td><code>throw new Error(...)</code></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="prose"><h3>Mini-quiz</h3></div>
+      <div class="quiz mini" data-quiz="0B-d3"></div>
+      <script type="application/json" data-quiz-for="0B-d3">[
+        {"id":"a","q":"Why test API code with <code>httpx.MockTransport</code> instead of calling the real API?","options":["The real API is always down","Tests must be fast, repeatable and independent of other people's servers; mocks also let you simulate 404s and 500s on demand","It's required by pytest","Mocks are more accurate"],"answer":1,"why":"Real calls make tests slow and flaky, and you can't reliably trigger a server error."},
+        {"id":"b","q":"What does <code>asyncio.Semaphore(5)</code> do in <code>lookup_many</code>?","options":["Retries 5 times","Allows at most 5 requests in flight at once","Waits 5 seconds","Runs 5 threads"],"answer":1,"why":"It caps concurrency so you don't exceed the API's rate limit."},
+        {"id":"c","q":"What is TypeScript's equivalent of <code>asyncio.gather</code>?","options":["await all","Promise.all","Promise.race","setTimeout"],"answer":1,"why":"Promise.all waits for every promise and returns results in order."}
+      ]</script>
+    </section>
+
+    <!-- ================= DAY 4 ================= -->
+    <section class="day" id="d4" data-day="d4">
+      <div class="day-kicker">Day 4 · Thursday on the Full-time pace · 4 hours</div>
+      <div class="day-head">
+        <h2>Storing data with SQL, and shipping through pull requests</h2>
+        <label class="day-done check"><input type="checkbox" data-check="lessonDays|0B-d4"> Session done</label>
+      </div>
+      <ul class="parts session-plan">
+        <li class="part part-core"><span class="part-tag">Core · 2h</span>SQLite from Python, SQL injection, branches and pull requests + Exercise 5</li>
+        <li class="part part-deep" data-track="cert"><span class="part-tag">Deep practice · 1h</span>SQL injection: see it, then prevent it</li>
+        <li class="part part-ent" data-track="ent"><span class="part-tag">Enterprise · 1h</span>TypeScript IV: arrays, map / filter / reduce</li>
+      </ul>
+
+      <h3 class="part-h part-core-h">Core · SQLite from Python</h3>
+      <div class="prose">
+        <p>SQLite is a full SQL database in a single file, built into Python. The SQL you learn here works (with small differences) on Postgres, Snowflake and the warehouses your customers use.</p>
+<pre><code>import sqlite3
+
+conn = sqlite3.connect("out/leads.db")            <span class="c"># creates the file if needed; ":memory:" for tests</span>
+conn.execute("""
+CREATE TABLE IF NOT EXISTS leads (
+    lead_id        TEXT PRIMARY KEY,
+    credit_score   INTEGER NOT NULL,
+    property_state TEXT NOT NULL
+)""")
+
+rows = [{"lead_id": "L-1001", "credit_score": 742, "property_state": "TX"}]
+conn.executemany(
+    "INSERT OR REPLACE INTO leads VALUES (:lead_id, :credit_score, :property_state)",   <span class="c"># named parameters</span>
+    rows,
+)
+conn.commit()                                       <span class="c"># nothing is saved until you commit</span>
+
+for state, n in conn.execute("SELECT property_state, COUNT(*) FROM leads GROUP BY property_state"):
+    print(state, n)</code></pre>
+        <div class="callout warn"><b>Never build SQL with f-strings</b><code>f"SELECT * FROM leads WHERE email = '{email}'"</code> lets a crafted input like <code>' OR '1'='1</code> rewrite your query. That's <b>SQL injection</b>, one of the most exploited bugs in history. Always pass values as parameters (<code>?</code> or <code>:name</code>) and let the driver handle them. Agents that generate SQL (Week 19) make this even more important.</div>
+
+        <h3 class="part-h part-core-h" style="margin-top:28px">Core · Branches and pull requests</h3>
+        <p>On a team, and at a customer, you never push straight to <code>main</code>. You work on a <b>branch</b>, open a <b>pull request</b> (PR), someone reviews the diff, then it's merged. You'll do this for every project from now on, even alone: reviewing your own diff catches mistakes.</p>
+<pre><code><span class="p">$ </span>git switch -c add-sqlite-store          <span class="c"># new branch</span>
+<span class="c"># … edit, test, commit …</span>
+<span class="p">$ </span>git push -u origin add-sqlite-store
+<span class="p">$ </span>gh pr create --fill                      <span class="c"># open a PR from your commits</span>
+<span class="p">$ </span>gh pr diff                               <span class="c"># review your own changes line by line</span>
+<span class="p">$ </span>gh pr merge --squash --delete-branch     <span class="c"># merge when it's right</span>
+<span class="p">$ </span>git switch main &amp;&amp; git pull</code></pre>
+        <p>A good PR description says <b>what</b> changed, <b>why</b>, and <b>how you tested it</b>.</p>
+      </div>
+
+      <div class="exercise">
+        <div class="ex-head"><span class="ex-tag">Exercise 5</span><h4>Store leads and query them, through a PR</h4><span class="chip">~55 min</span></div>
+        <div class="prose">
+          <p>In your <code>lead-intake</code> repo, create a branch <code>add-sqlite-store</code>. Add <code>lead_intake/store.py</code> with:</p>
+          <ol>
+            <li><code>save_leads(conn, leads)</code>: creates the table if needed (all Lead fields plus a nullable <code>city</code>) and inserts with named parameters using <code>INSERT OR REPLACE</code>.</li>
+            <li><code>leads_per_state(conn)</code>: returns <code>[(state, count, avg_score)]</code>, most leads first, ties alphabetical, average rounded to 1 decimal.</li>
+            <li>A test using <code>sqlite3.connect(":memory:")</code> with three leads (two TX, one CA).</li>
+          </ol>
+          <p>Commit, push, open a PR with <code>gh pr create</code>, read your own diff, then merge.</p>
+          <p class="expected"><b>Check:</b> with TX scores 700 and 720 and a CA score of 650, <code>leads_per_state</code> returns <code>[("TX", 2, 710.0), ("CA", 1, 650.0)]</code>, and your repo on GitHub shows one merged PR.</p>
+        </div>
+        <div class="hints" data-hints="0B-ex5">
+          <div class="hint" data-level="Concept">Named parameters (<code>:lead_id</code>) read values straight from each dict, so <code>executemany(sql, list_of_dicts)</code> inserts them all. <code>ROUND(AVG(credit_score), 1)</code> does the average in SQL. Order with <code>ORDER BY COUNT(*) DESC, property_state</code>.</div>
+          <div class="hint solution" data-level="Full solution (shortened schema)">
+<pre><code>import sqlite3
+
+SCHEMA = """
+CREATE TABLE IF NOT EXISTS leads (
+    lead_id        TEXT PRIMARY KEY,
+    full_name      TEXT NOT NULL,
+    email          TEXT NOT NULL,
+    loan_amount    REAL NOT NULL,
+    credit_score   INTEGER NOT NULL,
+    property_state TEXT NOT NULL,
+    city           TEXT
+)
+"""
+
+
+def save_leads(conn: sqlite3.Connection, leads: list[dict]) -> None:
+    conn.execute(SCHEMA)
+    conn.executemany(
+        "INSERT OR REPLACE INTO leads VALUES (:lead_id, :full_name, :email, :loan_amount, "
+        ":credit_score, :property_state, :city)",
+        leads,
+    )
+    conn.commit()
+
+
+def leads_per_state(conn: sqlite3.Connection) -> list[tuple[str, int, float]]:
+    return conn.execute(
+        "SELECT property_state, COUNT(*), ROUND(AVG(credit_score), 1) FROM leads "
+        "GROUP BY property_state ORDER BY COUNT(*) DESC, property_state"
+    ).fetchall()</code></pre></div>
+        </div>
+        <div class="ex-foot"><label class="done-toggle check"><input type="checkbox" data-check="exercises|0B-ex5"> <span class="check-text">Exercise 5 done and merged</span></label></div>
+      </div>
+
+      <div class="readings">
+        <div class="reading"><span class="kind must">Read</span><div><a href="https://docs.python.org/3/library/sqlite3.html#tutorial" target="_blank" rel="noopener">Python sqlite3: Tutorial ↗</a><p>Also read the "How to use placeholders to bind values in SQL queries" section.</p></div></div>
+        <div class="reading"><span class="kind must">Read</span><div><a href="https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request" target="_blank" rel="noopener">GitHub: Creating a pull request ↗</a></div></div>
+        <div class="reading"><span class="kind">Reference</span><div><a href="https://cli.github.com/manual/gh_pr_create" target="_blank" rel="noopener">GitHub CLI: gh pr create ↗</a></div></div>
+      </div>
+
+      <div data-track="cert">
+        <h3 class="part-h part-deep-h">Deep practice · SQL injection</h3>
+        <div class="prose">
+          <p>Read how the attack works, then prove it to yourself in a throwaway script with an in-memory database: build a vulnerable query with an f-string, pass <code>' OR '1'='1</code> as the email, and watch it return every row. Then rewrite it with a parameter and watch it return nothing.</p>
+        </div>
+        <div class="readings">
+          <div class="reading"><span class="kind must">Read</span><div><a href="https://community.owasp.org/attacks/SQL_Injection" target="_blank" rel="noopener">OWASP: SQL Injection ↗</a></div></div>
+        </div>
+      </div>
+
+      <div data-track="ent">
+        <h3 class="part-h part-ent-h">Enterprise · TypeScript IV: working with arrays</h3>
+        <div class="prose">
+          <p>Most TypeScript you'll read transforms arrays of objects. Write <code>perState.ts</code>: given an array of <code>Lead</code> objects, return an object counting leads per state, and a list of lead IDs with a credit score of 740 or more, using <code>filter</code>, <code>map</code> and <code>reduce</code>.</p>
+<pre><code>const highScores = leads.filter(l => l.creditScore >= 740).map(l => l.leadId);
+const perState = leads.reduce&lt;Record&lt;string, number&gt;&gt;((acc, l) => {
+  acc[l.state] = (acc[l.state] ?? 0) + 1;
+  return acc;
+}, {});</code></pre>
+          <p>Compare with your Python: <code>filter</code>/<code>map</code> ≈ list comprehensions, <code>reduce</code> into an object ≈ <code>Counter</code>, and <code>??</code> ≈ "use this default if the value is missing".</p>
+        </div>
+      </div>
+
+      <div class="prose"><h3>Mini-quiz</h3></div>
+      <div class="quiz mini" data-quiz="0B-d4"></div>
+      <script type="application/json" data-quiz-for="0B-d4">[
+        {"id":"a","q":"Which line is safe from SQL injection?","options":["conn.execute(f\"SELECT * FROM leads WHERE email = '{email}'\")","conn.execute(\"SELECT * FROM leads WHERE email = '\" + email + \"'\")","conn.execute(\"SELECT * FROM leads WHERE email = ?\", (email,))","conn.execute(\"SELECT * FROM leads WHERE email = %s\" % email)"],"answer":2,"why":"Only the parameterized version keeps the value as data, never as SQL."},
+        {"id":"b","q":"You inserted rows but a second script sees an empty table. What's the most likely cause?","options":["SQLite is broken","You forgot conn.commit()","The table name is wrong","Python is too old"],"answer":1,"why":"Changes stay in a transaction until you commit."},
+        {"id":"c","q":"Why open a pull request even on a solo project?","options":["GitHub requires it","Reviewing your own diff catches mistakes, the PR records what changed and why, and it's the habit every team and customer expects","It makes the code faster","It encrypts the code"],"answer":1,"why":"PRs create a reviewable, documented history. It's also what hiring managers look for on GitHub."}
+      ]</script>
+    </section>
+
+    <!-- ================= DAY 5 ================= -->
+    <section class="day" id="d5" data-day="d5">
+      <div class="day-kicker">Day 5 · Friday on the Full-time pace · 4 hours</div>
+      <div class="day-head">
+        <h2>Readiness check</h2>
+        <label class="day-done check"><input type="checkbox" data-check="lessonDays|0B-d5"> Session done</label>
+      </div>
+      <ul class="parts session-plan">
+        <li class="part part-core"><span class="part-tag">Core · 2h</span>Explain it out loud + weekly quiz + fix gaps</li>
+        <li class="part part-deep" data-track="cert"><span class="part-tag">Deep practice · 1h</span>pandas essentials</li>
+        <li class="part part-ent" data-track="ent"><span class="part-tag">Enterprise · 1h</span>TypeScript V: a tiny tested module</li>
+      </ul>
+
+      <h3 class="part-h part-core-h">Core · Explain it out loud</h3>
+      <div class="card" style="max-width:760px">
+        <label class="check"><input type="checkbox" data-check="readiness|0B-1"><span class="check-text">I can explain which HTTP errors to retry, which not to, and what exponential backoff is.</span></label>
+        <label class="check"><input type="checkbox" data-check="readiness|0B-2"><span class="check-text">I can write a Pydantic model with constraints and a custom validator from memory.</span></label>
+        <label class="check"><input type="checkbox" data-check="readiness|0B-3"><span class="check-text">I can write a parametrized pytest test and mock an API with MockTransport.</span></label>
+        <label class="check"><input type="checkbox" data-check="readiness|0B-4"><span class="check-text">I can explain what async buys you, and what a semaphore is for.</span></label>
+        <label class="check"><input type="checkbox" data-check="readiness|0B-5"><span class="check-text">I can write a parameterized INSERT and a GROUP BY query, and explain SQL injection.</span></label>
+        <label class="check"><input type="checkbox" data-check="readiness|0B-6"><span class="check-text">I can take a change from branch to merged PR with the GitHub CLI.</span></label>
+      </div>
+
+      <div class="prose"><h3 style="margin-top:28px">Weekly quiz</h3><p>15 questions, including 3 from last week so they stick. Aim for 12 or more.</p></div>
+      <div class="quiz" data-quiz="0B-weekly"></div>
+      <script type="application/json" data-quiz-for="0B-weekly">[
+        {"id":"q1","q":"Which responses should an API client retry?","options":["All errors","Timeouts, connection errors, 429 and 5xx","Only 400","Only 404"],"answer":1,"why":"Those can succeed on a later try; 4xx input errors can't."},
+        {"id":"q2","q":"The ZIP API returns 404 for <code>00000</code>. What should <code>lookup_zip</code> return?","options":["Raise an error and stop the run","None, meaning \"no such ZIP\", a valid answer","An empty string","Retry forever"],"answer":1,"why":"A 404 here is information, not a failure."},
+        {"id":"q3","q":"What does <code>resp.raise_for_status()</code> do?","options":["Always raises","Raises httpx.HTTPStatusError for 4xx/5xx responses, does nothing for success","Retries the request","Prints the status"],"answer":1,"why":"It turns error statuses into exceptions you can catch."},
+        {"id":"q4","q":"A Pydantic field is <code>credit_score: int = Field(ge=300, le=850)</code>. What happens with <code>\"905\"</code>?","options":["Accepted as 905","ValidationError: less than or equal to 850","Clipped to 850","Converted to None"],"answer":1,"why":"It converts the string, then enforces the constraint."},
+        {"id":"q5","q":"Why does duplicate-ID detection live outside the Pydantic model?","options":["Pydantic can't handle strings","It needs knowledge of other rows, and a model validates one object at a time","It's faster","Duplicates aren't errors"],"answer":1,"why":"Cross-row rules belong in the code that processes the whole file."},
+        {"id":"q6","q":"What does <code>@pytest.mark.parametrize</code> give you?","options":["Parallel tests","One test function run once per case, each reported separately","Mocked APIs","Faster imports"],"answer":1,"why":"Many cases, little code, clear failure reports."},
+        {"id":"q7","q":"How does the test check that a function raises?","options":["try/except and print","with pytest.raises(ExpectedError):","assert False","It can't"],"answer":1,"why":"The test passes only if the block raises that exception."},
+        {"id":"q8","q":"What does <code>await</code> do inside an async function?","options":["Blocks the whole program","Pauses this coroutine while it waits, letting others run","Creates a thread","Retries"],"answer":1,"why":"That's how one program keeps many network calls in flight."},
+        {"id":"q9","q":"You have 1,000 ZIPs and the API allows 10 requests at a time. What do you use?","options":["A for loop","asyncio.gather with a Semaphore(10)","time.sleep between calls","One request with all ZIPs"],"answer":1,"why":"gather runs them concurrently; the semaphore enforces the limit."},
+        {"id":"q10","q":"Which SQL safely finds a lead by email in Python?","options":["f-string with the email","String concatenation","A ? or :name placeholder with the value passed separately","% formatting"],"answer":2,"why":"Parameters keep user input as data, preventing SQL injection."},
+        {"id":"q11","q":"What does <code>GROUP BY property_state</code> with <code>COUNT(*)</code> return?","options":["Every row","One row per state with its count","Only the first state","The total number of rows"],"answer":1,"why":"GROUP BY collapses rows into groups; aggregates summarize each group."},
+        {"id":"q12","q":"TypeScript types at run time are…","options":["Checked automatically","Erased: you still need runtime validation for outside data","Converted to Pydantic","Stored in JSON"],"answer":1,"why":"Types help while writing code; data from APIs needs explicit checks."},
+        {"id":"q13","q":"(Week 0A) Where does an API key belong?","options":["In the code","In .env (git-ignored), with its name in .env.example","In README","In requirements.txt"],"answer":1,"why":"Secrets never go in code or git."},
+        {"id":"q14","q":"(Week 0A) What should a validator do with one bad row among thousands?","options":["Crash","Skip silently","Record it with context and continue","Guess a value"],"answer":2,"why":"Catch, record, continue."},
+        {"id":"q15","q":"(Week 0A) Why does <code>main()</code> return an exit code?","options":["Style","So scripts and CI can tell success from failure","argparse needs it","Logging needs it"],"answer":1,"why":"Other programs read the exit code, not your logs."}
+      ]</script>
+
+      <div data-track="cert">
+        <h3 class="part-h part-deep-h">Deep practice · pandas essentials</h3>
+        <div class="prose">
+          <p>pandas is how you'll explore customer data before designing anything. In <code>code/week-0B/drills/pandas_drill.py</code>, load <code>leads_v2.csv</code> keeping <code>zip</code> and <code>lead_id</code> as strings, convert the numeric columns (turning bad values into missing), drop rows with missing numbers and duplicate IDs, keep positive loan amounts, then group by state.</p>
+<pre><code>import pandas as pd
+
+df = pd.read_csv("leads_v2.csv", dtype={"zip": str, "lead_id": str})
+df["credit_score"] = pd.to_numeric(df["credit_score"], errors="coerce")   <span class="c"># bad → NaN</span>
+df["loan_amount"] = pd.to_numeric(df["loan_amount"], errors="coerce")
+clean = df.dropna(subset=["credit_score", "loan_amount"]).drop_duplicates(subset="lead_id")
+summary = (clean[clean["loan_amount"] > 0]
+           .groupby("property_state")
+           .agg(leads=("lead_id", "count"), avg_score=("credit_score", "mean"))
+           .sort_values("leads", ascending=False))
+print(summary.round(1).head(3))</code></pre>
+          <p class="expected"><b>Check:</b> TX has 4 leads (average 747.2) and CA has 2 (average 795.5). Why does CA appear with 2 here, when your validator rejects both CA rows? Because this drill only checks numbers. That's a good reminder that quick exploration is not validation.</p>
+        </div>
+        <div class="readings">
+          <div class="reading"><span class="kind must">Read</span><div><a href="https://pandas.pydata.org/docs/user_guide/10min.html" target="_blank" rel="noopener">10 minutes to pandas ↗</a><p>Selection, missing data, grouping.</p></div></div>
+        </div>
+      </div>
+
+      <div data-track="ent">
+        <h3 class="part-h part-ent-h">Enterprise · TypeScript V: a tiny tested module</h3>
+        <div class="prose">
+          <p>Node has a built-in test runner. Move <code>parseCreditScore</code> and <code>parseLoanType</code> into <code>parse.ts</code> (with <code>export</code> in front of each), and write <code>parse.test.ts</code>:</p>
+<pre><code>import { test } from "node:test";
+import assert from "node:assert/strict";
+import { parseCreditScore } from "./parse.ts";
+
+test("accepts a valid score", () => {
+  assert.equal(parseCreditScore("742"), 742);
+});
+
+test("rejects out-of-range scores", () => {
+  assert.throws(() => parseCreditScore("905"));
+});</code></pre>
+<pre><code><span class="p">$ </span>node --test</code></pre>
+          <p>Add three more tests (empty, <code>"7.5"</code>, and an unknown loan type). You now have the same testing habit in both languages.</p>
+        </div>
+        <div class="reflect" style="max-width:760px">
+          <label><span class="rq">Python vs TypeScript: what felt familiar, what felt different, and where would you trip up reading a customer's TypeScript code?</span><textarea data-reflect="ent-ts"></textarea></label>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= WEEKEND 1 ================= -->
+    <section class="day" id="w1" data-day="w1">
+      <div class="day-kicker">Weekend 1 · Saturday on the Full-time pace · 7.5 hours</div>
+      <div class="day-head">
+        <h2>Build Lead Intake CLI v2</h2>
+        <label class="day-done check"><input type="checkbox" data-check="lessonDays|0B-w1"> Session done</label>
+      </div>
+      <ul class="parts session-plan">
+        <li class="part part-core"><span class="part-tag">Core · 6h</span>Pydantic validation, SQLite storage, concurrent ZIP enrichment, on a branch</li>
+        <li class="part part-deep" data-track="cert"><span class="part-tag">Deep practice · 1.5h</span>SQL drills on your own leads database</li>
+      </ul>
+
+      <div class="prose">
+        <h3 class="part-h part-core-h">Core · The upgrade</h3>
+        <div class="callout"><b>The scenario continues</b>The sales team loved v1. Now they want the clean leads <b>stored</b> so the Week 1 agent can query them, and each lead <b>enriched with its city</b> so reps know where the property is. Security also asked that the tool be tested before anyone relies on it.</div>
+        <h4>Requirements</h4>
+        <ol>
+          <li>Work on a branch named <code>v2</code>; ship it through a PR on Sunday.</li>
+          <li>Use <code>leads_v2.csv</code>. Replace the hand-written rules in <code>validation.py</code> with your <code>Lead</code> model, but keep <code>report.json</code>'s error format (<code>row</code>, <code>lead_id</code>, <code>field</code>, <code>message</code>) by converting <code>e.errors()</code>.</li>
+          <li><code>--db PATH</code>: save valid leads (all fields plus <code>city</code>) to SQLite with parameterized inserts.</li>
+          <li><code>--enrich</code>: look up each valid lead's ZIP concurrently (at most 5 at a time) and fill <code>city</code>. An unknown ZIP, or a ZIP whose state doesn't match <code>property_state</code>, is a <b>warning</b>, not an error: the lead stays valid.</li>
+          <li><code>report.json</code> gains <code>"warnings": [{"lead_id", "message"}]</code> and <code>"enriched"</code> (how many leads got a city).</li>
+          <li>Enrichment failures from the network must never crash the run: log them, add a warning, continue.</li>
+        </ol>
+        <h4>Expected results</h4>
+        <table class="compare">
+          <tbody>
+            <tr><td>valid / invalid</td><td><b>9 / 11</b> (unchanged from v1)</td></tr>
+            <tr><td>with <code>--enrich</code></td><td><b>8</b> leads enriched, <b>1</b> warning (L-1015, ZIP 00000 not found)</td></tr>
+            <tr><td>database</td><td>9 rows; TX has 4 leads</td></tr>
+          </tbody>
+        </table>
+        <h4>Suggested build order (commit after each)</h4>
+        <ol>
+          <li>Swap in the <code>Lead</code> model; re-run and confirm 9 / 11.</li>
+          <li>Add <code>store.py</code> (from Exercise 5) and the <code>--db</code> flag.</li>
+          <li>Add <code>enrich.py</code> (from Exercise 4) and the <code>--enrich</code> flag; call it with <code>asyncio.run(...)</code> from <code>main()</code>.</li>
+          <li>Add warnings to the report.</li>
+        </ol>
+      </div>
+
+      <div class="exercise">
+        <div class="ex-head"><span class="ex-tag">Hints</span><h4>Stuck on the upgrade?</h4></div>
+        <p class="small muted" style="margin:0">This is your project, so hints go up to a snippet. Ask your AI tutor for a code review when you're done.</p>
+        <div class="hints" data-hints="0B-proj">
+          <div class="hint" data-level="Concept">Keep the pieces separate: validation returns valid <code>Lead</code> objects; enrichment takes their ZIPs and returns a <code>{zip: result}</code> map; <code>main()</code> merges the city into each lead's <code>model_dump(mode="json")</code> dict before saving. Wrap the whole enrichment call in <code>try/except httpx.HTTPError</code> so a network outage becomes a warning.</div>
+          <div class="hint" data-level="Snippet">
+<pre><code>def to_report_errors(row_number: int, lead_id: str, e: ValidationError) -> list[dict]:
+    return [{"row": row_number, "lead_id": lead_id, "field": str(err["loc"][0]), "message": err["msg"]}
+            for err in e.errors()]</code></pre></div>
+        </div>
+      </div>
+
+      <div data-track="cert">
+        <h3 class="part-h part-deep-h">Deep practice · SQL drills on your own data</h3>
+        <div class="prose">
+          <p>Open your database with <code>sqlite3 out/leads.db</code> (or a GUI such as DB Browser for SQLite) and write each query. Check your answers:</p>
+          <table class="compare">
+            <thead><tr><th>#</th><th>Question</th><th>Answer</th></tr></thead>
+            <tbody>
+              <tr><td>1</td><td>How many leads are stored?</td><td>9</td></tr>
+              <tr><td>2</td><td>How many have a credit score of 740 or more?</td><td>4</td></tr>
+              <tr><td>3</td><td>Average loan amount per loan type</td><td>purchase 332,400 · refinance 327,625</td></tr>
+              <tr><td>4</td><td>Which state has the most leads?</td><td>TX (4)</td></tr>
+              <tr><td>5</td><td>Top 3 leads by loan amount</td><td>L-1009, L-1016, L-1001</td></tr>
+              <tr><td>6</td><td>Leads created on or after 2026-09-08</td><td>4</td></tr>
+              <tr><td>7</td><td>Leads with no city after enrichment</td><td>L-1015</td></tr>
+              <tr><td>8</td><td>In Python: find a lead by email using a parameter</td><td>Your code, no f-strings</td></tr>
+            </tbody>
+          </table>
+          <p class="small muted">Dates stored as ISO text (<code>2026-09-08</code>) sort and compare correctly as strings. That's one reason ISO format matters.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= WEEKEND 2 ================= -->
+    <section class="day" id="w2" data-day="w2">
+      <div class="day-kicker">Weekend 2 · Sunday on the Full-time pace · 7.5 hours</div>
+      <div class="day-head">
+        <h2>Test, review, merge</h2>
+        <label class="day-done check"><input type="checkbox" data-check="lessonDays|0B-w2"> Session done</label>
+      </div>
+      <ul class="parts session-plan">
+        <li class="part part-core"><span class="part-tag">Core · 6h</span>Test suite, PR review and merge, README update, journal</li>
+        <li class="part part-ent" data-track="ent"><span class="part-tag">Enterprise · 1.5h</span>Read a real TypeScript SDK + explain v2 to a manager</li>
+      </ul>
+
+      <div class="prose">
+        <h3 class="part-h part-core-h">Core · Tests and merge</h3>
+        <h4>1. A test suite worth trusting (at least 12 tests)</h4>
+        <ul>
+          <li>Validation: a parametrized test covering every rule.</li>
+          <li>Duplicates: the second copy of an ID is rejected.</li>
+          <li>Enrichment with <code>MockTransport</code>: found, not found (warning), state mismatch (warning), network error (warning, run continues).</li>
+          <li>Storage with <code>:memory:</code>: rows saved, per-state query correct.</li>
+          <li>CLI: <code>main(["missing.csv"]) == 1</code>, and a full run on the sample file with <code>tmp_path</code> as the output folder produces 9 / 11.</li>
+        </ul>
+        <h4>2. Ship it through a PR</h4>
+        <p><code>gh pr create</code> with a description of what changed, why, and how you tested it (paste the <code>pytest</code> summary). Read the whole diff with <code>gh pr diff</code>, fix anything you'd flag in someone else's code, then merge.</p>
+        <h4>3. Update the README</h4>
+        <p>New flags, the database schema, how to run the tests, and one design decision: why enrichment problems are warnings, not errors.</p>
+      </div>
+
+      <div class="prose"><h4>Acceptance checklist</h4></div>
+      <div class="card" style="max-width:760px">
+        <label class="check"><input type="checkbox" data-check="accept|0B-counts"><span class="check-text">9 valid / 11 invalid; with <code>--enrich</code>, 8 enriched and 1 warning</span></label>
+        <label class="check"><input type="checkbox" data-check="accept|0B-db"><span class="check-text"><code>--db</code> writes 9 rows using parameterized SQL only</span></label>
+        <label class="check"><input type="checkbox" data-check="accept|0B-offline"><span class="check-text">With Wi-Fi off, <code>--enrich</code> finishes with warnings instead of crashing</span></label>
+        <label class="check"><input type="checkbox" data-check="accept|0B-tests"><span class="check-text">12+ tests pass in under 2 seconds with no network</span></label>
+        <label class="check"><input type="checkbox" data-check="accept|0B-pr"><span class="check-text">Merged through a PR with a what / why / how-tested description</span></label>
+        <label class="check"><input type="checkbox" data-check="accept|0B-readme"><span class="check-text">README updated: flags, schema, tests, one design decision</span></label>
+        <label class="check"><input type="checkbox" data-check="accept|0B-review"><span class="check-text">Asked an AI tutor for a code review and fixed at least one point</span></label>
+      </div>
+
+      <div class="prose">
+        <div class="callout tip" style="margin-top:20px"><b>Next week (0C): how LLMs actually work</b>You'll call OpenAI, Claude and Gemini with the same httpx and Pydantic skills, measure tokens, cost and latency, and build a model comparison bench. The retry code from Day 1 comes straight back.</div>
+      </div>
+
+      <div data-track="ent">
+        <h3 class="part-h part-ent-h">Enterprise · Read a real SDK, explain your work</h3>
+        <div class="prose">
+          <p><b>Reading (45 min):</b> open the official Claude TypeScript SDK repository and read its README. Find: how a client is created, how the API key is supplied, how errors and retries are handled. Compare with your Python <code>lookup_zip</code>: which ideas are the same?</p>
+          <p><b>Communication drill (45 min):</b> record a 2-minute explanation of v2 for the sales manager, then a separate 2-minute version for their IT security lead. The same system, told two ways: one about lost leads and city data, the other about tests, parameterized SQL and no secrets in code.</p>
+        </div>
+        <div class="readings">
+          <div class="reading"><span class="kind must">Read</span><div><a href="https://github.com/anthropics/anthropic-sdk-typescript" target="_blank" rel="noopener">Claude TypeScript SDK (README) ↗</a></div></div>
+        </div>
+        <div class="reflect" style="max-width:760px">
+          <label><span class="rq">What did the SDK do about retries and errors? What did you change between the manager version and the security version of your explanation?</span><textarea data-reflect="ent-w2"></textarea></label>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= JOURNAL ================= -->
+    <section class="day" id="journal">
+      <div class="day-kicker">Week journal · ~15 min</div>
+      <div class="day-head"><h2>Reflection</h2><span class="small muted" id="reflect-saved"></span></div>
+      <p class="muted" style="max-width:760px">Everything you typed on this page saves automatically in your browser. Download it into your folder each week.</p>
+      <div class="reflect" style="max-width:760px">
+        <label><span class="rq">What clicked this week?</span><textarea data-reflect="clicked"></textarea></label>
+        <label><span class="rq">What was hardest, and how did you get unstuck?</span><textarea data-reflect="hard"></textarea></label>
+        <label><span class="rq">What would you do differently next week?</span><textarea data-reflect="next"></textarea></label>
+        <label><span class="rq">Questions to ask your AI tutor</span><textarea data-reflect="questions"></textarea></label>
+        <button type="button" class="btn btn-ghost" id="reflect-download">Download this week's notes (HTML)</button>
+      </div>
+      <nav class="lesson-pager" aria-label="Lesson navigation">
+        <a class="btn btn-ghost" href="week-0A.html">← Week 0A</a>
+        <span class="btn btn-ghost" style="opacity:.55;cursor:default">Week 0C: How LLMs Actually Work (published before it starts) →</span>
+      </nav>
+    </section>
+
+  </article>
+</div>
+</main>
+
+<footer id="site-footer"></footer>
+
+<script src="../assets/js/curriculum.js"></script>
+<script src="../assets/js/tracks.js"></script>
+<script src="../assets/js/store.js"></script>
+<script src="../assets/js/ui.js"></script>
+<script src="../assets/js/lesson.js"></script>
+</body>
+</html>
