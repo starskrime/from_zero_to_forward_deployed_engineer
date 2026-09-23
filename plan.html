@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>FDE Study Plan</title>
+  <meta name="description" content="The full 27-week plan: phases, weekly rhythm, 10 portfolio projects, tech stack and setup.">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%2316191f'/%3E%3Ctext x='16' y='21' font-family='Arial' font-weight='800' font-size='11' fill='white' text-anchor='middle'%3EFDE%3C/text%3E%3C/svg%3E">
+  <link rel="stylesheet" href="assets/css/platform.css">
+</head>
+<body>
+  <header id="site-header"></header>
+
+  <main id="plan">
+    <div class="wrap plan-hero">
+      <div class="eyebrow">The plan</div>
+      <h1>From zero to Forward Deployed Engineer</h1>
+      <p class="lead">A 28-week, hands-on path from project-grade Python to production agentic AI and the Forward Deployed Engineer craft: customer discovery, scoping, deployment and handover. It runs three tracks side by side (core build, Claude Certified Architect preparation, and enterprise FDE knowledge) and ends with ten portfolio projects, a certification, and interview practice.</p>
+      <div class="facts" id="facts"></div>
+    </div>
+
+    <nav class="subnav" aria-label="Plan sections">
+      <div class="wrap subnav-inner" id="subnav">
+        <a href="#overview">Overview</a>
+        <a href="#tracks">Tracks</a>
+        <a href="#timeline">Timeline</a>
+        <a href="#rhythm">Weekly rhythm</a>
+        <a href="#projects">Projects</a>
+        <a href="#stack">Tech stack</a>
+        <a href="#setup">Setup</a>
+        <a href="#about">About</a>
+      </div>
+    </nav>
+
+    <div class="wrap">
+      <!-- OVERVIEW -->
+      <section class="section" id="overview">
+        <div class="section-head"><h2>How this program works</h2></div>
+        <div class="grid grid-3" id="principles"></div>
+
+        <div class="section-head" style="margin-top:32px"><h3 style="margin:0">Five phases</h3><span class="small muted">Click a phase to filter the timeline</span></div>
+        <div class="phase-strip" id="phase-strip"></div>
+        <div class="grid grid-3" id="phase-cards" style="margin-top:16px"></div>
+      </section>
+
+      <!-- TRACKS -->
+      <section class="section" id="tracks">
+        <div class="section-head"><h2>Three tracks, every week</h2><span class="small muted" id="tracks-note"></span></div>
+        <div class="grid grid-3" id="track-cards"></div>
+        <div class="card" style="padding:0;margin-top:16px"><div class="table-wrap"><table class="ptable matrix" id="matrix"></table></div></div>
+      </section>
+
+      <!-- TIMELINE -->
+      <section class="section" id="timeline">
+        <div class="section-head">
+          <h2>Week-by-week timeline</h2>
+          <button class="btn btn-ghost" id="expand-all" type="button">Expand all</button>
+        </div>
+        <div class="filters" id="filters"></div>
+        <div class="weeks" id="weeks"></div>
+      </section>
+
+      <!-- RHYTHM -->
+      <section class="section" id="rhythm">
+        <div class="section-head"><h2>Weekly rhythm</h2><span class="small muted">Every program week: 5 weekday sessions + 2 weekend sessions, across up to three tracks</span></div>
+        <div class="card">
+          <p class="small muted" id="rhythm-note" style="margin-top:0"></p>
+          <div class="tabs" role="tablist" id="rhythm-tabs"></div>
+          <div class="rhythm" id="rhythm-rows" role="tabpanel"></div>
+        </div>
+      </section>
+
+      <!-- PROJECTS -->
+      <section class="section" id="projects">
+        <div class="section-head"><h2>The 10 portfolio projects</h2><span class="small muted">Each set in a different industry, to show range</span></div>
+        <div class="card" style="padding:0">
+          <div class="table-wrap">
+            <table class="ptable">
+              <thead><tr><th>#</th><th>Your project</th><th>Domain</th><th>Week</th><th>Status</th></tr></thead>
+              <tbody id="ptbody"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- STACK -->
+      <section class="section" id="stack">
+        <div class="section-head"><h2>Tech stack & resources</h2><span class="small muted">Official docs first; videos, papers and articles are labeled</span></div>
+        <div class="grid grid-2" id="stack-grid"></div>
+
+        <div class="card" style="margin-top:16px">
+          <h3>Same capability, different clouds</h3>
+          <p class="small muted">We build on AWS, but an FDE works in the customer's cloud. Know the equivalents.</p>
+          <div id="cloud-map"></div>
+        </div>
+      </section>
+
+      <!-- SETUP -->
+      <section class="section" id="setup">
+        <div class="section-head"><h2>Before you start</h2></div>
+        <div class="grid grid-2">
+          <div class="card" id="setup-list"></div>
+          <div class="card">
+            <h3>Portfolio standard</h3>
+            <p class="small muted">Every one of the 10 projects ships with these. Track them per project in the Projects table above.</p>
+            <ul class="learn-list" id="pf-standard"></ul>
+            <div class="note" style="margin-top:16px"><b>Cost safety first.</b> Set a monthly spending limit on OpenAI and an AWS budget alert <i>before</i> writing any code. Tear down cloud resources when a project is done.</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ABOUT -->
+      <section class="section" id="about">
+        <div class="card">
+          <h2>About this program</h2>
+          <p>FDE Preparation is an open, self-paced program for engineers who want to become enterprise-ready Forward Deployed Engineers: the people who sit with a customer, scope a real problem, and ship a production AI system into their environment. You learn by building ten portfolio projects in different industries, prepare for the Claude Certified Architect – Foundations exam, and study the security, compliance, integration and business skills that enterprise FDE roles ask for.</p>
+          <p class="small muted" style="margin:0">Your name and progress are stored only in your browser. Links go to official documentation, original papers, engineering blogs and conference talks; each lesson re-checks its links before it's published.</p>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <footer id="site-footer"></footer>
+
+  <script src="assets/js/curriculum.js"></script>
+  <script src="assets/js/tracks.js"></script>
+  <script src="assets/js/store.js"></script>
+  <script src="assets/js/ui.js"></script>
+  <script src="assets/js/plan.js"></script>
+</body>
+</html>
