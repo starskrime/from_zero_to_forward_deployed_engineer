@@ -1,0 +1,1131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Week 0A · Python for Real Applications I</title>
+  <meta name="description" content="Week 0A: project-grade Python (environments, packages, files, errors, config, logging, CLI, git), deep practice, and an introduction to the Forward Deployed Engineer role.">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%2316191f'/%3E%3Ctext x='16' y='21' font-family='Arial' font-weight='800' font-size='11' fill='white' text-anchor='middle'%3EFDE%3C/text%3E%3C/svg%3E">
+  <link rel="stylesheet" href="../assets/css/platform.css">
+</head>
+<body data-week="0A">
+<header id="site-header"></header>
+
+<main class="wrap">
+<div class="lesson-layout">
+
+  <aside class="toc" aria-label="Lesson contents">
+    <div class="toc-group">
+      <p>Week 0A</p>
+      <a href="#overview">Overview</a>
+    </div>
+    <div class="toc-group">
+      <p>Weekdays</p>
+      <a href="#d1" data-toc="d1">Day 1 · Workbench</a>
+      <a href="#d2" data-toc="d2">Day 2 · Packages + git</a>
+      <a href="#d3" data-toc="d3">Day 3 · Files + errors</a>
+      <a href="#d4" data-toc="d4">Day 4 · Config + CLI</a>
+      <a href="#d5" data-toc="d5">Day 5 · Readiness</a>
+    </div>
+    <div class="toc-group">
+      <p>Weekend</p>
+      <a href="#w1" data-toc="w1">Weekend 1 · Build</a>
+      <a href="#w2" data-toc="w2">Weekend 2 · Ship</a>
+      <a href="#journal">Journal</a>
+    </div>
+  </aside>
+
+  <article>
+
+    <!-- ---------- OVERVIEW ---------- -->
+    <section class="lesson-hero" id="overview">
+      <div class="eyebrow">Week 0A · Foundations · <span id="week-dates"></span></div>
+      <h1>Python for Real Applications I</h1>
+      <p class="lead">You can write Python functions. This week you learn to build Python <b>projects</b>: environments, packages, files, bad data, configuration, logs, the command line and git. By the end of the week you'll have shipped a real tool to GitHub. You'll also start learning what a Forward Deployed Engineer actually does, and why companies are hiring so many.</p>
+      <div class="week-progress"><div class="bar"><span id="week-bar" style="width:0"></span></div><span class="small muted" id="week-bar-text"></span></div>
+
+      <div class="prose" style="margin-top:24px">
+        <h3>This week's three tracks</h3>
+        <table class="compare">
+          <thead><tr><th>Track</th><th>Hours</th><th>This week</th></tr></thead>
+          <tbody>
+            <tr><td><span class="part-tag" style="color:var(--ph-blue)">Core</span></td><td>22h</td><td>Project-grade Python; build and ship the <b>Lead Intake CLI</b></td></tr>
+            <tr data-track="cert"><td><span class="part-tag" style="color:var(--ph-slate)">Deep practice</span></td><td>6.5h</td><td>Certification prep starts in Week 2. Until then, these hours go to a foundational video, drills and git skills</td></tr>
+            <tr data-track="ent"><td><span class="part-tag" style="color:var(--ph-green)">Enterprise</span></td><td>6.5h</td><td>The FDE role and business model: what the job is, why it exists, what companies ask for</td></tr>
+          </tbody>
+        </table>
+
+        <h3>Coverage map: everything the weekend project needs</h3>
+        <p>The "no surprises" rule: every skill the weekend project uses is taught and practiced by hand earlier in the week.</p>
+        <table class="compare coverage">
+          <thead><tr><th>The weekend project needs…</th><th>Learned</th><th>Practiced in</th></tr></thead>
+          <tbody>
+            <tr><td>Terminal navigation; virtual environment, pip, requirements.txt; VS Code</td><td><span class="day-pill">Day 1</span></td><td>Exercise 1</td></tr>
+            <tr><td>Package layout, imports, <code>__main__.py</code>, <code>python -m</code></td><td><span class="day-pill">Day 2</span></td><td>Exercise 2</td></tr>
+            <tr><td>git: init, add, commit, .gitignore</td><td><span class="day-pill">Day 2</span></td><td>Exercise 2</td></tr>
+            <tr><td>Sets, dicts, counting and grouping</td><td><span class="day-pill">Day 2</span></td><td>Deep drills</td></tr>
+            <tr><td>pathlib; reading CSV; writing JSON</td><td><span class="day-pill">Day 3</span></td><td>Exercise 3</td></tr>
+            <tr><td>Converting text to numbers and dates; exceptions: catch, record, continue</td><td><span class="day-pill">Day 3</span></td><td>Exercise 3 + deep drills</td></tr>
+            <tr><td>Environment variables and .env; logging; argparse; exit codes</td><td><span class="day-pill">Day 4</span></td><td>Exercise 4</td></tr>
+            <tr><td>Pushing to GitHub</td><td><span class="day-pill">Day 4</span></td><td>Exercise 4</td></tr>
+          </tbody>
+        </table>
+
+        <div class="callout tip"><b>Where your code lives</b>Keep a <code>code/</code> folder next to this platform. Exercises go in <code>code/week-0A/</code>. The weekend project gets its own folder, <code>code/lead-intake/</code>, and its own GitHub repository, like every portfolio project.</div>
+        <div class="callout warn"><b>Rule for Weeks 1–11: no AI writing your project code</b>Turn off AI autocomplete (Copilot, Cursor and similar) for your <code>code/</code> folder. Ordinary editor autocomplete is fine, and asking an AI tutor <i>questions</i> is encouraged. Configuring Claude Code for the certification is a separate skill, practiced in sandbox repos from Week 7.</div>
+      </div>
+    </section>
+
+    <!-- ================= DAY 1 ================= -->
+    <section class="day" id="d1" data-day="d1">
+      <div class="day-kicker">Day 1 · Monday on the Full-time pace · 4 hours</div>
+      <div class="day-head">
+        <h2>Your workbench, and what an FDE is</h2>
+        <label class="day-done check"><input type="checkbox" data-check="lessonDays|0A-d1"> Session done</label>
+      </div>
+      <ul class="parts session-plan">
+        <li class="part part-core"><span class="part-tag">Core · 2h</span>Terminal, Python, virtual environments, VS Code + Exercise 1</li>
+        <li class="part part-deep" data-track="cert"><span class="part-tag">Deep practice · 1h</span>Video: how large language models work, the big picture</li>
+        <li class="part part-ent" data-track="ent"><span class="part-tag">Enterprise · 1h</span>What a Forward Deployed Engineer is</li>
+      </ul>
+
+      <h3 class="part-h part-core-h">Core · Your workbench</h3>
+      <div class="prose">
+        <h4>1. Terminal survival kit</h4>
+        <p>You'll run everything from the terminal. On a Mac: press <b>⌘ Space</b>, type <b>Terminal</b>, press Enter. On Windows, use <b>PowerShell</b> or <b>Windows Terminal</b>.</p>
+        <table class="compare">
+          <thead><tr><th>Command</th><th>What it does</th></tr></thead>
+          <tbody>
+            <tr><td><code>pwd</code></td><td>Shows which folder you're in</td></tr>
+            <tr><td><code>ls</code> / <code>ls -la</code></td><td>Lists files; <code>-la</code> also shows hidden ones like <code>.venv</code> and <code>.env</code></td></tr>
+            <tr><td><code>cd folder</code></td><td>Moves into a folder. <code>cd ..</code> goes up one level, <code>cd ~</code> goes home</td></tr>
+            <tr><td><code>mkdir -p a/b</code></td><td>Creates folders, including missing parents</td></tr>
+            <tr><td><code>open .</code></td><td>Opens the current folder in Finder (Windows: <code>explorer .</code>)</td></tr>
+            <tr><td><code>cat file</code></td><td>Prints a file's contents</td></tr>
+            <tr><td><kbd>Tab</kbd> / <kbd>↑</kbd></td><td>Autocomplete names / bring back the previous command</td></tr>
+          </tbody>
+        </table>
+        <p>If a folder name has spaces, wrap it in quotes:</p>
+<pre><code><span class="p">$ </span>cd ~/Desktop/"FDE Preparation"
+<span class="p">$ </span>mkdir -p code/week-0A
+<span class="p">$ </span>cd code/week-0A
+<span class="p">$ </span>pwd
+<span class="o">/Users/you/Desktop/FDE Preparation/code/week-0A</span></code></pre>
+
+        <h4>2. Which Python are you running?</h4>
+<pre><code><span class="p">$ </span>python3 --version
+<span class="o">Python 3.13.x</span>        <span class="c"># 3.11 or newer is fine</span>
+<span class="p">$ </span>which python3        <span class="c"># Windows: where python</span></code></pre>
+        <div class="callout warn"><b>If your prompt starts with <code>(base)</code></b>Anaconda is active and will interfere with virtual environments. Run <code>conda deactivate</code>, and to stop it starting automatically, <code>conda config --set auto_activate_base false</code> once. If your Python is older than 3.11, install the latest from <a href="https://www.python.org/downloads/" target="_blank" rel="noopener">python.org</a>.</div>
+
+        <h4>3. Virtual environments: one isolated toolbox per project</h4>
+        <p><b>The problem:</b> if every package goes into one shared Python, projects start to conflict. One project needs one version of a library, another needs a different one, and nobody else can reproduce your setup.</p>
+        <p><b>The fix:</b> each project gets its own <code>.venv</code> folder with its own Python and packages. "Activating" it tells your terminal to use that folder's <code>python</code> and <code>pip</code>.</p>
+        <figure class="diagram">
+          <svg viewBox="0 0 720 210" role="img" aria-label="System Python on the left; two projects, each with its own .venv; requirements.txt records exact versions">
+            <rect class="d-warn" x="10" y="40" width="200" height="130" rx="10"/>
+            <text class="d-t" x="24" y="68">System Python</text>
+            <text class="d-s" x="24" y="92">From macOS or Homebrew</text>
+            <text class="d-s" x="24" y="112">Shared by everything</text>
+            <text class="d-m" x="24" y="146">✗ never pip install here</text>
+            <path class="d-line" d="M210 105 H260"/><polygon class="d-arrow" points="260,100 270,105 260,110"/>
+            <text class="d-s" x="214" y="96">copies</text>
+            <rect class="d-accent" x="280" y="12" width="200" height="86" rx="10"/>
+            <text class="d-t" x="294" y="36">lead-intake/.venv</text>
+            <text class="d-m" x="294" y="60">python 3.13</text>
+            <text class="d-m" x="294" y="80">python-dotenv</text>
+            <rect class="d-accent" x="280" y="112" width="200" height="86" rx="10"/>
+            <text class="d-t" x="294" y="136">p1-lead-agent/.venv</text>
+            <text class="d-m" x="294" y="160">python 3.13</text>
+            <text class="d-m" x="294" y="180">openai · pydantic</text>
+            <rect class="d-ok" x="510" y="40" width="200" height="130" rx="10"/>
+            <text class="d-t" x="524" y="68">requirements.txt</text>
+            <text class="d-s" x="524" y="92">Exact versions, committed</text>
+            <text class="d-s" x="524" y="112">to git, so anyone can</text>
+            <text class="d-s" x="524" y="132">rebuild the same .venv</text>
+            <path class="d-line" d="M480 55 H500 V90 H510 M480 155 H500 V120 H510"/>
+          </svg>
+          <figcaption>The <code>.venv</code> folder is never committed to git; <code>requirements.txt</code> always is.</figcaption>
+        </figure>
+<pre><code><span class="p">$ </span>python3 -m venv .venv            <span class="c"># create: once per project</span>
+<span class="p">$ </span>source .venv/bin/activate        <span class="c"># activate: every new terminal (Windows: .venv\Scripts\activate)</span>
+<span class="p">(.venv) $ </span>which python                <span class="c"># proof: points inside .venv</span>
+<span class="p">(.venv) $ </span>pip install rich
+<span class="p">(.venv) $ </span>pip freeze > requirements.txt  <span class="c"># record exact versions</span>
+<span class="p">(.venv) $ </span>deactivate</code></pre>
+        <p>To rebuild the environment elsewhere: create and activate a new <code>.venv</code>, then <code>pip install -r requirements.txt</code>.</p>
+
+        <h4>4. VS Code, set up properly</h4>
+        <ol>
+          <li>Install the <b>Python</b> extension from Microsoft.</li>
+          <li>Enable the <code>code</code> command: <kbd>⌘⇧P</kbd> → "Shell Command: Install 'code' command in PATH". Now <code>code .</code> opens the current folder.</li>
+          <li><kbd>⌘⇧P</kbd> → "Python: Select Interpreter" → choose the one inside <code>.venv</code>.</li>
+          <li>Open the built-in terminal with <kbd>⌃`</kbd>. It activates the selected environment automatically.</li>
+        </ol>
+      </div>
+
+      <div class="exercise">
+        <div class="ex-head"><span class="ex-tag">Exercise 1</span><h4>Set up your workbench</h4><span class="chip">~30 min</span></div>
+        <div class="prose">
+          <p>In <code>code/week-0A/ex1-workbench/</code>:</p>
+          <ol>
+            <li>Create and activate a virtual environment, and prove it with <code>which python</code>.</li>
+            <li>Install <code>rich</code>, a library for nice terminal output.</li>
+            <li>Write <code>hello.py</code>, which prints a table titled "My FDE workbench" with three rows (tool → status).</li>
+            <li>Save your dependencies to <code>requirements.txt</code> and look inside. Why are there more packages than just <code>rich</code>?</li>
+            <li>Open the folder in VS Code and select the <code>.venv</code> interpreter.</li>
+          </ol>
+          <p class="expected"><b>Done when:</b> <code>python hello.py</code> prints a boxed table, and <code>requirements.txt</code> lists <code>rich==…</code> plus a few packages you didn't ask for: dependencies of dependencies.</p>
+        </div>
+        <div class="hints" data-hints="0A-ex1">
+          <div class="hint" data-level="Concept">A venv is just a folder. "Activate" changes which <code>python</code> and <code>pip</code> your terminal uses. If <code>which python</code> doesn't point into <code>.venv</code>, you're installing into the wrong place. The <a href="https://rich.readthedocs.io/en/stable/" target="_blank" rel="noopener">rich docs</a> have a "Tables" page.</div>
+          <div class="hint" data-level="Pseudocode">make folder → cd → create venv → activate → pip install rich → write hello.py (create Table, add 2 columns, add 3 rows, print with Console) → run → freeze to requirements.txt</div>
+          <div class="hint" data-level="Snippet">
+<pre><code>from rich.console import Console
+from rich.table import Table
+
+table = Table(title="My FDE workbench")
+table.add_column("Tool")
+# … add a second column and three rows …
+Console().print(table)</code></pre></div>
+          <div class="hint solution" data-level="Full solution">
+<pre><code><span class="p">$ </span>mkdir -p ex1-workbench &amp;&amp; cd ex1-workbench
+<span class="p">$ </span>python3 -m venv .venv &amp;&amp; source .venv/bin/activate
+<span class="p">(.venv) $ </span>pip install rich</code></pre>
+<pre><code><span class="c"># hello.py</span>
+from rich.console import Console
+from rich.table import Table
+
+table = Table(title="My FDE workbench")
+table.add_column("Tool")
+table.add_column("Status")
+table.add_row("Python", "ready")
+table.add_row("Virtual environment", "active")
+table.add_row("rich", "installed")
+
+Console().print(table)</code></pre>
+<pre><code><span class="p">(.venv) $ </span>python hello.py
+<span class="p">(.venv) $ </span>pip freeze > requirements.txt &amp;&amp; cat requirements.txt</code></pre></div>
+        </div>
+        <div class="ex-foot"><label class="done-toggle check"><input type="checkbox" data-check="exercises|0A-ex1"> <span class="check-text">Exercise 1 done</span></label></div>
+      </div>
+
+      <div class="readings">
+        <div class="reading"><span class="kind must">Read</span><div><a href="https://docs.python.org/3/tutorial/venv.html" target="_blank" rel="noopener">Python tutorial §12: Virtual Environments and Packages ↗</a><p>The official explanation. Read 12.1–12.3.</p></div></div>
+        <div class="reading"><span class="kind must">Read</span><div><a href="https://packaging.python.org/en/latest/guides/installing-using-pip-and-virtual-environments/" target="_blank" rel="noopener">PyPA: Install packages in a virtual environment using pip and venv ↗</a><p>Exact commands for Mac and Windows.</p></div></div>
+        <div class="reading"><span class="kind">Optional</span><div><a href="https://realpython.com/python-virtual-environments-a-primer/" target="_blank" rel="noopener">Real Python: Virtual Environments, a Primer ↗</a><p>What actually happens inside <code>.venv</code>.</p></div></div>
+        <div class="reading"><span class="kind">Reference</span><div><a href="https://code.visualstudio.com/docs/python/environments" target="_blank" rel="noopener">VS Code: Python environments ↗</a> · <a href="https://support.apple.com/guide/terminal/welcome/mac" target="_blank" rel="noopener">Apple Terminal guide ↗</a></div></div>
+      </div>
+
+      <div data-track="cert">
+        <h3 class="part-h part-deep-h">Deep practice · The big picture of LLMs</h3>
+        <div class="prose"><p>You'll build with large language models for the next 27 weeks. Before any detail, get the big picture from one of the clearest explanations available.</p></div>
+        <div class="readings">
+          <div class="reading"><span class="kind must">Watch</span><div><a href="https://www.youtube.com/watch?v=zjkBMFhNj_g" target="_blank" rel="noopener">Andrej Karpathy: Intro to Large Language Models (about 1 hour) ↗</a><p>Take notes on three questions: What is a model, physically? How does it get trained? What security risks does he describe at the end?</p></div></div>
+        </div>
+      </div>
+
+      <div data-track="ent">
+        <h3 class="part-h part-ent-h">Enterprise · What a Forward Deployed Engineer is</h3>
+        <div class="prose"><p>An FDE works <i>inside</i> a customer's world: they scope a real problem with the people who have it, build software in the customer's environment, get it into production, and feed what they learn back to their own company's product. Read these two pieces, then answer in your notes.</p></div>
+        <div class="readings">
+          <div class="reading"><span class="kind must">Read</span><div><a href="https://newsletter.pragmaticengineer.com/p/forward-deployed-engineers" target="_blank" rel="noopener">The Pragmatic Engineer: What are Forward Deployed Engineers, and why are they so in demand? ↗</a><p>A clear overview of the role across companies.</p></div></div>
+          <div class="reading"><span class="kind must">Read</span><div><a href="https://blog.palantir.com/dev-versus-delta-demystifying-engineering-roles-at-palantir-ad44c2a6e87" target="_blank" rel="noopener">Palantir: Dev versus Delta ↗</a><p>The company that invented the role explains "one capability, many customers" vs "one customer, many capabilities".</p></div></div>
+        </div>
+        <div class="reflect" style="max-width:760px">
+          <label><span class="rq">In your own words: how is an FDE different from a software engineer, a solutions architect, and a consultant?</span><textarea data-reflect="ent-d1"></textarea></label>
+        </div>
+      </div>
+
+      <div class="prose"><h3>Mini-quiz</h3></div>
+      <div class="quiz mini" data-quiz="0A-d1"></div>
+      <script type="application/json" data-quiz-for="0A-d1">[
+        {"id":"a","q":"Why does each project get its own virtual environment?","options":["It makes Python faster","It isolates each project's packages and versions so projects don't conflict and setups are reproducible","GitHub requires it","It encrypts the code"],"answer":1,"why":"Isolation plus requirements.txt means anyone can rebuild the same environment."},
+        {"id":"b","q":"After activating a venv, <code>which python</code> points to <code>/usr/bin/python3</code>. What does that tell you?","options":["Everything is fine","The venv isn't actually active in this terminal, so installs would go to the wrong Python","Python is broken","You need a newer computer"],"answer":1,"why":"An active venv puts its own python first on your PATH. Re-run the activate command and check for a conda (base) prompt."},
+        {"id":"c","q":"What best describes what makes an FDE different from a consultant?","options":["FDEs only write slide decks","FDEs build real software inside the customer's environment and feed learnings back into their company's product","FDEs never meet customers","FDEs only sell"],"answer":1,"why":"FDEs do significant engineering on site, then turn field learnings into product: \"one customer, many capabilities\"."}
+      ]</script>
+    </section>
+
+    <!-- ================= DAY 2 ================= -->
+    <section class="day" id="d2" data-day="d2">
+      <div class="day-kicker">Day 2 · Tuesday on the Full-time pace · 4 hours</div>
+      <div class="day-head">
+        <h2>From one file to a project: packages, imports and git</h2>
+        <label class="day-done check"><input type="checkbox" data-check="lessonDays|0A-d2"> Session done</label>
+      </div>
+      <ul class="parts session-plan">
+        <li class="part part-core"><span class="part-tag">Core · 2h</span>Modules, packages, <code>__main__</code>, git basics + Exercise 2</li>
+        <li class="part part-deep" data-track="cert"><span class="part-tag">Deep practice · 1h</span>Drills: sets, dicts, counting and grouping</li>
+        <li class="part part-ent" data-track="ent"><span class="part-tag">Enterprise · 1h</span>A day in the life of an FDE</li>
+      </ul>
+
+      <h3 class="part-h part-core-h">Core · Packages and git</h3>
+      <div class="prose">
+        <h4>1. Module, package, import</h4>
+        <ul>
+          <li>A <b>module</b> is one <code>.py</code> file. <code>text.py</code> is the module <code>text</code>.</li>
+          <li>A <b>package</b> is a folder of modules with an <code>__init__.py</code> (it can be empty).</li>
+          <li><b>Imports</b> follow folders with dots: <code>from greeter.text import shout</code> means "open <code>greeter/text.py</code> and take <code>shout</code>".</li>
+        </ul>
+<pre><code>import csv                          <span class="c"># whole module; use as csv.DictReader</span>
+from pathlib import Path            <span class="c"># one name from a module</span>
+from greeter.text import shout      <span class="c"># your own package, same syntax</span></code></pre>
+
+        <h4>2. <code>__name__</code> and <code>if __name__ == "__main__":</code></h4>
+        <p>Python sets <code>__name__</code> in every file. If you <b>run</b> the file, it's <code>"__main__"</code>; if another file <b>imports</b> it, it's the module's name (like <code>"greeter.text"</code>). The <code>if</code> check lets one file be both a reusable library and a runnable script.</p>
+<pre><code>def shout(name: str) -> str:
+    return f"HELLO, {name.upper()}!"
+
+if __name__ == "__main__":
+    print(shout("test"))   <span class="c"># runs with: python -m greeter.text, NOT when imported</span></code></pre>
+
+        <h4>3. <code>__main__.py</code> and <code>python -m</code></h4>
+        <p>Put a <code>__main__.py</code> inside a package, and <code>python -m greeter</code> runs it. <b>Always run from the project root</b>, the folder that <i>contains</i> the package.</p>
+
+        <h4>4. The project layout you'll use all program</h4>
+<pre class="no-copy"><code>lead-intake/                 <span class="c">← project root: run commands from here</span>
+├── .venv/                   <span class="c">← ignored by git</span>
+├── .env                     <span class="c">← your real settings / secrets: ignored by git</span>
+├── .env.example             <span class="c">← same keys, blank values: committed</span>
+├── .gitignore
+├── requirements.txt
+├── README.md
+├── data/leads_sample.csv
+└── lead_intake/             <span class="c">← the package</span>
+    ├── __init__.py
+    ├── __main__.py          <span class="c">← python -m lead_intake starts here</span>
+    ├── cli.py               <span class="c">← arguments, logging, orchestration</span>
+    ├── io_utils.py          <span class="c">← reading CSV, writing JSON</span>
+    └── validation.py        <span class="c">← business rules</span></code></pre>
+        <p>Keeping input/output, business rules and the command line separate is exactly the habit hiring managers look for, and it's what makes code testable (next week).</p>
+
+        <h4>5. git in 15 minutes</h4>
+        <figure class="diagram">
+          <svg viewBox="0 0 720 120" role="img" aria-label="Working folder to staging area with git add, to local history with git commit, to GitHub with git push">
+            <rect class="d-box" x="4" y="30" width="150" height="60" rx="10"/><text class="d-t" x="22" y="56">Working folder</text><text class="d-s" x="22" y="76">your edits</text>
+            <rect class="d-box" x="192" y="30" width="150" height="60" rx="10"/><text class="d-t" x="210" y="56">Staging area</text><text class="d-s" x="210" y="76">next snapshot</text>
+            <rect class="d-accent" x="380" y="30" width="150" height="60" rx="10"/><text class="d-t" x="398" y="56">Local history</text><text class="d-s" x="398" y="76">commits on your laptop</text>
+            <rect class="d-ok" x="566" y="30" width="150" height="60" rx="10"/><text class="d-t" x="584" y="56">GitHub</text><text class="d-s" x="584" y="76">backup + portfolio</text>
+            <path class="d-line" d="M154 60 H186"/><polygon class="d-arrow" points="186,55 192,60 186,65"/>
+            <path class="d-line" d="M342 60 H374"/><polygon class="d-arrow" points="374,55 380,60 374,65"/>
+            <path class="d-line" d="M530 60 H560"/><polygon class="d-arrow" points="560,55 566,60 560,65"/>
+            <text class="d-m" x="146" y="22">git add</text><text class="d-m" x="326" y="22">git commit</text><text class="d-m" x="518" y="22">git push</text>
+          </svg>
+          <figcaption>Check where things are at any time with <code>git status</code>.</figcaption>
+        </figure>
+<pre><code><span class="c"># one time only</span>
+<span class="p">$ </span>git config --global user.name "Your Name"
+<span class="p">$ </span>git config --global user.email "you@example.com"
+<span class="p">$ </span>git config --global init.defaultBranch main
+
+<span class="c"># per project</span>
+<span class="p">$ </span>git init
+<span class="p">$ </span>git status
+<span class="p">$ </span>git add .gitignore greeter/
+<span class="p">$ </span>git commit -m "Add greeter package with shout and whisper"
+<span class="p">$ </span>git log --oneline</code></pre>
+        <p>Commit messages read like commands ("Add CSV reader"). Commit small and often: your history is part of your portfolio. Create <b>.gitignore</b> before your first commit:</p>
+<pre><code>.venv/
+__pycache__/
+*.pyc
+.env
+out/
+.DS_Store</code></pre>
+        <div class="callout warn"><b>Secrets rule, from now on</b>Before every first commit, run <code>git status</code> and confirm <code>.env</code> isn't listed. If a key ever reaches GitHub, <b>revoke it immediately</b>. Deleting the file afterwards doesn't remove it from history.</div>
+      </div>
+
+      <div class="exercise">
+        <div class="ex-head"><span class="ex-tag">Exercise 2</span><h4>Build a tiny package and commit it</h4><span class="chip">~35 min</span></div>
+        <div class="prose">
+          <p>In <code>code/week-0A/ex2-greeter/</code>, create <code>.gitignore</code> and a package <code>greeter/</code> containing <code>__init__.py</code> (empty), <code>text.py</code> and <code>__main__.py</code>.</p>
+          <ol>
+            <li><code>text.py</code>: <code>shout(name)</code> returns <code>"HELLO, ADA!"</code>; <code>whisper(name)</code> returns <code>"hello, ada..."</code>. Add an <code>if __name__ == "__main__":</code> block that prints <code>shout("test")</code>.</li>
+            <li><code>__main__.py</code>: import both and print both for <code>"Ada"</code>.</li>
+            <li>Run <code>python3 -m greeter</code>, then <code>python3 -m greeter.text</code>. Explain out loud why the outputs differ.</li>
+            <li><code>git init</code>, then make <b>two</b> commits: the <code>.gitignore</code> first, then the package.</li>
+          </ol>
+          <p class="expected"><b>Done when:</b> <code>python3 -m greeter</code> prints <code>HELLO, ADA!</code> and <code>hello, ada...</code>; <code>python3 -m greeter.text</code> prints <code>HELLO, TEST!</code>; <code>git log --oneline</code> shows 2 commits.</p>
+        </div>
+        <div class="hints" data-hints="0A-ex2">
+          <div class="hint" data-level="Concept">With <code>python3 -m greeter</code>, Python runs <code>__main__.py</code>, where <code>text.py</code> is <i>imported</i>, so its <code>__name__</code> is <code>"greeter.text"</code> and its <code>if</code> block is skipped. With <code>-m greeter.text</code>, that file itself is <code>__main__</code>.</div>
+          <div class="hint" data-level="Pseudocode">text.py: shout → f-string with name.upper(); whisper → name.lower(); if-main prints shout("test"). __main__.py: import both, print both. Terminal: git init → add .gitignore → commit → add greeter → commit.</div>
+          <div class="hint" data-level="Snippet">
+<pre><code><span class="c"># greeter/__main__.py</span>
+from greeter.text import shout, whisper
+
+print(shout("Ada"))</code></pre></div>
+          <div class="hint solution" data-level="Full solution">
+<pre><code><span class="c"># greeter/text.py</span>
+def shout(name: str) -> str:
+    return f"HELLO, {name.upper()}!"
+
+
+def whisper(name: str) -> str:
+    return f"hello, {name.lower()}..."
+
+
+if __name__ == "__main__":
+    print(shout("test"))</code></pre>
+<pre><code><span class="c"># greeter/__main__.py</span>
+from greeter.text import shout, whisper
+
+print(shout("Ada"))
+print(whisper("Ada"))</code></pre>
+<pre><code><span class="p">$ </span>git init
+<span class="p">$ </span>git add .gitignore &amp;&amp; git commit -m "Add .gitignore"
+<span class="p">$ </span>git add greeter &amp;&amp; git commit -m "Add greeter package with shout and whisper"</code></pre></div>
+        </div>
+        <div class="ex-foot"><label class="done-toggle check"><input type="checkbox" data-check="exercises|0A-ex2"> <span class="check-text">Exercise 2 done</span></label></div>
+      </div>
+
+      <div class="readings">
+        <div class="reading"><span class="kind must">Read</span><div><a href="https://docs.python.org/3/tutorial/modules.html" target="_blank" rel="noopener">Python tutorial §6: Modules ↗</a><p>Read 6.1, 6.1.1 and 6.4.</p></div></div>
+        <div class="reading"><span class="kind must">Read</span><div><a href="https://git-scm.com/book/en/v2/Git-Basics-Recording-Changes-to-the-Repository" target="_blank" rel="noopener">Pro Git §2.2: Recording Changes ↗</a><p>status, add, commit. <a href="https://git-scm.com/book/en/v2/Git-Basics-Getting-a-Git-Repository" target="_blank" rel="noopener">§2.1</a> covers <code>git init</code>.</p></div></div>
+        <div class="reading"><span class="kind">Optional</span><div><a href="https://realpython.com/if-name-main-python/" target="_blank" rel="noopener">Real Python: What does if __name__ == "__main__" do? ↗</a></div></div>
+        <div class="reading"><span class="kind">Reference</span><div><a href="https://docs.python.org/3/library/__main__.html" target="_blank" rel="noopener">Python docs: __main__ ↗</a> · <a href="https://github.com/github/gitignore/blob/main/Python.gitignore" target="_blank" rel="noopener">GitHub's Python .gitignore template ↗</a></div></div>
+      </div>
+
+      <div data-track="cert">
+        <h3 class="part-h part-deep-h">Deep practice · Drills: sets, dicts, counting, grouping</h3>
+        <div class="exercise">
+          <div class="ex-head"><span class="ex-tag">Drills</span><h4>Three data-wrangling functions</h4><span class="chip">~45 min</span></div>
+          <div class="prose">
+            <p>In <code>code/week-0A/drills/tue_drills.py</code>, write and test these (you'll use all three patterns this weekend):</p>
+            <ol>
+              <li><code>unique_emails(emails)</code>: remove duplicates ignoring case and surrounding spaces, keep first-seen order, return lowercase.</li>
+              <li><code>leads_per_state(states)</code>: count per state (uppercased), return a list of <code>(state, count)</code>, most common first, ties alphabetical.</li>
+              <li><code>ids_by_loan_type(rows)</code>: given dicts with <code>lead_id</code> and <code>loan_type</code>, return <code>{loan_type: [ids…]}</code>.</li>
+            </ol>
+<pre><code>assert unique_emails(["A@x.com", "b@x.com", " a@X.com "]) == ["a@x.com", "b@x.com"]
+assert leads_per_state(["TX", "ca", "TX", "CA", "ny"]) == [("CA", 2), ("TX", 2), ("NY", 1)]</code></pre>
+          </div>
+          <div class="hints" data-hints="0A-drill-tue">
+            <div class="hint" data-level="Concept">A <code>set</code> answers "have I seen this?" quickly. <code>collections.Counter</code> counts. <code>dict.setdefault(key, [])</code> creates a list the first time a key appears. Sort with a key of <code>(-count, name)</code>.</div>
+            <div class="hint solution" data-level="Full solution">
+<pre><code>from collections import Counter
+
+
+def unique_emails(emails: list[str]) -> list[str]:
+    seen, out = set(), []
+    for e in emails:
+        key = e.strip().lower()
+        if key not in seen:
+            seen.add(key)
+            out.append(key)
+    return out
+
+
+def leads_per_state(states: list[str]) -> list[tuple[str, int]]:
+    counts = Counter(s.strip().upper() for s in states)
+    return sorted(counts.items(), key=lambda kv: (-kv[1], kv[0]))
+
+
+def ids_by_loan_type(rows: list[dict]) -> dict[str, list[str]]:
+    groups: dict[str, list[str]] = {}
+    for r in rows:
+        groups.setdefault(r["loan_type"], []).append(r["lead_id"])
+    return groups</code></pre></div>
+          </div>
+          <div class="ex-foot"><label class="done-toggle check"><input type="checkbox" data-check="exercises|0A-drill-tue"> <span class="check-text">Drills done</span></label></div>
+        </div>
+      </div>
+
+      <div data-track="ent">
+        <h3 class="part-h part-ent-h">Enterprise · A day in the life</h3>
+        <div class="readings">
+          <div class="reading"><span class="kind must">Read</span><div><a href="https://blog.palantir.com/a-day-in-the-life-of-a-palantir-forward-deployed-software-engineer-45ef2de257b1" target="_blank" rel="noopener">Palantir: A day in the life of a Forward Deployed Software Engineer ↗</a><p>What the work feels like day to day: customer meetings, data work, building, iterating.</p></div></div>
+          <div class="reading"><span class="kind">Optional</span><div><a href="https://www.svpg.com/forward-deployed-engineers/" target="_blank" rel="noopener">SVPG (Marty Cagan): Forward Deployed Engineers ↗</a><p>A product-management view of why putting engineers with customers works.</p></div></div>
+        </div>
+        <div class="reflect" style="max-width:760px">
+          <label><span class="rq">Which parts of that day would energize you, and which would drain you? What does that tell you about fit?</span><textarea data-reflect="ent-d2"></textarea></label>
+        </div>
+      </div>
+
+      <div class="prose"><h3>Mini-quiz</h3></div>
+      <div class="quiz mini" data-quiz="0A-d2"></div>
+      <script type="application/json" data-quiz-for="0A-d2">[
+        {"id":"a","q":"Inside <code>greeter/text.py</code>, what is <code>__name__</code> when <code>__main__.py</code> imports it?","options":["\"__main__\"","\"greeter.text\"","\"text.py\"","None"],"answer":1,"why":"Imported modules get their dotted name; only the file being run is \"__main__\"."},
+        {"id":"b","q":"What does <code>git add</code> do?","options":["Uploads to GitHub","Moves changes into the staging area for the next commit","Creates a branch","Adds a file to .gitignore"],"answer":1,"why":"add stages, commit snapshots locally, push uploads."},
+        {"id":"c","q":"Palantir describes product engineers as \"one capability, many customers\". How do they describe FDEs?","options":["One customer, many capabilities","Many customers, no capabilities","One capability, one customer","Sales engineers"],"answer":0,"why":"FDEs go deep with one customer and pull together many capabilities to solve their problem."}
+      ]</script>
+    </section>
+
+    <!-- ================= DAY 3 ================= -->
+    <section class="day" id="d3" data-day="d3">
+      <div class="day-kicker">Day 3 · Wednesday on the Full-time pace · 4 hours</div>
+      <div class="day-head">
+        <h2>Files, CSV, JSON, and handling bad data</h2>
+        <label class="day-done check"><input type="checkbox" data-check="lessonDays|0A-d3"> Session done</label>
+      </div>
+      <ul class="parts session-plan">
+        <li class="part part-core"><span class="part-tag">Core · 2h</span>pathlib, CSV, safe conversion, exceptions, JSON + Exercise 3</li>
+        <li class="part part-deep" data-track="cert"><span class="part-tag">Deep practice · 1h</span>Drills: parsing messy amounts and dates</li>
+        <li class="part part-ent" data-track="ent"><span class="part-tag">Enterprise · 1h</span>Why AI companies hire FDEs: the business model</li>
+      </ul>
+
+      <h3 class="part-h part-core-h">Core · Files and bad data</h3>
+      <div class="prose">
+        <h4>1. Paths with pathlib</h4>
+<pre><code>from pathlib import Path
+
+HERE = Path(__file__).parent                 <span class="c"># the folder this .py file lives in</span>
+INPUT = HERE / "data" / "leads_sample.csv"    <span class="c"># "/" joins path parts</span>
+OUT_DIR = Path("out")
+OUT_DIR.mkdir(parents=True, exist_ok=True)   <span class="c"># create if missing; no error if it exists</span></code></pre>
+
+        <h4>2. Reading CSV: every value is a string</h4>
+<pre><code>import csv
+
+with INPUT.open(newline="", encoding="utf-8") as f:
+    for row in csv.DictReader(f):     <span class="c"># each row is a dict keyed by the header</span>
+        print(row["credit_score"])    <span class="c"># '742'  ← a str, not an int!</span></code></pre>
+        <ul>
+          <li><b>Every value is text.</b> An empty cell is <code>""</code>, not <code>None</code>.</li>
+          <li><code>newline=""</code> is required by the csv docs; <code>encoding="utf-8"</code> handles names like "Müller".</li>
+          <li>Number rows the way a person sees the file: the header is line 1, so use <code>enumerate(reader, start=2)</code>.</li>
+        </ul>
+
+        <h4>3. Converting text safely</h4>
+<pre><code>int("742")                        <span class="c"># 742</span>
+int("")                           <span class="c"># ValueError</span>
+int("7.5")                        <span class="c"># ValueError: use float()</span>
+float("three")                    <span class="c"># ValueError</span>
+from datetime import date
+date.fromisoformat("2026-09-31")  <span class="c"># ValueError: September has 30 days</span></code></pre>
+        <p>A value can convert fine and still be <i>wrong</i>, like a credit score of 905. That's a <b>range check</b>, and you write it yourself.</p>
+
+        <h4>4. Exceptions: catch, record, continue</h4>
+<pre><code>def parse_credit_score(raw: str) -> int:
+    if raw.strip() == "":
+        raise ValueError("credit_score is missing")
+    score = int(raw)
+    if not 300 &lt;= score &lt;= 850:
+        raise ValueError(f"credit_score {score} is outside 300-850")
+    return score
+
+try:
+    score = parse_credit_score(row["credit_score"])
+except ValueError as e:              <span class="c"># catch the SPECIFIC error, never a bare except:</span>
+    errors.append(str(e))            <span class="c"># record it, and the loop continues</span></code></pre>
+        <div class="callout tip"><b>The data-pipeline mindset</b>One bad row must never crash the run. Validate each row, collect errors with enough context to fix them (row, ID, field, reason), and keep going. Stop only when the whole run is meaningless, like a missing input file. The same pattern returns when agent tools fail.</div>
+
+        <h4>5. Writing JSON</h4>
+<pre><code>import json
+with (OUT_DIR / "summary.json").open("w", encoding="utf-8") as f:
+    json.dump(summary, f, indent=2)</code></pre>
+        <p>JSON stores dicts, lists, strings, numbers, booleans and null, but not <code>date</code> objects or sets. Convert with <code>d.isoformat()</code> and <code>sorted(s)</code>.</p>
+      </div>
+
+      <div class="exercise">
+        <div class="ex-head"><span class="ex-tag">Exercise 3</span><h4>Credit-score summary</h4><span class="chip">~35 min</span></div>
+        <div class="prose">
+          <p>Set up <code>code/week-0A/ex3-summary/data/</code> and save the sample file there: <a href="week-0A/leads_sample.csv" download>⬇ leads_sample.csv</a> (20 mortgage leads, with problems planted on purpose). Write <code>summarize.py</code> that reads the CSV, converts each <code>credit_score</code> with a <code>parse_credit_score()</code> that raises <code>ValueError</code> for missing, non-numeric, or out-of-range values, collects errors as <code>{"row", "lead_id", "error"}</code>, and writes <code>out/summary.json</code> with <code>total_rows</code>, <code>valid_scores</code>, <code>average_score</code> (1 decimal) and <code>errors</code>.</p>
+          <p class="expected"><b>Check your answer:</b> <code>total_rows: 20</code>, <code>valid_scores: 18</code>, <code>average_score: 729.8</code>, and 2 errors, on rows <b>6</b> (L-1005, score 905) and <b>13</b> (L-1012, missing).</p>
+        </div>
+        <div class="hints" data-hints="0A-ex3">
+          <div class="hint" data-level="Concept">Keep two lists while you loop: good scores and errors. Wrap only the risky call in <code>try/except ValueError</code>. Guard the average against dividing by zero.</div>
+          <div class="hint" data-level="Pseudocode">open → for (n, row) in enumerate(DictReader, start=2): total += 1; try: scores.append(parse(row["credit_score"])) except ValueError as e: errors.append({...}) → build dict → mkdir out → json.dump</div>
+          <div class="hint" data-level="Snippet">
+<pre><code>for row_number, row in enumerate(csv.DictReader(f), start=2):
+    total += 1
+    try:
+        scores.append(parse_credit_score(row["credit_score"]))
+    except ValueError as e:
+        errors.append({"row": row_number, "lead_id": row["lead_id"], "error": str(e)})</code></pre></div>
+          <div class="hint solution" data-level="Full solution">
+<pre><code>import csv
+import json
+from pathlib import Path
+
+HERE = Path(__file__).parent
+INPUT = HERE / "data" / "leads_sample.csv"
+OUTPUT = HERE / "out" / "summary.json"
+
+
+def parse_credit_score(raw: str) -> int:
+    if raw.strip() == "":
+        raise ValueError("credit_score is missing")
+    score = int(raw)
+    if not 300 &lt;= score &lt;= 850:
+        raise ValueError(f"credit_score {score} is outside 300-850")
+    return score
+
+
+def main() -> None:
+    total, scores, errors = 0, [], []
+    with INPUT.open(newline="", encoding="utf-8") as f:
+        for row_number, row in enumerate(csv.DictReader(f), start=2):
+            total += 1
+            try:
+                scores.append(parse_credit_score(row["credit_score"]))
+            except ValueError as e:
+                errors.append({"row": row_number, "lead_id": row["lead_id"], "error": str(e)})
+
+    summary = {
+        "total_rows": total,
+        "valid_scores": len(scores),
+        "average_score": round(sum(scores) / len(scores), 1) if scores else None,
+        "errors": errors,
+    }
+    OUTPUT.parent.mkdir(parents=True, exist_ok=True)
+    with OUTPUT.open("w", encoding="utf-8") as f:
+        json.dump(summary, f, indent=2)
+    print(f"Wrote {OUTPUT} ({len(errors)} errors)")
+
+
+if __name__ == "__main__":
+    main()</code></pre></div>
+        </div>
+        <div class="ex-foot"><label class="done-toggle check"><input type="checkbox" data-check="exercises|0A-ex3"> <span class="check-text">Exercise 3 done</span></label></div>
+      </div>
+
+      <div class="readings">
+        <div class="reading"><span class="kind must">Read</span><div><a href="https://docs.python.org/3/tutorial/errors.html" target="_blank" rel="noopener">Python tutorial §8: Errors and Exceptions ↗</a><p>Read 8.2–8.6.</p></div></div>
+        <div class="reading"><span class="kind must">Read</span><div><a href="https://docs.python.org/3/library/csv.html" target="_blank" rel="noopener">Python docs: csv ↗</a><p>The <code>DictReader</code> section and the <code>newline=""</code> footnote.</p></div></div>
+        <div class="reading"><span class="kind">Skim</span><div><a href="https://docs.python.org/3/library/json.html" target="_blank" rel="noopener">json ↗</a> · <a href="https://docs.python.org/3/library/pathlib.html" target="_blank" rel="noopener">pathlib ("Basic use") ↗</a> · <a href="https://docs.python.org/3/library/datetime.html#datetime.date.fromisoformat" target="_blank" rel="noopener">date.fromisoformat ↗</a></div></div>
+      </div>
+
+      <div data-track="cert">
+        <h3 class="part-h part-deep-h">Deep practice · Parsing messy amounts and dates</h3>
+        <div class="exercise">
+          <div class="ex-head"><span class="ex-tag">Drills</span><h4>Real exports are messy</h4><span class="chip">~45 min</span></div>
+          <div class="prose">
+            <p>In <code>code/week-0A/drills/wed_drills.py</code>:</p>
+            <ol>
+              <li><code>parse_amount(raw)</code>: <code>"$385,000"</code> → <code>385000.0</code>; <code>" 1,250.50 "</code> → <code>1250.5</code>; raise <code>ValueError</code> for <code>""</code>, <code>"three"</code> or <code>"$"</code>.</li>
+              <li><code>parse_date(raw)</code>: accept <code>"2026-09-01"</code> or <code>"09/01/2026"</code>, return ISO <code>"2026-09-01"</code>, raise <code>ValueError</code> for <code>"2026-09-31"</code>, <code>"31/12/2026"</code> or <code>"yesterday"</code>.</li>
+            </ol>
+            <p>Write the checks as <code>assert</code> lines under <code>if __name__ == "__main__":</code>, including the error cases.</p>
+          </div>
+          <div class="hints" data-hints="0A-drill-wed">
+            <div class="hint" data-level="Concept">Clean first (strip, remove <code>$</code> and commas), then convert. For dates, try one format; if it raises <code>ValueError</code>, try the next with <code>datetime.strptime(raw, "%m/%d/%Y")</code>; if both fail, raise your own clear error.</div>
+            <div class="hint solution" data-level="Full solution">
+<pre><code>from datetime import date, datetime
+
+
+def parse_amount(raw: str) -> float:
+    cleaned = raw.strip().replace("$", "").replace(",", "")
+    if cleaned == "":
+        raise ValueError("amount is missing")
+    return float(cleaned)
+
+
+def parse_date(raw: str) -> str:
+    raw = raw.strip()
+    try:
+        return date.fromisoformat(raw).isoformat()
+    except ValueError:
+        pass
+    try:
+        return datetime.strptime(raw, "%m/%d/%Y").date().isoformat()
+    except ValueError:
+        raise ValueError(f"unrecognized date: {raw!r}") from None</code></pre></div>
+          </div>
+          <div class="ex-foot"><label class="done-toggle check"><input type="checkbox" data-check="exercises|0A-drill-wed"> <span class="check-text">Drills done</span></label></div>
+        </div>
+      </div>
+
+      <div data-track="ent">
+        <h3 class="part-h part-ent-h">Enterprise · Why AI companies hire FDEs</h3>
+        <div class="readings">
+          <div class="reading"><span class="kind must">Read</span><div><a href="https://a16z.com/services-led-growth/" target="_blank" rel="noopener">a16z: Trading margin for moat ↗</a><p>Why AI companies accept lower margins to put engineers with customers, and the practices that make it work.</p></div></div>
+        </div>
+        <div class="reflect" style="max-width:760px">
+          <label><span class="rq">Summarize the argument in three sentences. Which practice would matter most to a customer in your favorite industry?</span><textarea data-reflect="ent-d3"></textarea></label>
+        </div>
+      </div>
+
+      <div class="prose"><h3>Mini-quiz</h3></div>
+      <div class="quiz mini" data-quiz="0A-d3"></div>
+      <script type="application/json" data-quiz-for="0A-d3">[
+        {"id":"a","q":"<code>csv.DictReader</code> reads a cell showing 742. What type is <code>row[\"credit_score\"]</code>?","options":["int","float","str","It depends on the header"],"answer":2,"why":"The csv module never guesses types. Converting is your job."},
+        {"id":"b","q":"Row 4,512 of 10,000 has a malformed date. What should a production validator do?","options":["Crash so someone notices","Silently skip it","Record row, ID, field and reason, then continue","Replace it with today's date"],"answer":2,"why":"Catch, record, continue. Skipping hides problems; inventing data corrupts it."},
+        {"id":"c","q":"Why are AI companies willing to spend expensive engineering time embedded with customers?","options":["They can't sell software any other way","Enterprises want the technology but need help making it work in their environment, and that deep integration builds a lasting advantage","Customers pay by the hour","It's required by law"],"answer":1,"why":"The services-led argument: deployment work turns interest into production use, and it's hard for competitors to copy."}
+      ]</script>
+    </section>
+
+    <!-- ================= DAY 4 ================= -->
+    <section class="day" id="d4" data-day="d4">
+      <div class="day-kicker">Day 4 · Thursday on the Full-time pace · 4 hours</div>
+      <div class="day-head">
+        <h2>Configuration, logging and command-line tools</h2>
+        <label class="day-done check"><input type="checkbox" data-check="lessonDays|0A-d4"> Session done</label>
+      </div>
+      <ul class="parts session-plan">
+        <li class="part part-core"><span class="part-tag">Core · 2h</span>Environment variables, .env, logging, argparse, GitHub + Exercise 4</li>
+        <li class="part part-deep" data-track="cert"><span class="part-tag">Deep practice · 1h</span>git: undoing things safely</li>
+        <li class="part part-ent" data-track="ent"><span class="part-tag">Enterprise · 1h</span>Read real FDE job postings; start your skills-gap map</li>
+      </ul>
+
+      <h3 class="part-h part-core-h">Core · Config, logs and CLIs</h3>
+      <div class="prose">
+        <h4>1. Environment variables and .env files</h4>
+        <p>Settings that differ between machines, or that are secret, come from the <b>environment</b>, not the code:</p>
+<pre><code>import os
+from dotenv import load_dotenv
+
+load_dotenv()                            <span class="c"># reads .env from the current folder, if it exists</span>
+level = os.getenv("LOG_LEVEL", "INFO")   <span class="c"># the value, or "INFO" if not set</span></code></pre>
+<pre><code><span class="c"># .env            (git-ignored: your real values)</span>
+LOG_LEVEL=DEBUG
+<span class="c"># .env.example    (committed: tells others which settings exist)</span>
+LOG_LEVEL=INFO</code></pre>
+        <div class="callout tip"><b>Why this matters soon</b>From Week 0C, API keys (<code>OPENAI_API_KEY</code>, <code>ANTHROPIC_API_KEY</code>) live in <code>.env</code>, never in code. Every project follows this pattern.</div>
+
+        <h4>2. logging instead of print</h4>
+        <table class="compare">
+          <thead><tr><th></th><th>print()</th><th>logging</th></tr></thead>
+          <tbody>
+            <tr><td>Importance levels</td><td>No</td><td>DEBUG &lt; INFO &lt; WARNING &lt; ERROR</td></tr>
+            <tr><td>Turn detail on or off</td><td>Edit code</td><td>Change <code>LOG_LEVEL</code></td></tr>
+            <tr><td>Timestamps, source</td><td>Do it yourself</td><td>Built in</td></tr>
+          </tbody>
+        </table>
+<pre><code>import logging
+logger = logging.getLogger(__name__)     <span class="c"># one per module</span>
+
+logging.basicConfig(level="INFO", format="%(asctime)s %(levelname)-8s %(name)s: %(message)s")
+
+logger.debug("Row %s parsed", 7)          <span class="c"># hidden at INFO</span>
+logger.info("Validated %s rows", 20)
+logger.error("Input file not found: %s", path)</code></pre>
+
+        <h4>3. Command-line arguments and exit codes</h4>
+<pre><code>import argparse
+from pathlib import Path
+
+parser = argparse.ArgumentParser(prog="lead_intake", description="Validate a leads CSV.")
+parser.add_argument("input", type=Path, help="path to the leads CSV")
+parser.add_argument("--output-dir", type=Path, default=Path("out"))
+args = parser.parse_args()          <span class="c"># args.input, args.output_dir</span></code></pre>
+        <p>You get <code>--help</code> for free. <b>Exit codes</b> tell other programs whether the run worked: <code>0</code> = success, anything else = failure. Have <code>main()</code> return the code and end with <code>sys.exit(main())</code>.</p>
+
+        <h4>4. Pushing to GitHub</h4>
+<pre><code><span class="p">$ </span>brew install gh                 <span class="c"># once (Windows: winget install GitHub.cli)</span>
+<span class="p">$ </span>gh auth login                   <span class="c"># once: GitHub.com → HTTPS → browser login</span>
+<span class="p">$ </span>gh repo create lead-intake --private --source=. --push</code></pre>
+        <p>Keep repos <b>private</b> until they meet the portfolio standard.</p>
+      </div>
+
+      <div class="exercise">
+        <div class="ex-head"><span class="ex-tag">Exercise 4</span><h4>Skeleton of the Lead Intake CLI, pushed to GitHub</h4><span class="chip">~45 min</span></div>
+        <div class="prose">
+          <p>This is the start of your weekend project. Create <code>code/lead-intake/</code> with its own venv, then:</p>
+          <ol>
+            <li>Install <code>python-dotenv</code>, freeze <code>requirements.txt</code>, write the <code>.gitignore</code>.</li>
+            <li>Create <code>.env</code> (<code>LOG_LEVEL=DEBUG</code>) and <code>.env.example</code> (<code>LOG_LEVEL=INFO</code>).</li>
+            <li>Create the <code>lead_intake</code> package with <code>cli.py</code>: <code>setup_logging()</code>, <code>parse_args()</code> and <code>main()</code>. <code>main()</code> logs the arguments at DEBUG, returns <code>1</code> with an ERROR log if the input file is missing, and otherwise logs <code>"Would process … into …"</code> and returns <code>0</code>.</li>
+            <li>Add <code>__main__.py</code>, copy <code>leads_sample.csv</code> into <code>data/</code>.</li>
+            <li>Confirm <code>git status</code> doesn't list <code>.env</code>, then commit and push to a private repo named <code>lead-intake</code>.</li>
+          </ol>
+          <p class="expected"><b>Check:</b> <code>python -m lead_intake --help</code> prints usage. <code>python -m lead_intake data/leads_sample.csv; echo $?</code> prints <code>0</code>; with <code>nope.csv</code> it logs an ERROR and prints <code>1</code>. Set <code>.env</code> to <code>INFO</code> and the DEBUG line disappears without any code change.</p>
+        </div>
+        <div class="hints" data-hints="0A-ex4">
+          <div class="hint" data-level="Concept">Three small functions in <code>cli.py</code>: one sets up logging (reads <code>.env</code> first!), one parses arguments, and <code>main()</code> wires them together and returns an exit code. <code>__main__.py</code> is two lines.</div>
+          <div class="hint" data-level="Pseudocode">setup_logging: load_dotenv → level = getenv("LOG_LEVEL","INFO").upper() → basicConfig. parse_args(argv=None) → parser → return parse_args(argv). main: setup → args → debug → if not exists: error, return 1 → info → return 0.</div>
+          <div class="hint" data-level="Snippet">
+<pre><code><span class="c"># lead_intake/__main__.py</span>
+import sys
+
+from lead_intake.cli import main
+
+sys.exit(main())</code></pre></div>
+          <div class="hint solution" data-level="Full solution">
+<pre><code><span class="c"># lead_intake/cli.py</span>
+import argparse
+import logging
+import os
+import sys
+from pathlib import Path
+
+from dotenv import load_dotenv
+
+logger = logging.getLogger(__name__)
+
+
+def setup_logging() -> None:
+    load_dotenv()
+    level = os.getenv("LOG_LEVEL", "INFO").upper()
+    logging.basicConfig(level=level, format="%(asctime)s %(levelname)-8s %(name)s: %(message)s")
+
+
+def parse_args(argv=None) -> argparse.Namespace:
+    parser = argparse.ArgumentParser(prog="lead_intake",
+                                     description="Validate a CSV of mortgage leads and write a JSON report.")
+    parser.add_argument("input", type=Path, help="path to the leads CSV file")
+    parser.add_argument("--output-dir", type=Path, default=Path("out"),
+                        help="folder for the JSON files (default: out)")
+    return parser.parse_args(argv)
+
+
+def main(argv=None) -> int:
+    setup_logging()
+    args = parse_args(argv)
+    logger.debug("Arguments: %s", args)
+    if not args.input.exists():
+        logger.error("Input file not found: %s", args.input)
+        return 1
+    logger.info("Would process %s into %s", args.input, args.output_dir)
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())</code></pre></div>
+        </div>
+        <div class="ex-foot"><label class="done-toggle check"><input type="checkbox" data-check="exercises|0A-ex4"> <span class="check-text">Exercise 4 done and pushed</span></label></div>
+      </div>
+
+      <div class="readings">
+        <div class="reading"><span class="kind must">Read</span><div><a href="https://docs.python.org/3/howto/logging.html" target="_blank" rel="noopener">Python Logging HOWTO ↗</a><p>The "Basic Logging Tutorial" section.</p></div></div>
+        <div class="reading"><span class="kind must">Read</span><div><a href="https://docs.python.org/3/howto/argparse.html" target="_blank" rel="noopener">Python argparse tutorial ↗</a><p>Up to "Combining positional and optional arguments".</p></div></div>
+        <div class="reading"><span class="kind must">Read</span><div><a href="https://pypi.org/project/python-dotenv/" target="_blank" rel="noopener">python-dotenv ↗</a><p>"Getting Started" only.</p></div></div>
+        <div class="reading"><span class="kind">Reference</span><div><a href="https://realpython.com/python-logging/" target="_blank" rel="noopener">Real Python: Logging ↗</a> · <a href="https://docs.python.org/3/library/sys.html#sys.exit" target="_blank" rel="noopener">sys.exit ↗</a> · <a href="https://cli.github.com/" target="_blank" rel="noopener">GitHub CLI ↗</a></div></div>
+      </div>
+
+      <div data-track="cert">
+        <h3 class="part-h part-deep-h">Deep practice · Undoing things in git</h3>
+        <div class="prose">
+          <p>Everyone makes git mistakes. Learn the safe undo moves now, in a throwaway repo (<code>code/week-0A/git-sandbox/</code>), so they're not scary later.</p>
+          <ol>
+            <li>Commit a file, then fix the commit message with <code>git commit --amend</code>.</li>
+            <li>Stage a file by accident, then unstage it with <code>git restore --staged file</code>.</li>
+            <li>Edit a file, then throw the edit away with <code>git restore file</code>. (This one is destructive: know that it is.)</li>
+            <li>Make a bad commit, then undo it safely with <code>git revert HEAD</code>, which adds a new commit instead of rewriting history.</li>
+          </ol>
+        </div>
+        <div class="readings">
+          <div class="reading"><span class="kind must">Read</span><div><a href="https://git-scm.com/book/en/v2/Git-Basics-Undoing-Things" target="_blank" rel="noopener">Pro Git §2.4: Undoing Things ↗</a><p>Covers amend, unstage and discard. Only amend commits you haven't pushed.</p></div></div>
+        </div>
+      </div>
+
+      <div data-track="ent">
+        <h3 class="part-h part-ent-h">Enterprise · Read real job postings</h3>
+        <div class="prose"><p>Open three real FDE postings. For each, list the <b>required</b> skills, the <b>preferred</b> skills, and anything that surprised you. Then start your skills-gap map: for each skill, what evidence you already have, and which week of this program builds it.</p></div>
+        <div class="readings">
+          <div class="reading"><span class="kind must">Read</span><div><a href="https://job-boards.greenhouse.io/anthropic/jobs/5302966008" target="_blank" rel="noopener">Anthropic: Forward Deployed Engineer ↗</a></div></div>
+          <div class="reading"><span class="kind must">Read</span><div><a href="https://www.amazon.jobs/en/jobs/10517491/sr-forward-deployed-engineer-aws-forward-deployed-engineering" target="_blank" rel="noopener">AWS: Senior Forward Deployed Engineer ↗</a></div></div>
+          <div class="reading"><span class="kind must">Read</span><div><a href="https://openai.com/careers/forward-deployed-engineer-(fde)-healthcare-sf-san-francisco/" target="_blank" rel="noopener">OpenAI: Forward Deployed Engineer, Healthcare ↗</a></div></div>
+          <div class="reading"><span class="kind">Note</span><div><p style="margin:0">Postings close and change often. If a link no longer works, search the company's careers page for "forward deployed".</p></div></div>
+        </div>
+        <div class="reflect" style="max-width:760px">
+          <label><span class="rq">Skills-gap map: skill → evidence I have today → week of this program that builds it</span><textarea data-reflect="ent-gap" style="min-height:140px" placeholder="Customer communication → led stakeholder meetings at work → W13 discovery&#10;Evals → none yet → W3, W8"></textarea></label>
+        </div>
+      </div>
+
+      <div class="prose"><h3>Mini-quiz</h3></div>
+      <div class="quiz mini" data-quiz="0A-d4"></div>
+      <script type="application/json" data-quiz-for="0A-d4">[
+        {"id":"a","q":"Where does an API key belong?","options":["A constant in cli.py","In .env (git-ignored), read with os.getenv; .env.example lists the name with a blank value","In README.md","In requirements.txt"],"answer":1,"why":"Secrets live in the environment, never in code or docs."},
+        {"id":"b","q":"Which command undoes a bad commit that's already been pushed, without rewriting history?","options":["git commit --amend","git revert","git restore","Deleting the .git folder"],"answer":1,"why":"revert adds a new commit that reverses the old one, which is safe for shared history. Amend rewrites, and should only be used on commits that haven't been pushed."},
+        {"id":"c","q":"Across FDE job postings, which requirement appears most consistently?","options":["Deep knowledge of one database","Customer-facing communication combined with shipping production LLM systems","A PhD","Mobile development"],"answer":1,"why":"Almost every posting asks for both: talking to customers and actually getting systems into production."}
+      ]</script>
+    </section>
+
+    <!-- ================= DAY 5 ================= -->
+    <section class="day" id="d5" data-day="d5">
+      <div class="day-kicker">Day 5 · Friday on the Full-time pace · 4 hours</div>
+      <div class="day-head">
+        <h2>Readiness check</h2>
+        <label class="day-done check"><input type="checkbox" data-check="lessonDays|0A-d5"> Session done</label>
+      </div>
+      <ul class="parts session-plan">
+        <li class="part part-core"><span class="part-tag">Core · 2h</span>Explain it out loud + weekly quiz + fix gaps</li>
+        <li class="part part-deep" data-track="cert"><span class="part-tag">Deep practice · 1h</span>Polish your exercises: type hints and docstrings</li>
+        <li class="part part-ent" data-track="ent"><span class="part-tag">Enterprise · 1h</span>Write your FDE one-pager</li>
+      </ul>
+
+      <h3 class="part-h part-core-h">Core · Explain it out loud</h3>
+      <div class="prose"><p>Say each answer out loud as if a hiring manager asked. If you stumble, re-read that day. You can also ask an AI tutor to quiz you.</p></div>
+      <div class="card" style="max-width:760px">
+        <label class="check"><input type="checkbox" data-check="readiness|0A-1"><span class="check-text">I can create and activate a virtual environment from memory, and explain why every project gets its own.</span></label>
+        <label class="check"><input type="checkbox" data-check="readiness|0A-2"><span class="check-text">I can explain module vs package, what <code>__main__.py</code> does, and why <code>python -m</code> runs from the project root.</span></label>
+        <label class="check"><input type="checkbox" data-check="readiness|0A-3"><span class="check-text">I can explain why every CSV value is a string, and how I convert and range-check it.</span></label>
+        <label class="check"><input type="checkbox" data-check="readiness|0A-4"><span class="check-text">I can write "catch, record, continue" from memory, and say when a program <i>should</i> stop.</span></label>
+        <label class="check"><input type="checkbox" data-check="readiness|0A-5"><span class="check-text">I can explain how <code>.env</code>, <code>.env.example</code> and <code>.gitignore</code> keep keys out of GitHub.</span></label>
+        <label class="check"><input type="checkbox" data-check="readiness|0A-6"><span class="check-text">I can explain why logging beats print, and what exit codes 0 and 1 mean.</span></label>
+      </div>
+
+      <div class="prose"><h3 style="margin-top:28px">Weekly quiz</h3><p>15 questions covering the core and enterprise material. Aim for 12 or more before the weekend. For more, use the <a href="../practice.html">Practice page</a>.</p></div>
+      <div class="quiz" data-quiz="0A-weekly"></div>
+      <script type="application/json" data-quiz-for="0A-weekly">[
+        {"id":"q1","q":"Why does each project get its own virtual environment?","options":["It makes Python faster","It isolates each project's packages and versions so projects don't conflict and setups are reproducible","GitHub requires it","It hides the code"],"answer":1,"why":"A venv plus requirements.txt means anyone can recreate the same environment."},
+        {"id":"q2","q":"You run <code>python -m greeter</code>. Which file does Python execute?","options":["greeter/__init__.py only","greeter/text.py","greeter/__main__.py (after importing the package)","Any file with an if-main block"],"answer":2,"why":"-m package imports the package, then runs its __main__.py."},
+        {"id":"q3","q":"Inside <code>greeter/text.py</code>, what is <code>__name__</code> when it's imported?","options":["\"__main__\"","\"greeter.text\"","\"text.py\"","None"],"answer":1,"why":"Only the file actually being run is \"__main__\"."},
+        {"id":"q4","q":"A CSV cell shows 742. What is <code>row[\"credit_score\"]</code>?","options":["int 742","float 742.0","the string \"742\"","depends on the header"],"answer":2,"why":"csv never guesses types; an empty cell is \"\"."},
+        {"id":"q5","q":"What should a production validator do with one malformed row among thousands?","options":["Crash","Skip silently","Record row, ID, field and reason, and continue","Invent a value"],"answer":2,"why":"Catch, record, continue."},
+        {"id":"q6","q":"What does <code>date.fromisoformat(\"2026-09-31\")</code> do?","options":["Returns Oct 1","Returns Sep 30","Raises ValueError","Returns None"],"answer":2,"why":"The format is valid, but the date isn't."},
+        {"id":"q7","q":"You pushed an API key, then deleted the file. Are you safe?","options":["Yes","Yes, if the repo is private","No: it's in git history. Revoke the key immediately","No: delete the repo and it's fine"],"answer":2,"why":"History keeps it, and bots scan GitHub for keys within minutes. Revoke it."},
+        {"id":"q8","q":"What does <code>git add</code> do?","options":["Uploads to GitHub","Stages changes for the next commit","Creates a branch","Edits .gitignore"],"answer":1,"why":"add stages, commit snapshots, push uploads."},
+        {"id":"q9","q":"Strongest reason to use logging over print?","options":["Faster","Detail level (DEBUG vs INFO) is controlled by configuration, with timestamps and module names built in","print fails in functions","It writes to GitHub"],"answer":1,"why":"Configurable levels are the key benefit; production logs flow to monitoring systems."},
+        {"id":"q10","q":"Why does <code>main()</code> return 0 or 1?","options":["argparse requires it","Shells, scripts and CI read the exit code to know whether the run succeeded","It's faster","So logging works"],"answer":1,"why":"Other programs don't read logs; they read the exit code."},
+        {"id":"q11","q":"What does <code>pip freeze > requirements.txt</code> record?","options":["Packages you imported","Exact installed packages and versions, including dependencies of dependencies","A backup of .venv","Outdated packages"],"answer":1,"why":"Commit it; never commit .venv."},
+        {"id":"q12","q":"Which git command safely undoes a commit that's already on GitHub?","options":["git commit --amend","git revert","git restore --staged","git init"],"answer":1,"why":"revert adds an inverse commit instead of rewriting shared history."},
+        {"id":"q13","q":"What best distinguishes an FDE from a consultant?","options":["Only writes documents","Builds real software in the customer's environment and feeds learnings back into the product","Never meets customers","Only sells"],"answer":1,"why":"Significant hands-on engineering, plus the loop back to product."},
+        {"id":"q14","q":"Why do AI companies invest in FDEs even though it lowers margins?","options":["It's legally required","Enterprises need help getting AI into production, and that deep deployment work creates a durable advantage","Customers pay hourly","To avoid building products"],"answer":1,"why":"The services-led growth argument: deployment turns interest into production use."},
+        {"id":"q15","q":"Palantir's \"Delta\" (FDE) is described as…","options":["One capability, many customers","One customer, many capabilities","A sales role","A support role"],"answer":1,"why":"Deltas go deep with one customer; Devs build one capability for many customers."}
+      ]</script>
+
+      <div data-track="cert">
+        <h3 class="part-h part-deep-h">Deep practice · Polish your code</h3>
+        <div class="prose"><p>Go back to Exercises 3 and 4. Add type hints to every function signature and a one-line docstring saying what each function does and what it raises. Compare with the full solutions and note one thing you'd do differently. Clean, typed, documented code is the standard for every project from here on.</p></div>
+      </div>
+
+      <div data-track="ent">
+        <h3 class="part-h part-ent-h">Enterprise · Your FDE one-pager</h3>
+        <div class="prose"><p>Write a short one-pager you'll refine all program. It becomes the backbone of your resume, LinkedIn and interview stories in Weeks 18–23.</p></div>
+        <div class="reflect" style="max-width:760px">
+          <label><span class="rq">Why do I want to be an FDE?</span><textarea data-reflect="ent-why"></textarea></label>
+          <label><span class="rq">My edge: industries, domains or experiences that make me valuable to customers</span><textarea data-reflect="ent-edge"></textarea></label>
+          <label><span class="rq">Target companies and roles (from the postings I read)</span><textarea data-reflect="ent-targets"></textarea></label>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= WEEKEND 1 ================= -->
+    <section class="day" id="w1" data-day="w1">
+      <div class="day-kicker">Weekend 1 · Saturday on the Full-time pace · 7.5 hours</div>
+      <div class="day-head">
+        <h2>Accounts, then build the Lead Intake CLI</h2>
+        <label class="day-done check"><input type="checkbox" data-check="lessonDays|0A-w1"> Session done</label>
+      </div>
+      <ul class="parts session-plan">
+        <li class="part part-core"><span class="part-tag">Core · 6h</span>Hour 1: accounts. Hours 2–6: build the Lead Intake CLI</li>
+        <li class="part part-deep" data-track="cert"><span class="part-tag">Deep practice · 1.5h</span>git branching, ready for pull requests next week</li>
+      </ul>
+
+      <h3 class="part-h part-core-h">Core · Hour 1: accounts (spending limits first)</h3>
+      <p class="small muted">These checkboxes are shared with the Home dashboard.</p>
+      <div class="card" style="max-width:760px">
+        <label class="check"><input type="checkbox" data-check="setup|acc-openai"><span class="check-text"><b>OpenAI API:</b> create an account, add a payment method, create a project for this program, and <b>set a monthly spend limit</b> before anything else. Store the API key in a password manager. <br><a class="doc-link" href="https://help.openai.com/en/articles/9186755-managing-projects-in-the-api-platform" target="_blank" rel="noopener">OpenAI: projects and spend limits<span class="ext">↗</span></a></span></label>
+        <label class="check"><input type="checkbox" data-check="setup|acc-claude"><span class="check-text"><b>Claude API:</b> create a Claude Console account and set a spend limit. You'll first use it in Week 0C. <br><a class="doc-link" href="https://platform.claude.com/docs/en/api/overview" target="_blank" rel="noopener">Claude API docs<span class="ext">↗</span></a></span></label>
+        <label class="check"><input type="checkbox" data-check="setup|acc-gemini"><span class="check-text"><b>Gemini API:</b> get a free-tier key (Week 0C). <br><a class="doc-link" href="https://ai.google.dev/gemini-api/docs" target="_blank" rel="noopener">Gemini API docs<span class="ext">↗</span></a></span></label>
+        <label class="check"><input type="checkbox" data-check="setup|acc-aws"><span class="check-text"><b>AWS:</b> create the account, turn on <b>MFA for the root user</b>, and create a monthly <b>budget alert</b>. Don't create resources yet. <br><a class="doc-link" href="https://docs.aws.amazon.com/IAM/latest/UserGuide/enable-virt-mfa-for-root.html" target="_blank" rel="noopener">AWS: root MFA<span class="ext">↗</span></a> <a class="doc-link" href="https://docs.aws.amazon.com/cost-management/latest/userguide/budgets-managing-costs.html" target="_blank" rel="noopener">AWS Budgets<span class="ext">↗</span></a></span></label>
+        <label class="check"><input type="checkbox" data-check="setup|acc-github"><span class="check-text"><b>GitHub:</b> done on Day 4 if <code>gh auth status</code> shows you're logged in.</span></label>
+        <label class="check"><input type="checkbox" data-check="setup|acc-langsmith"><span class="check-text"><b>LangSmith</b> (tracing, from Week 8): free account. <br><a class="doc-link" href="https://docs.langchain.com/langsmith/create-account-api-key" target="_blank" rel="noopener">LangSmith: create an account<span class="ext">↗</span></a></span></label>
+        <label class="check"><input type="checkbox" data-check="setup|acc-hf"><span class="check-text"><b>Hugging Face</b> (Week 9): free account. <br><a class="doc-link" href="https://huggingface.co/join" target="_blank" rel="noopener">Sign up<span class="ext">↗</span></a></span></label>
+        <label class="check"><input type="checkbox" data-check="setup|acc-tavily"><span class="check-text"><b>Tavily</b> (web search for agents, Week 4): free tier. <br><a class="doc-link" href="https://docs.tavily.com/documentation/quickstart" target="_blank" rel="noopener">Tavily quickstart<span class="ext">↗</span></a></span></label>
+        <label class="check"><input type="checkbox" data-check="setup|acc-colab"><span class="check-text"><b>Google Colab:</b> open it once while signed in. <br><a class="doc-link" href="https://colab.research.google.com/" target="_blank" rel="noopener">Google Colab<span class="ext">↗</span></a></span></label>
+        <label class="check"><input type="checkbox" data-check="setup|acc-python"><span class="check-text"><b>Python 3.11+ and VS Code:</b> done on Day 1.</span></label>
+      </div>
+
+      <div class="prose">
+        <h3 class="part-h part-core-h" style="margin-top:32px">Core · The project: Lead Intake CLI</h3>
+        <div class="callout"><b>The scenario</b>You're the engineer at a mortgage lender. Every night the website exports new leads as a CSV. The CRM import rejects the <i>entire</i> file if any row is bad, so sales loses a day of leads to one typo. Build a command-line tool that validates the file, writes clean leads as JSON, and produces a report telling the web team exactly what to fix. <br><br>This warm-up isn't one of your 10 portfolio projects, but its clean output is the kind of data your <b>Week 1 lead-qualifier agent</b> will read.</div>
+
+        <figure class="diagram">
+          <svg viewBox="0 0 720 230" role="img" aria-label="leads CSV to read_rows, then validate_row per row, split into valid leads and errors, written to valid_leads.json and report.json, with logs to the terminal">
+            <rect class="d-box" x="4" y="84" width="120" height="56" rx="10"/><text class="d-t" x="20" y="108">leads.csv</text><text class="d-s" x="20" y="126">nightly export</text>
+            <rect class="d-accent" x="160" y="84" width="130" height="56" rx="10"/><text class="d-t" x="174" y="108">read_rows()</text><text class="d-s" x="174" y="126">io_utils.py</text>
+            <rect class="d-accent" x="326" y="84" width="150" height="56" rx="10"/><text class="d-t" x="340" y="108">validate_row()</text><text class="d-s" x="340" y="126">validation.py · per row</text>
+            <rect class="d-ok" x="520" y="18" width="196" height="56" rx="10"/><text class="d-t" x="534" y="42">valid_leads.json</text><text class="d-s" x="534" y="60">typed, clean records</text>
+            <rect class="d-warn" x="520" y="96" width="196" height="56" rx="10"/><text class="d-t" x="534" y="120">report.json</text><text class="d-s" x="534" y="138">counts + every error</text>
+            <rect class="d-box" x="520" y="174" width="196" height="50" rx="10"/><text class="d-t" x="534" y="196">terminal logs</text><text class="d-s" x="534" y="213">INFO summary, DEBUG per row</text>
+            <path class="d-line" d="M124 112 H154"/><polygon class="d-arrow" points="154,107 160,112 154,117"/>
+            <path class="d-line" d="M290 112 H320"/><polygon class="d-arrow" points="320,107 326,112 320,117"/>
+            <path class="d-line" d="M476 104 H496 V46 H514"/><polygon class="d-arrow" points="514,41 520,46 514,51"/>
+            <path class="d-line" d="M476 120 H514"/><polygon class="d-arrow" points="514,115 520,120 514,125"/>
+            <path class="d-line" d="M496 128 V199 H514"/><polygon class="d-arrow" points="514,194 520,199 514,204"/>
+            <text class="d-s" x="330" y="166">cli.py orchestrates all of this</text>
+          </svg>
+          <figcaption>Three modules, three jobs: input/output, business rules, and the command line.</figcaption>
+        </figure>
+
+        <h4>Validation rules</h4>
+        <table class="compare req-table">
+          <thead><tr><th>Field</th><th>Rule</th><th>Store as</th></tr></thead>
+          <tbody>
+            <tr><td>lead_id</td><td>Not empty; not a duplicate of an earlier row</td><td>str</td></tr>
+            <tr><td>full_name</td><td>Not empty after trimming</td><td>str (trimmed)</td></tr>
+            <tr><td>email</td><td>Contains <code>@</code>, and the part after it contains a <code>.</code></td><td>str (lowercase)</td></tr>
+            <tr><td>loan_amount</td><td>A number, greater than 0, at most 5,000,000</td><td>float</td></tr>
+            <tr><td>credit_score</td><td>A whole number from 300 to 850</td><td>int</td></tr>
+            <tr><td>annual_income</td><td>A number, 0 or more</td><td>float</td></tr>
+            <tr><td>property_state</td><td>A 2-letter US state code, or DC</td><td>str (uppercase)</td></tr>
+            <tr><td>loan_type</td><td><code>purchase</code> or <code>refinance</code></td><td>str (lowercase)</td></tr>
+            <tr><td>created_at</td><td>A real calendar date, <code>YYYY-MM-DD</code></td><td>str (ISO date)</td></tr>
+          </tbody>
+        </table>
+        <p>Check <b>every</b> field and collect all of a row's problems. A row is valid only with zero errors.</p>
+
+        <h4>Outputs</h4>
+<pre class="no-copy"><code><span class="c"># out/report.json (shape)</span>
+{
+  "run_at": "2026-10-03T14:02:11",
+  "input_file": "data/leads_sample.csv",
+  "total_rows": 20,
+  "valid_rows": 0,
+  "invalid_rows": 0,
+  "errors_by_field": {"email": 0, "loan_amount": 0, "…": 0},
+  "errors": [{"row": 4, "lead_id": "L-1003", "field": "email", "message": "…"}]
+}</code></pre>
+        <p>Command: <code>python -m lead_intake data/leads_sample.csv --output-dir out</code>. Exit <code>0</code> when the run completes (even with invalid rows), <code>1</code> if the input file is missing. One INFO summary line at the end, one DEBUG line per row.</p>
+
+        <h4>Build order (commit after each step)</h4>
+        <ol>
+          <li><b>io_utils.py:</b> <code>read_rows(path)</code> → list of <code>(row_number, row_dict)</code>; <code>write_json(path, data)</code>. Wire into <code>cli.py</code>, log the count. <i>Commit.</i></li>
+          <li><b>validation.py:</b> <code>validate_row(row, seen_ids)</code> → <code>(lead_or_None, errors)</code>. Start with <code>lead_id</code> and <code>full_name</code>. <i>Commit.</i></li>
+          <li>Add <code>loan_amount</code>, <code>credit_score</code>, <code>annual_income</code> (reuse your Wednesday drills). <i>Commit.</i></li>
+          <li>Add <code>email</code>, <code>property_state</code>, <code>loan_type</code>, <code>created_at</code>. <i>Commit.</i></li>
+          <li>Build <code>report.json</code> with <code>errors_by_field</code> (your Tuesday counting drill). <i>Commit and push.</i></li>
+        </ol>
+      </div>
+
+      <div class="exercise">
+        <div class="ex-head"><span class="ex-tag">Hints</span><h4>validate_row(): stuck?</h4></div>
+        <p class="small muted" style="margin:0">This is your project, so there's no full solution. Hints go up to a snippet. For a code review, share your repo with your AI tutor.</p>
+        <div class="hints" data-hints="0A-proj-validate">
+          <div class="hint" data-level="Concept">One function, one row. Keep an <code>errors</code> list and a <code>lead</code> dict. For each field: convert, range-check, and on failure append <code>{"field", "message"}</code> and move on. Duplicates: the caller passes a <code>set</code> of IDs seen so far; add the ID after checking, so the <i>second</i> occurrence is flagged. Return the lead only if <code>errors</code> is empty.</div>
+          <div class="hint" data-level="Pseudocode">errors = []; lead = {} → lead_id: strip; empty → error; in seen_ids → "duplicate"; else store; add to seen_ids → numeric fields: try convert → range → except ValueError → error → … → return (lead if not errors else None, errors). A helper like <code>parse_number(raw, field, kind, low, high)</code> removes repetition.</div>
+          <div class="hint" data-level="Snippet (one field)">
+<pre><code>US_STATES = {"AL", "AK", "AZ", …, "WY", "DC"}   <span class="c"># type all 50 + DC; a set gives fast lookup</span>
+
+def validate_row(row: dict, seen_ids: set) -> tuple[dict | None, list[dict]]:
+    errors: list[dict] = []
+    lead: dict = {}
+
+    raw = row.get("credit_score", "").strip()
+    try:
+        if raw == "":
+            raise ValueError("missing")
+        score = int(raw)
+        if not 300 &lt;= score &lt;= 850:
+            raise ValueError(f"{score} is outside 300-850")
+        lead["credit_score"] = score
+    except ValueError as e:
+        errors.append({"field": "credit_score", "message": str(e)})
+
+    <span class="c"># … the other eight fields …</span>
+    return (lead if not errors else None), errors</code></pre></div>
+        </div>
+      </div>
+
+      <div data-track="cert">
+        <h3 class="part-h part-deep-h">Deep practice · Branches</h3>
+        <div class="prose"><p>Next week you'll merge work through a pull request. Prepare now: in your git sandbox, create a branch with <code>git switch -c try-feature</code>, commit on it, switch back to <code>main</code>, and merge it. Draw the commit graph with <code>git log --oneline --graph --all</code>.</p></div>
+        <div class="readings">
+          <div class="reading"><span class="kind must">Read</span><div><a href="https://git-scm.com/book/en/v2/Git-Branching-Branches-in-a-Nutshell" target="_blank" rel="noopener">Pro Git §3.1: Branches in a Nutshell ↗</a><p>What a branch really is: a lightweight pointer to a commit.</p></div></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= WEEKEND 2 ================= -->
+    <section class="day" id="w2" data-day="w2">
+      <div class="day-kicker">Weekend 2 · Sunday on the Full-time pace · 7.5 hours</div>
+      <div class="day-head">
+        <h2>Finish, check, document, ship</h2>
+        <label class="day-done check"><input type="checkbox" data-check="lessonDays|0A-w2"> Session done</label>
+      </div>
+      <ul class="parts session-plan">
+        <li class="part part-core"><span class="part-tag">Core · 6h</span>Verify results, README, acceptance checklist, stretch goals, journal</li>
+        <li class="part part-ent" data-track="ent"><span class="part-tag">Enterprise · 1.5h</span>Case study + explain your project to a non-technical person</li>
+      </ul>
+
+      <h3 class="part-h part-core-h">Core · Finish and ship</h3>
+      <div class="prose">
+        <h4>1. Check your numbers</h4>
+        <p>The sample file has one planted problem per bad row. A correct validator produces:</p>
+        <table class="compare">
+          <tbody>
+            <tr><td>total_rows</td><td><b>20</b></td></tr>
+            <tr><td>valid_rows</td><td><b>9</b></td></tr>
+            <tr><td>invalid_rows</td><td><b>11</b></td></tr>
+            <tr><td>errors_by_field</td><td>loan_amount <b>3</b> · credit_score <b>2</b> · lead_id, full_name, email, property_state, loan_type, created_at <b>1 each</b></td></tr>
+          </tbody>
+        </table>
+        <p>Don't match? Run with <code>LOG_LEVEL=DEBUG</code> and read the per-row lines. Finding the difference is the skill being trained.</p>
+
+        <h4>2. README.md (the one Markdown file we write, because GitHub displays it)</h4>
+<pre class="no-copy"><code># Lead Intake CLI
+One sentence: what it does, for whom.
+
+## Why
+The problem in 2–3 sentences.
+
+## Quick start
+python3 -m venv .venv &amp;&amp; source .venv/bin/activate
+pip install -r requirements.txt
+cp .env.example .env
+python -m lead_intake data/leads_sample.csv --output-dir out
+
+## Validation rules
+(the table)
+
+## Output
+Shortened example of report.json
+
+## Design decisions
+- Why errors are collected instead of crashing
+- Why io / validation / cli are separate modules
+
+## What I learned
+2–3 honest bullets</code></pre>
+      </div>
+
+      <div class="prose"><h4>3. Acceptance checklist</h4></div>
+      <div class="card" style="max-width:760px">
+        <label class="check"><input type="checkbox" data-check="accept|0A-numbers"><span class="check-text">Report shows 20 / 9 / 11 and the errors_by_field counts above</span></label>
+        <label class="check"><input type="checkbox" data-check="accept|0A-exit"><span class="check-text">Missing input file → ERROR log and exit code 1</span></label>
+        <label class="check"><input type="checkbox" data-check="accept|0A-level"><span class="check-text">Switching LOG_LEVEL in .env changes output without a code change</span></label>
+        <label class="check"><input type="checkbox" data-check="accept|0A-modules"><span class="check-text">Code is split into cli.py, io_utils.py and validation.py</span></label>
+        <label class="check"><input type="checkbox" data-check="accept|0A-secrets"><span class="check-text"><code>.env</code>, <code>.venv/</code> and <code>out/</code> are not on GitHub; <code>.env.example</code> and <code>requirements.txt</code> are</span></label>
+        <label class="check"><input type="checkbox" data-check="accept|0A-commits"><span class="check-text">At least 5 commits with clear, imperative messages</span></label>
+        <label class="check"><input type="checkbox" data-check="accept|0A-readme"><span class="check-text">A stranger could run the tool from the README alone</span></label>
+        <label class="check"><input type="checkbox" data-check="accept|0A-fresh"><span class="check-text">Fresh-clone test: clone into a new folder, follow the README, it works</span></label>
+        <label class="check"><input type="checkbox" data-check="accept|0A-review"><span class="check-text">Asked an AI tutor for a code review and fixed at least one point</span></label>
+      </div>
+
+      <div class="prose">
+        <h4 style="margin-top:24px">4. Stretch goals</h4>
+        <ul>
+          <li><code>--strict</code> flag: exit code <code>2</code> if any row is invalid (useful for CI).</li>
+          <li>Also write the errors as <code>errors.csv</code> so the web team can open them in a spreadsheet.</li>
+          <li>Add a <code>by_state</code> count of valid leads.</li>
+          <li>Handle files saved by Excel with a hidden "BOM" at the start: try <code>encoding="utf-8-sig"</code>.</li>
+        </ul>
+        <div class="callout tip"><b>Next week (0B) builds on this repo</b>You'll add pytest tests, replace the hand-written checks with Pydantic models, store leads in SQLite, and merge through a pull request. Don't delete anything.</div>
+      </div>
+
+      <div data-track="ent">
+        <h3 class="part-h part-ent-h">Enterprise · Case study and communication practice</h3>
+        <div class="readings">
+          <div class="reading"><span class="kind must">Read</span><div><a href="https://www.latent.space/p/forward-deployed-engineers-aiewf" target="_blank" rel="noopener">Latent Space: Forward deployed engineers (AI Engineer World's Fair 2026) ↗</a><p>How AI companies run deployments today: where the work happens and how long it takes to reach production.</p></div></div>
+        </div>
+        <div class="prose"><p><b>Communication drill (30 min):</b> explain your Lead Intake CLI to a sales manager who doesn't code, in under 2 minutes. Record yourself on your phone. Listen back: did you lead with <i>their</i> problem (lost leads), or with Python? Try again until it's about their problem.</p></div>
+        <div class="reflect" style="max-width:760px">
+          <label><span class="rq">Case study: what surprised you about how real deployments work? What one sentence did you use to open your 2-minute explanation?</span><textarea data-reflect="ent-w2"></textarea></label>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= JOURNAL ================= -->
+    <section class="day" id="journal">
+      <div class="day-kicker">Week journal · ~15 min</div>
+      <div class="day-head"><h2>Reflection</h2><span class="small muted" id="reflect-saved"></span></div>
+      <p class="muted" style="max-width:760px">Everything you typed on this page (this journal plus your enterprise notes) saves automatically in your browser. Download it into your folder each week; it becomes the story behind your portfolio.</p>
+      <div class="reflect" style="max-width:760px">
+        <label><span class="rq">What clicked this week?</span><textarea data-reflect="clicked"></textarea></label>
+        <label><span class="rq">What was hardest, and how did you get unstuck?</span><textarea data-reflect="hard"></textarea></label>
+        <label><span class="rq">What would you do differently next week?</span><textarea data-reflect="next"></textarea></label>
+        <label><span class="rq">Questions to ask your AI tutor</span><textarea data-reflect="questions"></textarea></label>
+        <button type="button" class="btn btn-ghost" id="reflect-download">Download this week's notes (HTML)</button>
+      </div>
+
+      <nav class="lesson-pager" aria-label="Lesson navigation">
+        <a class="btn btn-ghost" href="../plan.html#week-0A">← Week 0A in the plan</a>
+        <a class="btn btn-primary" href="week-0B.html">Week 0B: APIs, Data &amp; SQL →</a>
+      </nav>
+    </section>
+
+  </article>
+</div>
+</main>
+
+<footer id="site-footer"></footer>
+
+<script src="../assets/js/curriculum.js"></script>
+<script src="../assets/js/tracks.js"></script>
+<script src="../assets/js/store.js"></script>
+<script src="../assets/js/ui.js"></script>
+<script src="../assets/js/lesson.js"></script>
+</body>
+</html>
