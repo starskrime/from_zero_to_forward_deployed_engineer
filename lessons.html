@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>FDE Lessons</title>
+  <meta name="description" content="Weekly lesson packs: concepts, hand-coded exercises, readings, quizzes and weekend projects.">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%2316191f'/%3E%3Ctext x='16' y='21' font-family='Arial' font-weight='800' font-size='11' fill='white' text-anchor='middle'%3EFDE%3C/text%3E%3C/svg%3E">
+  <link rel="stylesheet" href="assets/css/platform.css">
+</head>
+<body>
+  <header id="site-header"></header>
+  <main class="wrap">
+    <div class="eyebrow">Lessons</div>
+    <h1>Weekly lesson packs</h1>
+    <p class="muted" style="max-width:720px">Each pack has a coverage map, day-by-day lessons, hand-coded exercises with stepped hints, checked reading links, a quiz, the weekend project and a journal. Packs are published ahead of their week. Each one has 5 learning sessions and 2 build sessions, plus videos, papers and quizzes.</p>
+    <div class="card" style="padding:0;margin-top:20px" id="lesson-list"></div>
+  </main>
+  <footer id="site-footer"></footer>
+  <script src="assets/js/curriculum.js"></script>
+  <script src="assets/js/tracks.js"></script>
+  <script src="assets/js/store.js"></script>
+  <script src="assets/js/ui.js"></script>
+  <script>
+  (function () {
+    const F = window.FDE, U = window.UI, S = window.Store;
+    U.header("lessons"); U.footer();
+    const st = S.get(), ci = U.currentWeekIndex();
+    document.getElementById("lesson-list").innerHTML = F.weeks.map((w, i) => {
+      const p = U.phaseOf(w);
+      const sess = U.sessionsOf(w), days = sess.filter(x => U.isSessionDone(w, x)).length;
+      const right = w.lesson
+        ? (st.weeksDone[w.id] ? '<span class="status shipped">Complete</span>' : '<span class="status in-progress">' + days + '/' + sess.length + ' sessions</span>')
+        : '<span class="status">' + (w.phase === "pb" ? "Buffer" : "Coming") + '</span>';
+      const inner = '<span class="ph-badge">' + w.id + '</span>' +
+        '<span class="lr-title"><b>' + U.esc(w.title) + '</b><span>' + U.weekRange(i) + (i === ci ? ' · this week' : '') + '</span></span>' + right;
+      return w.lesson
+        ? '<a class="lesson-row ph-' + p.color + '" href="' + w.lesson + '">' + inner + '</a>'
+        : '<div class="lesson-row locked ph-' + p.color + '">' + inner + '</div>';
+    }).join("");
+  })();
+  </script>
+</body>
+</html>
