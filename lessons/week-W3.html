@@ -1,0 +1,1112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Week 3 · RAG-Powered Knowledge Agents II</title>
+  <meta name="description" content="Week 3: measure a RAG system and make it better: BM25 and hybrid search, retrieval metrics with confidence intervals, reranking, contextual retrieval, an LLM judge validated against human labels, multi-turn and agentic RAG. Certification tasks 4.1 and 4.2; evals as the customer's acceptance contract.">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%2316191f'/%3E%3Ctext x='16' y='21' font-family='Arial' font-weight='800' font-size='11' fill='white' text-anchor='middle'%3EFDE%3C/text%3E%3C/svg%3E">
+  <link rel="stylesheet" href="../assets/css/platform.css">
+</head>
+<body data-week="W3">
+<header id="site-header"></header>
+
+<main class="wrap">
+<div class="lesson-layout">
+
+  <aside class="toc" aria-label="Lesson contents">
+    <div class="toc-group"><p>Week 3</p><a href="#overview">Overview</a></div>
+    <div class="toc-group">
+      <p>Weekdays</p>
+      <a href="#d1" data-toc="d1">Day 1 · Hybrid search</a>
+      <a href="#d2" data-toc="d2">Day 2 · Measuring retrieval</a>
+      <a href="#d3" data-toc="d3">Day 3 · Rerank + context</a>
+      <a href="#d4" data-toc="d4">Day 4 · Answers + chat</a>
+      <a href="#d5" data-toc="d5">Day 5 · Readiness</a>
+    </div>
+    <div class="toc-group">
+      <p>Weekend</p>
+      <a href="#w1" data-toc="w1">Weekend 1 · Finish P2</a>
+      <a href="#w2" data-toc="w2">Weekend 2 · Report + demo</a>
+      <a href="#interview">Interview room</a>
+      <a href="#journal">Journal</a>
+    </div>
+  </aside>
+
+  <article>
+
+    <!-- ---------- OVERVIEW ---------- -->
+    <section class="lesson-hero" id="overview">
+      <div class="eyebrow">Week 3 · AI Engineering · <span id="week-dates"></span></div>
+      <h1>RAG-Powered Knowledge Agents II</h1>
+      <p class="lead">Last week you built a RAG assistant that works on the questions you tried. This week you find out <b>how well</b> it works, and make it better with evidence instead of guesses. You'll add keyword search and fuse it with vectors, measure retrieval on 40 labeled questions with confidence intervals, add a reranker and contextual retrieval, grade answers with an LLM judge that you first check against human labels, and handle follow-up questions. The weekend finishes <b>portfolio project P2</b> with an evaluation report and a demo. Customers ask one question before they sign off: <i>how do you know it works?</i> By Sunday you can answer it with numbers.</p>
+      <div class="week-progress"><div class="bar"><span id="week-bar" style="width:0"></span></div><span class="small muted" id="week-bar-text"></span></div>
+
+      <div class="prose" style="margin-top:24px">
+        <h3>This week's three tracks</h3>
+        <table class="compare">
+          <thead><tr><th>Track</th><th>Hours</th><th>This week</th></tr></thead>
+          <tbody>
+            <tr><td><span class="part-tag" style="color:var(--ph-blue)">Core</span></td><td>22h</td><td>BM25 and hybrid search (RRF), retrieval metrics and their statistics, cross-encoder reranking, contextual retrieval, an LLM judge for groundedness, multi-turn and agentic RAG, LlamaIndex and pgvector; <b>finish P2</b></td></tr>
+            <tr data-track="cert"><td><span class="part-tag" style="color:var(--ph-purple)">Certification</span></td><td>6.5h</td><td>Domain 4: task <b>4.1</b> (explicit criteria instead of vague instructions) and task <b>4.2</b> (a few targeted examples), applied to your own judge</td></tr>
+            <tr data-track="ent"><td><span class="part-tag" style="color:var(--ph-green)">Enterprise</span></td><td>6.5h</td><td>Evals as the acceptance contract: success criteria, a golden set built with the customer's experts, thresholds and sign-off, and evals after launch</td></tr>
+          </tbody>
+        </table>
+
+        <h3>Coverage map: everything P2 needs this week</h3>
+        <table class="compare coverage wrap">
+          <thead><tr><th>P2 needs…</th><th>Learned</th><th>Practiced in</th></tr></thead>
+          <tbody>
+            <tr><td>BM25 keyword search with a code-friendly tokenizer; hybrid search with reciprocal rank fusion</td><td><span class="day-pill">Day 1</span></td><td>Exercise 1</td></tr>
+            <tr><td>An <code>eval</code> command: hit rate, Precision@k, Recall@k, F1@k, MRR, per category, with a bootstrap confidence interval; paired comparisons</td><td><span class="day-pill">Day 2</span></td><td>Exercise 2</td></tr>
+            <tr><td>A cross-encoder reranker over 20 candidates; contextual chunks with a cache</td><td><span class="day-pill">Day 3</span></td><td>Exercise 3</td></tr>
+            <tr><td>An LLM judge for groundedness, checked against human labels; a <code>check</code> command with code checks first</td><td><span class="day-pill">Day 4</span></td><td>Exercise 4</td></tr>
+            <tr><td>Multi-turn chat: rewriting follow-ups into standalone queries; agentic RAG as an option</td><td><span class="day-pill">Day 4</span></td><td>Exercise 5</td></tr>
+            <tr><td>Scripted Responses API replies and fakes for offline tests; the Week 1 tool loop</td><td><span class="day-pill">W1–W2</span></td><td>All exercises</td></tr>
+          </tbody>
+        </table>
+
+        <div class="callout tip"><b>This week's data</b>Download <a href="week-W3/lumora-evals.zip" download>⬇ lumora-evals.zip</a> and unzip it into an <code>evals/</code> folder in your P2 repository. It holds three files: <code>eval-set.json</code> (40 questions, each labeled with the sources that answer it and a category: 13 <i>keyword</i> questions with codes and ids, 13 <i>paraphrase</i> questions that share few words with their answer, 6 <i>multi-source</i> and 8 <i>unanswerable</i>; the first 15 are last week's check questions), <code>conversations.json</code> (6 two-turn conversations) and <code>labeled-answers.json</code> (24 answers a human graded as grounded or not, split into train, dev and test). Install one new package: <code>pip install rank-bm25</code>. FastEmbed, which you installed last week, also runs the reranker.</div>
+      </div>
+    </section>
+
+    <!-- ================= DAY 1 ================= -->
+    <section class="day" id="d1" data-day="d1">
+      <div class="day-kicker">Day 1 · Monday on the Full-time pace · 4 hours</div>
+      <div class="day-head">
+        <h2>Keyword search and hybrid retrieval</h2>
+        <label class="day-done check"><input type="checkbox" data-check="lessonDays|W3-d1"> Session done</label>
+      </div>
+      <ul class="parts session-plan">
+        <li class="part part-core"><span class="part-tag">Core · 2h</span>BM25, tokenization, reciprocal rank fusion + Exercise 1</li>
+        <li class="part part-cert" data-track="cert"><span class="part-tag">Certification · 1h</span>Task 4.1: explicit criteria beat vague instructions</li>
+        <li class="part part-ent" data-track="ent"><span class="part-tag">Enterprise · 1h</span>Evals are the acceptance contract</li>
+      </ul>
+
+      <h3 class="part-h part-core-h">Core · When exact words matter</h3>
+      <div class="readings">
+        <div class="reading"><span class="kind must">Read</span><div><a href="https://en.wikipedia.org/wiki/Okapi_BM25" target="_blank" rel="noopener">Okapi BM25 (Wikipedia) ↗</a><p>The ranking function behind most keyword search engines. Read the formula section; the summary below explains each part.</p></div></div>
+        <div class="reading"><span class="kind must">Read</span><div><a href="https://github.com/dorianbrown/rank_bm25" target="_blank" rel="noopener">rank_bm25 README ↗</a><p>The small library you'll use. Note what it does <i>not</i> do: any text preprocessing.</p></div></div>
+        <div class="reading"><span class="kind">Paper</span><div><a href="https://cormack.uwaterloo.ca/cormacksigir09-rrf.pdf" target="_blank" rel="noopener">Cormack, Clarke &amp; Büttcher (2009): Reciprocal Rank Fusion ↗</a><p>Two pages. The formula and the choice of k = 60 come from here.</p></div></div>
+      </div>
+      <div class="card summary" style="max-width:760px">
+        <h4 style="margin-top:0">Summary</h4>
+        <ul>
+          <li><b>What embeddings blur:</b> error codes (<code>550 5.7.1</code>), queue names (<code>DAL-3F-PRINT</code>), ticket ids, product names and rare terms. An embedding places "550 5.7.1" near "some email problem"; the user needs the one ticket that contains those exact characters.</li>
+          <li><b>BM25</b> scores a chunk by adding, for each query word it contains: <i>IDF</i> (rare words count more) × a <i>term-frequency</i> part that saturates (the 5th "vpn" adds little; parameter k1, 1.5 in rank_bm25) × a <i>length</i> correction (long chunks don't win by size; parameter b, 0.75). A chunk that shares no query word scores 0.</li>
+          <li><b>Tokenization decides everything.</b> rank_bm25 takes lists of tokens and does no preprocessing. Lowercase, keep codes whole (<code>dal-3f-print</code>, <code>5.7.1</code>, <code>t-1018</code>), strip trailing punctuation, and use the <b>same</b> function for chunks and queries. Stemming ("laptops" → "laptop") and stop words are trade-offs; decide by measuring (Day 2).</li>
+          <li><b>Hybrid search</b> runs both retrievers and fuses the results. BM25 scores are unbounded and cosine similarities sit between −1 and 1, so you can't add them. Fuse <b>ranks</b> instead: <i>Reciprocal Rank Fusion</i> gives each chunk Σ 1 / (k + rank) over the lists it appears in, with k = 60. Chunks that both retrievers like rise to the top.</li>
+          <li><b>Fetch more, then cut:</b> take about 20 candidates from each retriever, fuse, and keep the top k (5). A chunk ranked 12th by vectors and 3rd by BM25 can make the final five.</li>
+          <li><b>Where you'll meet it:</b> most search engines and vector databases now offer keyword and hybrid search built in (Elasticsearch/OpenSearch, Azure AI Search, Qdrant, Postgres with pgvector plus full-text search on Day 3). Building it by hand once shows you what their settings do.</li>
+        </ul>
+      </div>
+
+      <div class="callout reality" style="max-width:760px">
+        <b>Production reality</b>
+        <ul style="margin:6px 0 0">
+          <li><b>Two indexes drift apart.</b> The vector store is upserted and deleted incrementally; a BM25 index rebuilt from files on startup is not. Build both from the same chunk list with the same ids, apply deletions to both, and count items in each after every ingest.</li>
+          <li><b>Tiny corpora give zero scores.</b> rank_bm25 computes IDF as log((N − n + 0.5) / (n + 0.5)). In a two-chunk test corpus, a word that appears in one chunk has IDF log(1.5 / 1.5) = 0, so every score is 0; words in more than half the chunks get a small floor value instead of a negative one. Test BM25 on a realistic corpus, not two sentences.</li>
+          <li><b>Scores have no fixed meaning.</b> A BM25 score grows with the number of query words and depends on the corpus; an RRF score only reflects ranks. Last week's <code>min_score</code> floor was calibrated for cosine similarity: switch it off for BM25, hybrid and reranked results, or calibrate a new one on labeled questions.</li>
+          <li><b>Fusion can make things worse.</b> RRF trusts every retriever equally, so a weak retriever pulls good results down. Always measure each retriever alone <i>and</i> fused. You'll see this on Day 2 with the word-hash fake embedder.</li>
+          <li><b>Frameworks tokenize for you, differently.</b> LlamaIndex's BM25 retriever stems words and, by default, drops one-character tokens, so <code>5.7.1</code> disappears from the query. Read the tokenizer defaults of any library before trusting its keyword search on codes.</li>
+        </ul>
+      </div>
+      <div class="exercise">
+        <div class="ex-head"><span class="ex-tag">Exercise 1</span><h4>BM25, then hybrid</h4><span class="chip">~70 min</span></div>
+        <div class="prose">
+          <p>Work in your P2 repository's package (the reference solution calls it <code>kb_assistant</code>).</p>
+          <ol>
+            <li>In <code>keyword.py</code>, write <code>tokenize(text)</code> using this pattern, which keeps codes together: <code>re.compile(r"[a-z0-9]+(?:[-./@][a-z0-9]+)*")</code> on the lowercased text. Then write <code>KeywordIndex(chunks)</code> with <code>search(query, k=5) -> list[Hit]</code>, using <code>BM25Okapi</code> and returning the BM25 score as <code>Hit.score</code>. Leave out chunks that score 0.</li>
+            <li>In <code>hybrid.py</code>, write <code>rrf(rankings, k=60)</code>: a list of best-first <code>Hit</code> lists in, one fused list out, keyed by <code>chunk_id</code>, with ranks counted from 1. Then <code>HybridSearch(kb, keyword_index, candidates=20)</code> whose <code>search(query, k)</code> takes 20 from each retriever, fuses them and returns the top k.</li>
+            <li>For three questions, print the top 5 of vector search (your W2 <code>KnowledgeBase</code>), BM25 and hybrid side by side: "What was the fix in ticket T-1018?", "Emails to a customer bounce with 550 5.7.1. What's going on?" and "How quickly do I need to report a lost laptop?".</li>
+          </ol>
+          <p class="expected"><b>Check:</b> <code>tokenize("Jobs stuck in DAL-3F-PRINT? Error 550 5.7.1, ticket T-1018.")</code> → <code>['jobs', 'stuck', 'in', 'dal-3f-print', 'error', '550', '5.7.1', 'ticket', 't-1018']</code>. <code>rrf([[a, b, c], [c, d, b]])</code> orders the chunks <b>c, b, a, d</b>, and c scores 1/61 + 1/63 ≈ 0.03227. With the <code>FakeEmbedder</code> (256 dimensions, as in Week 2): BM25 puts <b>T-1007</b> first for the 550 question and <b>T-1018</b> first for the T-1018 question; vector search doesn't have T-1018 in its top 5 at all; hybrid ranks it 2nd. With real embeddings, the lost-laptop question should go the other way: vectors find the handbook ("lost or stolen device") that BM25 ranks lower.</p>
+        </div>
+        <div class="hints" data-hints="W3-ex1">
+          <div class="hint" data-level="Concept"><code>BM25Okapi([tokenize(c.text) for c in chunks])</code> builds the index once; <code>get_scores(tokenize(query))</code> returns one score per chunk, in the same order as <code>chunks</code>. Sort the indices by score. For RRF, loop over each ranking with <code>enumerate(ranking, start=1)</code> and add <code>1 / (k + rank)</code> to a dict keyed by <code>chunk_id</code>.</div>
+          <div class="hint solution" data-level="Full solution">
+<pre><code>"""Keyword search with BM25: exact words, codes and ids that embeddings blur."""
+import re
+
+from rank_bm25 import BM25Okapi
+
+from kb_assistant.loaders import Document
+from kb_assistant.store import Hit
+
+TOKEN = re.compile(r"[a-z0-9]+(?:[-./@][a-z0-9]+)*")   # keeps dal-3f-print, 5.7.1, t-1004, billing@ ...
+
+
+def tokenize(text: str) -&gt; list[str]:
+    return TOKEN.findall(text.lower())
+
+
+class KeywordIndex:
+    def __init__(self, chunks: list[Document]):
+        self.chunks = chunks
+        self.bm25 = BM25Okapi([tokenize(c.text) for c in chunks])
+
+    def search(self, query: str, k: int = 5) -&gt; list[Hit]:
+        scores = self.bm25.get_scores(tokenize(query))
+        ranked = sorted(range(len(self.chunks)), key=lambda i: scores[i], reverse=True)
+        return [Hit(self.chunks[i].text, self.chunks[i].metadata, round(float(scores[i]), 4))
+                for i in ranked[:k] if scores[i] &gt; 0]          # a zero score shares no query word</code></pre>
+<pre><code>"""Hybrid search: fuse the vector and keyword rankings with Reciprocal Rank Fusion (RRF)."""
+from kb_assistant.store import Hit
+
+
+def rrf(rankings: list[list[Hit]], k: int = 60) -&gt; list[Hit]:
+    """Each list is best-first. A chunk scores sum(1 / (k + rank)) over the lists it appears in."""
+    scores: dict[str, float] = {}
+    by_id: dict[str, Hit] = {}
+    for ranking in rankings:
+        for rank, hit in enumerate(ranking, start=1):
+            cid = hit.metadata["chunk_id"]
+            scores[cid] = scores.get(cid, 0.0) + 1.0 / (k + rank)
+            by_id.setdefault(cid, hit)
+    order = sorted(scores, key=scores.get, reverse=True)
+    return [Hit(by_id[c].text, by_id[c].metadata, scores[c]) for c in order]
+
+
+class HybridSearch:
+    def __init__(self, kb, keyword_index, candidates: int = 20):
+        self.kb, self.keyword, self.candidates = kb, keyword_index, candidates
+
+    def search(self, query: str, k: int = 5) -&gt; list[Hit]:
+        vector_hits = self.kb.search(query, k=self.candidates)
+        keyword_hits = self.keyword.search(query, k=self.candidates)
+        return rrf([vector_hits, keyword_hits])[:k]</code></pre></div>
+        </div>
+        <div class="ex-foot"><label class="done-toggle check"><input type="checkbox" data-check="exercises|W3-ex1"> <span class="check-text">Exercise 1 done</span></label></div>
+      </div>
+
+      <div data-track="cert">
+        <h3 class="part-h part-cert-h">Certification · Task 4.1: explicit criteria</h3>
+        <div class="card summary" style="max-width:760px">
+          <ul style="margin:0">
+            <li><b>The exam's point:</b> vague instructions ("be conservative", "flag anything suspicious", "only report high-confidence issues") don't cut false positives. <b>Explicit criteria</b> do: exactly which cases to report, what each severity means, and what <i>not</i> to report, with examples.</li>
+            <li><b>Explain why.</b> Claude's prompting guide recommends giving the reason behind an instruction, because the model generalizes from the explanation.</li>
+            <li><b>The colleague test:</b> show the prompt to a colleague with no context. If they'd be unsure what to flag, so is the model.</li>
+            <li><b>Self-reported confidence is not a filter.</b> Asking the model for a confidence score and dropping low ones is a common wrong answer on the exam: the scores are not calibrated.</li>
+          </ul>
+        </div>
+        <div class="prose">
+          <p><b>Task:</b> rewrite this reviewer prompt with explicit criteria: <i>"Review the help desk assistant's answer and flag any problems."</i> Write three kinds of problem to flag (with one example each), three things <b>not</b> to flag (style, brevity, a suggestion to open a ticket), and one sentence on why. Keep it; on Day 2 you'll measure it.</p>
+        </div>
+        <div class="readings">
+          <div class="reading"><span class="kind must">Read</span><div><a href="https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices" target="_blank" rel="noopener">Claude: prompting best practices ↗</a><p>The sections on being clear and explicit, and on adding context to instructions.</p></div></div>
+        </div>
+      </div>
+
+      <div data-track="ent">
+        <h3 class="part-h part-ent-h">Enterprise · Evals are the acceptance contract</h3>
+        <div class="prose">
+          <p>A demo proves that something <i>can</i> work. A customer signs off when you agree, in advance, on <b>how "done" will be measured</b>: a set of real questions, the checks run on them, and the thresholds that count as a pass. That agreement protects both sides. It turns "the AI feels unreliable" into "hit rate is 0.88 against a target of 0.85, and here are the four failures". Anthropic's guide says good success criteria are specific, measurable, achievable and relevant.</p>
+          <p><b>Task:</b> write four success criteria for Lumora's IT assistant that satisfy all four properties, for example about unanswerable questions: <i>"On the 8 unanswerable questions, the assistant says 'I don't know' at least 7 times."</i> Avoid "accurate" or "helpful" without a number.</p>
+        </div>
+        <div class="readings">
+          <div class="reading"><span class="kind must">Read</span><div><a href="https://platform.claude.com/docs/en/test-and-evaluate/develop-tests" target="_blank" rel="noopener">Claude: define success criteria and build evaluations ↗</a></div></div>
+        </div>
+      </div>
+
+      <div class="prose"><h3>Mini-quiz</h3></div>
+      <div class="quiz mini" data-quiz="W3-d1"></div>
+      <script type="application/json" data-quiz-for="W3-d1">[{"id": "h1", "q": "A teammate simplifies the tokenizer in <code>keyword.py<\/code> to the line below. With the fake setup, BM25's hit rate on the 32 answerable questions drops from 29/32 to 27/32. Which two questions are lost, and why?<pre><code>def tokenize(text: str) -&gt; list[str]:\n    return text.lower().split()<\/code><\/pre>", "options": ["e07 and e17: split() breaks DAL-3F-PRINT at its hyphens, so the queue name stops matching", "e25 and e26: without the regex, paraphrases that share few words with their tickets stop matching", "e18 and e12: lower() runs after split(), so T-1018 and YubiKey keep capitals the index lacks", "e18 and e36: tokens like t-1018? and (dropbox, keep their punctuation and never equal the indexed words"], "answer": 3, "why": "split() only cuts on whitespace, so punctuation stays glued to the token: the query token \"t-1018?\" never equals \"t-1018\", and the article's \"(dropbox,\" never equals the query's \"dropbox\". Hyphens are not whitespace, so dal-3f-print survives split() intact. lower() is applied to the whole text before splitting, so capitals are not the problem. e25 and e26 already miss with the regex tokenizer; they are paraphrases BM25 can't reach either way."}, {"id": "h2", "q": "A unit test builds a tiny index and fails with <code>IndexError: list index out of range<\/code>. The reference <code>KeywordIndex<\/code> is unchanged. Why?<pre><code>idx = KeywordIndex([\n    Document(\"VPN gateway not responding: switch to us-east\", {...}),\n    Document(\"Printer queue DAL-3F-PRINT: badge release\", {...})])\nassert idx.search(\"vpn gateway\")[0].metadata[\"source\"] == \"vpn-setup.md\"<\/code><\/pre>", "options": ["IDF is log((2 − 1 + 0.5) / (1 + 0.5)) = 0 for a word in one of two chunks, so all scores are 0 and get dropped", "With k1 = 1.5, a word that appears only once in a short chunk saturates to a term-frequency score of 0", "Words in more than half of the chunks get a negative IDF, and \"vpn\" appears in exactly half of them", "search() passes the raw query string to BM25, which then scores single characters instead of words"], "answer": 0, "why": "rank_bm25 computes IDF as log((N − n + 0.5) / (n + 0.5)); with N = 2 and n = 1 that is log(1) = 0, so every score is 0 and search() leaves out zero-score chunks. A word in exactly half the chunks isn't negative (it's zero); negative IDF needs more than half, and rank_bm25 then floors it at a small positive value. Term-frequency saturation limits repeated words; it never turns one occurrence into 0. KeywordIndex tokenizes the query before get_scores. Test BM25 on a realistic corpus."}, {"id": "h3", "q": "For one query, the two retrievers rank three chunks like this. Which chunk comes first if fusion adds the raw scores, and which with RRF (k = 60, ranks from 1)?<pre><code>chunk   vector rank (cosine)    BM25 rank (score)\nX       1  (0.71)               3  (6.2)\nY       15 (0.22)               1  (9.8)\nZ       not in top 20           2  (8.0)<\/code><\/pre>", "options": ["Raw sum: Y · RRF: Y", "Raw sum: X · RRF: X", "Raw sum: Y · RRF: X", "Raw sum: X · RRF: Y"], "answer": 2, "why": "Raw sums are X 6.91, Y 10.02, Z 8.0: BM25's unbounded scores decide everything and the vector ranking barely counts. RRF gives X 1/61 + 1/63 ≈ 0.0323, Y 1/61 + 1/75 ≈ 0.0297 and Z 1/62 ≈ 0.0161, so the chunk both retrievers like wins. Picking X for the raw sum ignores that 0.71 is tiny next to BM25 scores; picking Y for RRF overweights one first place against two good ranks."}, {"id": "h4", "q": "(Certification) Your reviewer prompt says: \"Review the assistant's answer and flag any problems. Be conservative.\" In your run on the dev split it flags 5 of the 6 answers humans marked as good, mostly for being short. Which change matches exam task 4.1?", "options": ["Ask for a confidence score from 1 to 10 with every flag, and drop each flag the model scores below 8", "Define what to flag (wrong numbers, unsupported or too-broad claims), what not to (brevity), and why", "Add twenty graded answers, sampled at random from production logs, as examples in the prompt", "Replace \"be conservative\" with \"only report high-confidence problems you are certain are real errors\""], "answer": 1, "why": "Task 4.1: explicit criteria (what counts, what doesn't, and the reason) cut false positives; vague words like \"conservative\" or \"high-confidence\" don't tell the model which cases to skip. Self-reported confidence is a classic wrong answer: the scores aren't calibrated. Twenty random examples add cost without targeting the short-answer confusion; examples are task 4.2, and they should be few and chosen for the hard cases."}]</script>
+    </section>
+
+    <!-- ================= DAY 2 ================= -->
+    <section class="day" id="d2" data-day="d2">
+      <div class="day-kicker">Day 2 · Tuesday on the Full-time pace · 4 hours</div>
+      <div class="day-head">
+        <h2>Measuring retrieval</h2>
+        <label class="day-done check"><input type="checkbox" data-check="lessonDays|W3-d2"> Session done</label>
+      </div>
+      <ul class="parts session-plan">
+        <li class="part part-core"><span class="part-tag">Core · 2h</span>Eval sets, metrics at k, confidence intervals, paired comparisons + Exercise 2</li>
+        <li class="part part-cert" data-track="cert"><span class="part-tag">Certification · 1h</span>Task 4.1 measured: false positives before and after</li>
+        <li class="part part-ent" data-track="ent"><span class="part-tag">Enterprise · 1h</span>Building the golden set with the customer</li>
+      </ul>
+
+      <h3 class="part-h part-core-h">Core · Numbers you can defend</h3>
+      <div class="readings">
+        <div class="reading"><span class="kind must">Read</span><div><a href="https://hamel.dev/blog/posts/evals/" target="_blank" rel="noopener">Hamel Husain: Your AI Product Needs Evals ↗</a><p>Why every AI product needs its own evaluation, and how teams that skip it get stuck.</p></div></div>
+        <div class="reading"><span class="kind">Reference</span><div><a href="https://en.wikipedia.org/wiki/Evaluation_measures_(information_retrieval)" target="_blank" rel="noopener">Evaluation measures in information retrieval ↗</a><p>Precision@k, recall, MRR and friends, with formulas.</p></div></div>
+        <div class="reading"><span class="kind">Reference</span><div><a href="https://en.wikipedia.org/wiki/Bootstrapping_(statistics)" target="_blank" rel="noopener">Bootstrapping (statistics) ↗</a><p>The idea behind the confidence intervals you'll compute: resample your own data.</p></div></div>
+      </div>
+      <div class="card summary" style="max-width:760px">
+        <h4 style="margin-top:0">Summary</h4>
+        <ul>
+          <li><b>An eval set</b> is questions plus labels: which sources answer each one, and a fact the answer must contain. Cover the kinds of questions users really ask (here: keyword, paraphrase, multi-source, unanswerable), ideally taken from ticket and search logs.</li>
+          <li><b>Label sources, not chunks.</b> Chunk ids change every time you re-chunk; a label like <code>T-1015</code> or <code>password-policy.md</code> survives. Metrics then compare the <i>sources</i> of the top k chunks with the labels.</li>
+          <li><b>Metrics at k</b> (k = the number of chunks the model will see): <i>Hit rate@k</i>, whether any relevant source is in the top k; <i>Precision@k</i>, the share of the k results that come from relevant sources (always divide by k); <i>Recall@k</i>, the share of distinct relevant sources found; <i>F1@k</i>, their harmonic mean; <i>MRR</i>, the average of 1/rank of the first relevant result (how high the right answer sits).</li>
+          <li><b>Which matters most:</b> the model can only use what's in the top k, so <b>recall@k caps answer quality</b>. Precision is about noise and cost. MRR matters because models use the start of the context best (Day 3).</li>
+          <li><b>Unanswerable questions have nothing to retrieve.</b> Leave them out of retrieval metrics and judge them on the answer ("I don't know"), on Day 4.</li>
+          <li><b>Small sets are noisy.</b> With 32 answerable questions, one question moves the hit rate by about 3 points. Report a <b>95% confidence interval</b>: resample the questions with replacement 10,000 times, recompute the mean each time, and take the 2.5th and 97.5th percentiles (the <i>bootstrap</i>). As a rule of thumb the margin is ±1.96 × √(p(1 − p)/n): at p = 0.9 that's about ±10 points for n = 32, ±6 for 100 and ±3 for 400.</li>
+          <li><b>Compare systems on the same questions.</b> Count the questions where B beats A and where A beats B, and bootstrap the per-question <i>differences</i> (keeping each question's pair together). Five wins and zero losses says more than two overlapping intervals.</li>
+        </ul>
+      </div>
+
+      <div class="callout reality" style="max-width:760px">
+        <b>Production reality</b>
+        <ul style="margin:6px 0 0">
+          <li><b>Labels are incomplete.</b> A question can be answered by a source nobody labeled, and your metric counts it as a miss. Read every miss before believing it; if the source really answers the question, fix the label and note it.</li>
+          <li><b>Eval sets rot.</b> Documents get renamed, policies change, tickets are archived. Version the eval set with the corpus, re-check labels whenever sources move, and add questions from real failures every month.</li>
+          <li><b>Don't tune on the test.</b> Every choice you make while looking at the eval set (k, candidates, tokenizer, prompt) leaks into the score. Keep a dev set for tuning and a held-out test set you run rarely; report the test number.</li>
+          <li><b>Averages hide categories.</b> A change that gains 3 points overall can lose 20 on keyword questions, which might be exactly the ones the service desk cares about. Always print results per category.</li>
+          <li><b>Precision@k has a ceiling.</b> If a question has one relevant source that produced one chunk, Precision@5 can't exceed 0.2. Compare precision only between systems on the same eval set, never against a number from a blog post.</li>
+        </ul>
+      </div>
+      <div class="exercise">
+        <div class="ex-head"><span class="ex-tag">Exercise 2</span><h4>An <code>eval</code> command with honest error bars</h4><span class="chip">~80 min</span></div>
+        <div class="prose">
+          <p>In <code>metrics.py</code>, write <code>precision_at_k</code>, <code>recall_at_k</code>, <code>f1</code> and <code>reciprocal_rank</code> (each takes the list of retrieved <i>sources</i> in rank order and the set of relevant ones), then <code>evaluate(search, eval_set, k)</code> returning per-question rows and means, <code>bootstrap_ci(values)</code> and <code>paired_bootstrap(a, b)</code>. Add an <code>eval</code> command to the CLI with a <code>--retriever vector|bm25|hybrid</code> flag that prints the metrics, the interval for the hit rate, hits per category and the ids of the misses. It makes no model calls.</p>
+          <p>Run it for all three retrievers, first with <code>--embedder fake</code>, then with <code>--embedder openai</code> (or <code>fastembed</code>). Save the six results in <code>results/week3-retrieval.md</code> and write two sentences on what changed between the fake and the real embedder.</p>
+          <p class="expected"><b>Check:</b> for retrieved sources <code>["x", "A", "x", "B", "x"]</code> and relevant <code>{"A", "B", "C"}</code>: Precision@5 = 0.4, Recall@5 = 2/3, and the reciprocal rank for relevant <code>{"B"}</code> is 0.25. With the fake embedder, k = 5 and 32 answerable questions: <b>BM25</b> hits 29/32 (0.906), MRR 0.814, missing e25, e26 and e27, three paraphrases that share no words with their tickets; <b>vector</b> hits 24/32 (0.750); <b>hybrid</b> 27/32 (0.844): worse than BM25 alone, because the fake embedder is a weak retriever (see Production reality on Day 1). Paired, BM25 beats vector on 5 questions and loses on none. With a real embedder, expect the paraphrase misses to be found by vectors and hybrid to beat both single retrievers; your exact numbers depend on the model.</p>
+        </div>
+        <div class="hints" data-hints="W3-ex2">
+          <div class="hint" data-level="Concept">Turn hits into sources once: <code>[h.metadata["source"] for h in hits]</code>. Recall uses <b>sets</b> (<code>relevant &amp; set(retrieved[:k])</code>) so a source that produced three chunks counts once. For the bootstrap, <code>random.Random(seed)</code> makes the interval reproducible; for the paired version, draw question <i>indices</i> and take both systems' values at the same index.</div>
+          <div class="hint solution" data-level="Full solution">
+<pre><code>"""Retrieval metrics at the source level, and the statistics to read them honestly."""
+import random
+
+
+def sources(hits) -&gt; list[str]:
+    return [h.metadata["source"] for h in hits]
+
+
+def precision_at_k(retrieved: list[str], relevant: set[str], k: int) -&gt; float:
+    top = retrieved[:k]
+    return sum(s in relevant for s in top) / k          # divide by k, not by len(top)
+
+
+def recall_at_k(retrieved: list[str], relevant: set[str], k: int) -&gt; float:
+    return len(relevant &amp; set(retrieved[:k])) / len(relevant)
+
+
+def f1(p: float, r: float) -&gt; float:
+    return 0.0 if p + r == 0 else 2 * p * r / (p + r)
+
+
+def reciprocal_rank(retrieved: list[str], relevant: set[str]) -&gt; float:
+    return next((1 / rank for rank, s in enumerate(retrieved, start=1) if s in relevant), 0.0)
+
+
+def evaluate(search, eval_set: list[dict], k: int = 5) -&gt; dict:
+    """search(question, k) -&gt; hits. Unanswerable questions (no relevant sources) are skipped."""
+    rows = []
+    for item in eval_set:
+        relevant = set(item["relevant"])
+        if not relevant:
+            continue
+        got = sources(search(item["question"], k))
+        p, r = precision_at_k(got, relevant, k), recall_at_k(got, relevant, k)
+        rows.append({"id": item["id"], "category": item["category"], "hit": float(bool(relevant &amp; set(got[:k]))),
+                     "precision": p, "recall": r, "f1": f1(p, r), "rr": reciprocal_rank(got, relevant)})
+    n = len(rows)
+    means = {m: sum(row[m] for row in rows) / n for m in ("hit", "precision", "recall", "f1", "rr")}
+    return {"rows": rows, "n": n, **means}
+
+
+def bootstrap_ci(values: list[float], iterations: int = 10_000, seed: int = 0) -&gt; tuple[float, float]:
+    """95% confidence interval of the mean, by resampling questions with replacement."""
+    rng = random.Random(seed)
+    n = len(values)
+    means = sorted(sum(rng.choice(values) for _ in range(n)) / n for _ in range(iterations))
+    return means[int(0.025 * iterations)], means[int(0.975 * iterations) - 1]
+
+
+def paired_bootstrap(a: list[float], b: list[float], iterations: int = 10_000, seed: int = 0) -&gt; dict:
+    """Is B better than A on the SAME questions? Resample question indices, keep the pairs together."""
+    rng = random.Random(seed)
+    n = len(a)
+    diffs = [y - x for x, y in zip(a, b)]
+    boots = sorted(sum(diffs[rng.randrange(n)] for _ in range(n)) / n for _ in range(iterations))
+    return {"mean_diff": sum(diffs) / n, "ci": (boots[int(0.025 * iterations)], boots[int(0.975 * iterations) - 1]),
+            "b_better": sum(d &gt; 0 for d in diffs), "a_better": sum(d &lt; 0 for d in diffs)}</code></pre>
+<p class="small muted">The CLI's <code>eval_report</code> and <code>make_searcher</code> are in the Weekend 1 snippet; the full CLI is part of your project.</p></div>
+        </div>
+        <div class="ex-foot"><label class="done-toggle check"><input type="checkbox" data-check="exercises|W3-ex2"> <span class="check-text">Exercise 2 done</span></label></div>
+      </div>
+
+      <div data-track="cert">
+        <h3 class="part-h part-cert-h">Certification · Task 4.1, measured</h3>
+        <div class="prose">
+          <p>A prompt change is a hypothesis, so measure it. Take the <b>dev</b> split of <code>labeled-answers.json</code> (10 answers; a human marked 4 of them as not grounded). Ask a model to review each answer twice: once with the vague prompt from Day 1 ("flag any problems") and once with your explicit-criteria version. For each prompt, count <b>false positives</b> (grounded answers it flagged) and <b>misses</b> (ungrounded answers it passed).</p>
+          <p class="expected"><b>What to look for:</b> the vague prompt tends to flag answers for being short or for missing details, which are not grounding problems. The explicit version should flag fewer good answers while still catching the invented numbers. Note which failure kinds neither prompt catches; Day 3 fixes those with examples.</p>
+        </div>
+      </div>
+
+      <div data-track="ent">
+        <h3 class="part-h part-ent-h">Enterprise · Building the golden set with the customer</h3>
+        <div class="prose">
+          <p>Your eval set is only as credible as its labels, and the customer's experts must trust it. Practical rules: take questions from <b>real traffic</b> (ticket subjects, intranet search logs) rather than inventing them; cover the categories that matter to the business in rough proportion to traffic, plus the rare but costly ones; include <b>unanswerable</b> and adversarial questions; scrub personal data before anything leaves the customer's systems. Have <b>one domain expert</b> make the final call on labels (Husain and Shankar call this person the "benevolent dictator"), so labels stay consistent. Start with 30–50 questions and grow the set from real failures.</p>
+          <p><b>Task:</b> draft a one-page plan for Lumora: where the first 50 questions come from, who labels them, the category mix, and how new failures get added each month.</p>
+        </div>
+        <div class="readings">
+          <div class="reading"><span class="kind must">Read</span><div><a href="https://hamel.dev/blog/posts/evals-faq/" target="_blank" rel="noopener">Husain &amp; Shankar: Evals FAQ ↗</a><p>Read the answers on error analysis, binary pass/fail labels, and who should label.</p></div></div>
+        </div>
+      </div>
+
+      <div class="prose"><h3>Mini-quiz</h3></div>
+      <div class="quiz mini" data-quiz="W3-d2"></div>
+      <script type="application/json" data-quiz-for="W3-d2">[{"id": "h1", "q": "For e24, the relevant sources are <code>{\"password-policy.md\", \"T-1009\"}<\/code>. The top 5 chunks come from these sources, in order. What do the reference <code>precision_at_k<\/code> and <code>recall_at_k<\/code> return at k = 5?<pre><code>[\"password-policy.md\", \"password-policy.md\", \"T-1009\", \"password-policy.md\", \"vpn-setup.md\"]<\/code><\/pre>", "options": ["Precision 0.4 · recall 1.0", "Precision 0.8 · recall 2.0", "Precision 0.8 · recall 1.0", "Precision 0.67 · recall 1.0"], "answer": 2, "why": "Precision counts results: 4 of the 5 chunks come from a relevant source, so 0.8. Recall counts distinct relevant sources: both were found, so 1.0. Recall 2.0 comes from counting the four relevant chunks instead of the two sources (it can exceed 1, which flatters the report). 0.4 counts each relevant source once for precision; 0.67 divides 2 relevant sources by 3 distinct retrieved sources instead of by k."}, {"id": "h2", "q": "The eval command prints this with the fake embedder. A teammate says: \"The intervals overlap, so there's no evidence BM25 is better.\" What's the right reading?<pre><code>vector  hit rate 0.750 (95% CI 0.59-0.91)\nbm25    hit rate 0.906 (95% CI 0.78-1.00)\npaired (bm25 vs vector): bm25 better on 5, vector better on 0,\n        mean diff +0.156, 95% CI 0.03-0.28<\/code><\/pre>", "options": ["They're equal: vector's upper bound, 0.91, is above BM25's point estimate of 0.906", "No evidence yet: overlapping 95% intervals mean the difference isn't significant at 32 questions", "Neither: hit rate is too coarse at 32 questions, so compare the MRR values, where the gap is larger", "BM25 is better on this set: on the same questions it wins 5, loses 0, and the paired interval excludes 0"], "answer": 3, "why": "Separate intervals include the variation between questions, which is the same for both systems when they run on the same questions; the paired comparison removes it. Five wins and no losses, with a difference interval of 0.03 to 0.28, is evidence on this set. Overlapping intervals are not a test of a difference. Switching to MRR dodges the question rather than answering it. Comparing one bound with the other system's point estimate mixes two different quantities."}, {"id": "h3", "q": "At a hit rate around 0.9, 32 questions give a margin of about ±10 points (±1.96 × √(p(1 − p)/n)). The customer wants the reported hit rate within about ±3 points. Roughly how many answerable questions do you need?", "options": ["About 400: the margin shrinks with the square root of n", "About 96: three times the questions for a third of the margin", "About 1,000: bootstrap intervals need a thousand samples", "About 100: margins shrink quickly once you pass 100 questions"], "answer": 0, "why": "Solving 1.96 × √(0.09/n) = 0.03 gives n ≈ 384. A third of the margin needs about 9 times the questions (12 times 32 here), not 3 times. At 100 questions the margin is still about ±6 points. The bootstrap's 10,000 resamples are computation, not a requirement on the number of questions."}, {"id": "h4", "q": "(Enterprise) Lumora's project team offers 200 questions they wrote in a workshop. You also have 6 months of ticket subjects and intranet search logs. What's the best way to build the golden set?", "options": ["Use the 200 workshop questions the project team wrote: they already exist, and more questions give a narrower interval", "Sample ticket subjects and search logs by traffic, add costly and unanswerable cases, scrub data, one expert labels", "Have a model generate 500 questions from the knowledge base documents, so every article is covered evenly", "Let five help desk agents label every question and keep the majority vote, so no single person decides the labels"], "answer": 1, "why": "Real traffic tells you what users actually ask and in what proportions; a single domain expert (the \"benevolent dictator\") keeps labels consistent; unanswerable and costly cases test what matters most; personal data must be scrubbed before anything leaves the customer. Workshop questions reflect what the team thinks users ask. Generated questions echo the documents' wording, which inflates retrieval scores. Majority votes across five labelers produce inconsistent rules nobody owns."}]</script>
+    </section>
+
+    <!-- ================= DAY 3 ================= -->
+    <section class="day" id="d3" data-day="d3">
+      <div class="day-kicker">Day 3 · Wednesday on the Full-time pace · 4 hours</div>
+      <div class="day-head">
+        <h2>Reranking and contextual retrieval</h2>
+        <label class="day-done check"><input type="checkbox" data-check="lessonDays|W3-d3"> Session done</label>
+      </div>
+      <ul class="parts session-plan">
+        <li class="part part-core"><span class="part-tag">Core · 2h</span>Cross-encoder reranking, contextual chunks, prompt order + Exercise 3; LlamaIndex and pgvector (30 min)</li>
+        <li class="part part-cert" data-track="cert"><span class="part-tag">Certification · 1h</span>Task 4.2: a few targeted examples</li>
+        <li class="part part-ent" data-track="ent"><span class="part-tag">Enterprise · 1h</span>Thresholds and sign-off</li>
+      </ul>
+
+      <h3 class="part-h part-core-h">Core · A second opinion on ranking, and chunks that know where they came from</h3>
+      <div class="readings">
+        <div class="reading"><span class="kind must">Read</span><div><a href="https://www.anthropic.com/news/contextual-retrieval" target="_blank" rel="noopener">Anthropic: Introducing Contextual Retrieval ↗</a><p>The method, the prompt, the measured gains, and when to skip RAG altogether.</p></div></div>
+        <div class="reading"><span class="kind must">Read</span><div><a href="https://www.sbert.net/examples/cross_encoder/applications/README.html" target="_blank" rel="noopener">Sentence Transformers: cross-encoders vs bi-encoders ↗</a><p>Why the same model family gives two very different tools.</p></div></div>
+        <div class="reading"><span class="kind">Paper</span><div><a href="https://arxiv.org/abs/2307.03172" target="_blank" rel="noopener">Liu et al.: Lost in the Middle (TACL) ↗</a><p>Where in a long prompt models find information best. The abstract and Figure 1 are enough.</p></div></div>
+      </div>
+      <div class="card summary" style="max-width:760px">
+        <h4 style="margin-top:0">Summary</h4>
+        <ul>
+          <li><b>Bi-encoder vs cross-encoder.</b> Embeddings are a <i>bi-encoder</i>: question and chunk are encoded separately and compared with cosine, which is fast because chunk vectors are computed once. A <i>cross-encoder</i> reads the question and one chunk <b>together</b> and outputs a relevance score. It's more accurate, but it has to run once per (question, chunk) pair at question time.</li>
+          <li><b>Two stages:</b> retrieve 20–50 candidates cheaply (hybrid), rerank them with the cross-encoder, keep the top 5. The reranker can only reorder what stage one fetched, so <b>recall@candidates caps the final recall</b>. FastEmbed runs small open-source rerankers locally (<code>Xenova/ms-marco-MiniLM-L-6-v2</code>, about 80 MB); hosted rerankers (Cohere, Voyage) are an API call.</li>
+          <li><b>Contextual retrieval</b> (Anthropic, 2024): before indexing, ask a model for a short context (usually 50–100 tokens) that situates each chunk in its document, prepend it, and embed and BM25-index the combined text. On Anthropic's datasets, top-20 retrieval failures fell by 35% with contextual embeddings, 49% with contextual embeddings plus contextual BM25, and 67% with reranking on top (5.7% → 1.9%). Those are their numbers on their data; measure on yours.</li>
+          <li><b>Cost and caching:</b> one model call per chunk, with the whole document first so calls for the same document share a cacheable prefix. Anthropic quoted $1.02 per million document tokens with caching. For Lumora, 27 article and PDF chunks mean about 11,000 input tokens: a fifth of a cent, and no caching at all, because the longest document is about 450 tokens, below OpenAI's 1,024-token minimum.</li>
+          <li><b>Sometimes skip RAG:</b> Anthropic notes that a knowledge base under about 200,000 tokens can go straight into the prompt (with caching). Lumora's whole knowledge base would fit. RAG earns its place with large, changing corpora, per-user permissions and cost at volume.</li>
+          <li><b>Order in the prompt matters.</b> Models use information at the start and end of a long context better than in the middle ("lost in the middle"). Put the best-ranked chunks first, keep k small, and put the question after the sources: Claude's guide reports up to 30% better answers with the query at the end on long, multi-document inputs.</li>
+        </ul>
+      </div>
+
+      <div class="callout reality" style="max-width:760px">
+        <b>Production reality</b>
+        <ul style="margin:6px 0 0">
+          <li><b>Rerankers cost latency on every question.</b> Scoring 50 candidates can take longer than the retrieval itself, especially on CPU. Measure p95 latency with realistic chunk lengths, cap the candidates, and batch.</li>
+          <li><b>Rerankers read a limited window.</b> Small cross-encoders are trained on short passages and truncate long inputs, so the end of a long chunk never influences its score. Keep chunks within the model's limit, or rerank on a summary.</li>
+          <li><b>Contexts go stale with their document.</b> A chunk's context depends on the whole document, so an edit anywhere should regenerate the contexts of <i>all</i> its chunks. Key the cache on the document and the chunk (the solution hashes both), not on the chunk alone.</li>
+          <li><b>Model-written text is now in your index.</b> Contexts can be wrong or can repeat sensitive details from elsewhere in the document. Spot-check a sample for every new document type, and never contextualize content that users of the chunk aren't allowed to see.</li>
+          <li><b>Reranker scores aren't thresholds either.</b> Like cosine and BM25, they're only comparable within one query and one model. Don't reuse a similarity floor; calibrate on labeled questions or rely on "I don't know" at answer time.</li>
+        </ul>
+      </div>
+      <div class="exercise">
+        <div class="ex-head"><span class="ex-tag">Exercise 3</span><h4>Rerank the candidates; add context to the chunks</h4><span class="chip">~70 min</span></div>
+        <div class="prose">
+          <ol>
+            <li>In <code>rerank.py</code>, write two rerankers with one method, <code>scores(query, texts) -> list[float]</code>: <code>CrossEncoderReranker</code> (FastEmbed's <code>TextCrossEncoder</code>; its <code>rerank(query, documents)</code> returns one score per document) and <code>FakeReranker</code> for tests (the number of distinct query tokens found in each text). Then <code>rerank(reranker, query, hits, top_n)</code> and <code>RerankedSearch(first_stage, reranker, candidates=20)</code>, whose <code>search(query, k)</code> asks the first stage for <b>20</b> and returns the reranked top k. Add <code>--rerank none|cross-encoder|fake</code> to the CLI.</li>
+            <li>In <code>contextual.py</code>, write <code>situate(client, document, chunk)</code> with Anthropic's prompt (in the solution) on <code>gpt-6-luna</code>, and <code>contextualize(client, docs, chunks, cache_path)</code>: tickets stay as they are (they're already self-contained); every other chunk becomes <code>context + "\n\n" + text</code>, with the context also stored in the metadata. Cache contexts in a JSON file keyed by a hash of document and chunk, so a second run makes no calls. Add a <code>--contextual</code> flag that uses a separate collection (<code>kb-{model}-ctx</code>) and contextual text for BM25 too.</li>
+            <li>Run <code>eval</code> for hybrid, hybrid + rerank, and hybrid + rerank + contextual, with a real embedder. Add the rows to <code>results/week3-retrieval.md</code> with their intervals, and a paired comparison of the best configuration against plain hybrid.</li>
+          </ol>
+          <p class="expected"><b>Check:</b> with the fake reranker, <code>rerank(FakeReranker(), "dallas printer", [vpn gateway hit, printer queue dallas hit], top_n=1)</code> returns only the printer hit, scored 2.0. A spy first stage confirms <code>RerankedSearch</code> asks for 20. Running <code>contextualize</code> twice on <code>vpn-setup.md</code>'s chunks makes 4 calls the first time and 0 the second; each request's input starts with <code>&lt;document&gt;</code> and the document's first line. With the real models, don't expect every metric to rise: the eval is small, so read the paired comparison, and keep a change only if it wins more questions than it loses.</p>
+        </div>
+        <div class="hints" data-hints="W3-ex3">
+          <div class="hint" data-level="Concept">Sort indices by score with <code>sorted(range(len(hits)), key=lambda i: scores[i], reverse=True)</code>: Python's sort is stable, so ties keep the first stage's order. For the context of a PDF chunk, the "document" is all of its pages joined; build a <code>source → full text</code> dict from the loaded documents first.</div>
+          <div class="hint solution" data-level="Full solution">
+<pre><code>"""Second-stage ranking: a cross-encoder reads the question and each candidate together."""
+from kb_assistant.keyword import tokenize
+from kb_assistant.store import Hit
+
+
+class CrossEncoderReranker:
+    """Local and free. Downloads the model once (about 80 MB)."""
+
+    def __init__(self, model: str = "Xenova/ms-marco-MiniLM-L-6-v2"):
+        from fastembed.rerank.cross_encoder import TextCrossEncoder
+        self.model = TextCrossEncoder(model_name=model)
+
+    def scores(self, query: str, texts: list[str]) -&gt; list[float]:
+        return [float(s) for s in self.model.rerank(query, texts)]
+
+
+class FakeReranker:
+    """For tests: counts distinct query words found in the text. No network."""
+
+    def scores(self, query: str, texts: list[str]) -&gt; list[float]:
+        words = set(tokenize(query))
+        return [float(len(words &amp; set(tokenize(t)))) for t in texts]
+
+
+def rerank(reranker, query: str, hits: list[Hit], top_n: int = 5) -&gt; list[Hit]:
+    if not hits:
+        return []
+    scores = reranker.scores(query, [h.text for h in hits])
+    order = sorted(range(len(hits)), key=lambda i: scores[i], reverse=True)   # stable: ties keep stage-1 order
+    return [Hit(hits[i].text, hits[i].metadata, round(scores[i], 4)) for i in order[:top_n]]
+
+
+class RerankedSearch:
+    def __init__(self, first_stage, reranker, candidates: int = 20):
+        self.first_stage, self.reranker, self.candidates = first_stage, reranker, candidates
+
+    def search(self, query: str, k: int = 5) -&gt; list[Hit]:
+        return rerank(self.reranker, query, self.first_stage.search(query, k=self.candidates), top_n=k)</code></pre>
+<pre><code>"""Contextual retrieval: prepend a short, model-written context to each chunk before indexing."""
+import hashlib
+import json
+from pathlib import Path
+
+from kb_assistant.loaders import Document
+
+MODEL = "gpt-6-luna"
+PROMPT = """&lt;document&gt;
+{document}
+&lt;/document&gt;
+Here is the chunk we want to situate within the whole document
+&lt;chunk&gt;
+{chunk}
+&lt;/chunk&gt;
+Please give a short succinct context to situate this chunk within the overall document for the purposes of improving search retrieval of the chunk. Answer only with the succinct context and nothing else."""
+
+
+def situate(client, document: str, chunk: str) -&gt; str:
+    # The document comes first, so calls for chunks of the same document share a long identical prefix
+    # (OpenAI caches prompt prefixes of 1,024+ tokens automatically).
+    r = client.responses.create(model=MODEL, reasoning={"effort": "low"},
+                                input=PROMPT.format(document=document, chunk=chunk))
+    return r.output_text.strip()
+
+
+def contextualize(client, docs: list[Document], chunks: list[Document], cache: Path) -&gt; list[Document]:
+    """Tickets are already self-contained, so only articles and PDFs get a context.
+    Contexts are cached by content hash: re-running costs nothing unless a chunk changed."""
+    full_text: dict[str, str] = {}
+    for d in docs:                                     # a PDF's "document" is all of its pages
+        full_text[d.metadata["source"]] = (full_text.get(d.metadata["source"], "") + "\n\n" + d.text).strip()
+    saved = json.loads(cache.read_text()) if cache.exists() else {}
+    out = []
+    for c in chunks:
+        if c.metadata["doc_type"] == "ticket":
+            out.append(c)
+            continue
+        key = hashlib.sha256((full_text[c.metadata["source"]] + "\x00" + c.text).encode()).hexdigest()
+        if key not in saved:
+            saved[key] = situate(client, full_text[c.metadata["source"]], c.text)
+        out.append(Document(f"{saved[key]}\n\n{c.text}", {**c.metadata, "context": saved[key]}))
+    cache.write_text(json.dumps(saved, indent=1))
+    return out</code></pre></div>
+        </div>
+        <div class="ex-foot"><label class="done-toggle check"><input type="checkbox" data-check="exercises|W3-ex3"> <span class="check-text">Exercise 3 done</span></label></div>
+      </div>
+
+      <h3 class="part-h part-core-h">Core · The same retrieval in LlamaIndex, and in Postgres (30 min)</h3>
+      <div class="prose">
+        <p><b>LlamaIndex</b> is a framework built around indexing and retrieval. It offers several index types: <code>VectorStoreIndex</code> (what you built), <code>SummaryIndex</code> (reads every node, for small sets or summaries), <code>KeywordTableIndex</code>, <code>DocumentSummaryIndex</code> and <code>PropertyGraphIndex</code> (a knowledge graph). Here's your hybrid retriever in LlamaIndex, fed with your own chunks:</p>
+<pre><code><span class="p">(.venv) $ </span>pip install llama-index-core llama-index-retrievers-bm25 llama-index-embeddings-openai</code></pre>
+<pre><code>from llama_index.core import Document, Settings, VectorStoreIndex
+from llama_index.core.llms import MockLLM
+from llama_index.core.retrievers import QueryFusionRetriever
+from llama_index.embeddings.openai import OpenAIEmbedding
+from llama_index.retrievers.bm25 import BM25Retriever
+
+Settings.embed_model = OpenAIEmbedding(model="text-embedding-3-small")
+index = VectorStoreIndex.from_documents(
+    [Document(text=c.text, metadata={"source": c.metadata["source"]}) for c in chunks])   # your Exercise 2 chunks (W2)
+hybrid = QueryFusionRetriever(
+    [index.as_retriever(similarity_top_k=20), BM25Retriever.from_defaults(docstore=index.docstore, similarity_top_k=20)],
+    similarity_top_k=5, mode="reciprocal_rerank", num_queries=1, use_async=False,
+    llm=MockLLM())            # num_queries=1: no extra queries are generated, but the class still wants an LLM object
+for node in hybrid.retrieve("Print jobs are stuck in DAL-3F-PRINT."):
+    print(round(node.score, 4), node.node.metadata["source"])</code></pre>
+        <p>Compare the top 5 with your own hybrid search, then read what the framework decided for you. <code>num_queries</code> defaults to 4, which silently makes an LLM call per question to generate three extra queries. Its RRF counts ranks from 0 (1/(60 + 0) for the first result). Its BM25 retriever stems, drops one-character tokens, and pads its results with zero-score nodes to fill <code>similarity_top_k</code>, and those padding nodes then earn RRF credit like real matches. None of this is wrong, but you only know it because you built the plain version first.</p>
+        <p><b>pgvector</b> adds a vector type and nearest-neighbor indexes to Postgres. Customers who already run Postgres often prefer it to a new database, and Postgres' own full-text search gives you both halves of hybrid in one place. Optional: start one with <code>docker run -d -e POSTGRES_PASSWORD=dev -p 5432:5432 pgvector/pgvector:pg18-trixie</code> and <code>pip install "psycopg[binary]" pgvector</code>.</p>
+<pre><code>import numpy as np, psycopg
+from pgvector.psycopg import register_vector
+
+with psycopg.connect("postgresql://postgres:dev@localhost:5432/postgres", autocommit=True) as conn:
+    conn.execute("CREATE EXTENSION IF NOT EXISTS vector")
+    register_vector(conn)
+    conn.execute("""CREATE TABLE IF NOT EXISTS chunks (id text PRIMARY KEY, source text NOT NULL,
+                    doc_type text NOT NULL, content text NOT NULL, embedding vector(1536) NOT NULL)""")
+    conn.execute("CREATE INDEX IF NOT EXISTS chunks_hnsw ON chunks USING hnsw (embedding vector_cosine_ops)")
+    with conn.cursor() as cur:
+        cur.executemany("""INSERT INTO chunks VALUES (%s, %s, %s, %s, %s)
+                           ON CONFLICT (id) DO UPDATE SET content = EXCLUDED.content, embedding = EXCLUDED.embedding""",
+                        [(c.metadata["chunk_id"], c.metadata["source"], c.metadata["doc_type"], c.text, np.array(v))
+                         for c, v in zip(chunks, vectors)])
+    q = np.array(query_vector)
+    rows = conn.execute("""SELECT id, 1 - (embedding &lt;=&gt; %s) AS score FROM chunks
+                           WHERE doc_type = %s ORDER BY embedding &lt;=&gt; %s LIMIT 5""", (q, "ticket", q)).fetchall()</code></pre>
+        <p class="small muted"><code>&lt;=&gt;</code> is cosine distance, so similarity is 1 minus it, just like Chroma. The <code>WHERE</code> filter is applied after the approximate index scan, so a rare filter value can return fewer than 5 rows; pgvector 0.8 added <code>SET hnsw.iterative_scan = strict_order</code> to keep scanning. The upsert, the filter and the score conversion are the same ideas as last week, in SQL.</p>
+      </div>
+      <div class="readings">
+        <div class="reading"><span class="kind">Reference</span><div><a href="https://developers.llamaindex.ai/python/framework/" target="_blank" rel="noopener">LlamaIndex docs ↗</a> · <a href="https://github.com/pgvector/pgvector" target="_blank" rel="noopener">pgvector README ↗</a> · <a href="https://www.postgresql.org/docs/current/textsearch-intro.html" target="_blank" rel="noopener">Postgres full-text search ↗</a></div></div>
+      </div>
+
+      <div data-track="cert">
+        <h3 class="part-h part-cert-h">Certification · Task 4.2: a few targeted examples</h3>
+        <div class="card summary" style="max-width:760px">
+          <ul style="margin:0">
+            <li><b>The exam's point:</b> when output is inconsistent on <i>ambiguous</i> cases, add 2–4 examples that show exactly how those cases should be handled. Many random examples add cost without teaching the hard part.</li>
+            <li><b>Claude's guide</b> recommends 3–5 examples in general, and asks that they be relevant (like your real inputs), diverse (so the model doesn't copy a surface pattern) and wrapped in <code>&lt;example&gt;</code> tags so they're not confused with instructions. The two pieces of advice agree: few, chosen for the cases you get wrong.</li>
+            <li><b>Show the reasoning</b> in each example, not only the label, so the model learns the rule instead of the answer.</li>
+          </ul>
+        </div>
+        <div class="prose">
+          <p><b>Task:</b> add the four <b>train</b> answers from <code>labeled-answers.json</code> as examples to your Day 2 reviewer prompt: a02 (a wrong number), a03 (a true fact that the sources don't contain), a04 ("I don't know", which is grounded) and a01 (a plain pass). Each example gets the question, sources, answer, verdict and one line of reasoning. Re-run on the dev split and compare false positives and misses with Day 2.</p>
+        </div>
+        <div class="readings">
+          <div class="reading"><span class="kind must">Read</span><div><a href="https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices" target="_blank" rel="noopener">Claude: prompting best practices, "Use examples effectively" ↗</a></div></div>
+        </div>
+      </div>
+
+      <div data-track="ent">
+        <h3 class="part-h part-ent-h">Enterprise · Thresholds and sign-off</h3>
+        <div class="prose">
+          <p>An acceptance contract names each metric, the threshold, <b>the eval set it's measured on</b>, and what happens on a miss. Three rules keep it honest: (1) set thresholds per risk, not one global number: a wrong answer about security incidents costs more than one about printers; (2) state the confidence interval, so nobody argues over a 1-point difference on 40 questions; (3) an LLM judge counts only after it's been checked against the customer's own labels (Day 4).</p>
+          <p><b>Task:</b> draft Lumora's thresholds: retrieval hit rate, answer checks, "I don't know" on unanswerable questions, groundedness, and the latency and cost per question. For each, say who signs it off and what happens if a release misses it.</p>
+        </div>
+      </div>
+
+      <div class="prose"><h3>Mini-quiz</h3></div>
+      <div class="quiz mini" data-quiz="W3-d3"></div>
+      <script type="application/json" data-quiz-for="W3-d3">[{"id": "h1", "q": "Plain hybrid has a hit rate of 27/32 at k = 5, and for 30 of the 32 questions a relevant source is somewhere in its top 20. A teammate wires the reranker like this. What hit rate at k = 5 can it reach?<pre><code>searcher = RerankedSearch(hybrid, CrossEncoderReranker(), candidates=5)<\/code><\/pre>", "options": ["Up to 32/32 with a strong enough cross-encoder, since it reads question and chunk together", "Exactly 27/32: it reorders the same five chunks, so only MRR can change", "Below 27/32: small cross-encoders truncate long chunks and push relevant ones out", "Up to 30/32: the reranker can promote anything stage one ranked in the top 20"], "answer": 1, "why": "With candidates=5, stage one hands over exactly the five chunks plain hybrid would return, and top_n=5 keeps all of them, so the set (and the hit rate) can't change; only the order, and so MRR, can. With candidates=20, 30/32 would be the ceiling, because a reranker only reorders what stage one fetched; 32/32 is impossible for the same reason. Truncation can change scores and order, but it can't remove any of the five."}, {"id": "h2", "q": "A teammate simplifies the context cache key to the chunk text alone. IT then edits one section of <code>vpn-setup.md<\/code> (4 chunks: the edit changes 1 of them) and you re-run <code>contextualize<\/code>. What happens?<pre><code>key = hashlib.sha256(c.text.encode()).hexdigest()<\/code><\/pre>", "options": ["1 call, which is ideal: an edit elsewhere can't change what an unchanged chunk means in the document", "4 calls: any edit to the document changes every chunk's hash, so all four are regenerated", "0 calls: the cache is keyed by source name, so the edit stays invisible until the file is deleted", "1 call: only the edited chunk misses the cache; the other 3 keep contexts written from the old document"], "answer": 3, "why": "Each context is written from the whole document, so an edit anywhere can make the other chunks' contexts stale (for example, a renamed gateway). The reference key hashes document + chunk, so all 4 contexts are regenerated. With the chunk-only key, the 3 unchanged chunks have the same hash and keep their old contexts. A chunk's own hash doesn't change when a different section changes; the key is a content hash, not the source name."}, {"id": "h3", "q": "You try LlamaIndex's BM25 retriever on your 57 chunks with its defaults. What explains the output?<pre><code>bm25 = BM25Retriever.from_defaults(nodes=nodes, similarity_top_k=20)\nhits = bm25.retrieve(\"5.7.1\")\nprint(len(hits), max(h.score for h in hits))\n# 20 0.0<\/code><\/pre>", "options": ["Stemming reduces 5.7.1 to 5, which occurs in almost every chunk, so all scores collapse to 0", "The nodes were built without the source metadata, so the retriever can't tell which chunk holds the code", "Default tokens need 2+ word characters, so the query is empty, and results are padded with zero scores", "bm25s normalizes scores per query, and a single-term query always normalizes to 0.0 for every chunk"], "answer": 2, "why": "The default token_pattern (?u)\\b\\w\\w+\\b drops one-character tokens, so \"5.7.1\" becomes 5, 7 and 1 and then nothing. The retriever still fills similarity_top_k with zero-score nodes, and inside QueryFusionRetriever those padding nodes earn RRF credit like real matches. It isn't stemming (the tokens are gone before stemming matters), bm25s doesn't normalize scores to 0, and metadata plays no part in BM25 scoring."}, {"id": "h4", "q": "(Certification) Your groundedness judge already has explicit criteria, but it's inconsistent on two kinds of answer: ones that add a true fact the sources don't contain (like a03's SIM-swapping reason), and \"I don't know\" answers. What does exam task 4.2 recommend?", "options": ["Add 2–4 examples of exactly those cases from the train split, each with its verdict and reasoning", "Add 30 graded answers sampled at random, so the model sees the full range of answers it will meet", "Add the test items it got wrong, a21 and a24, as examples so the judge learns the hard cases", "Repeat the criteria in capital letters at the end of the prompt, because the model ignores them"], "answer": 0, "why": "Task 4.2: when output is inconsistent on ambiguous cases, a few examples that show exactly how those cases are handled (with the reasoning, in example tags) fix it. Thirty random examples cost tokens without targeting the confusion. Test items used as examples make the test score meaningless. Shouting the criteria doesn't show how to apply them to the ambiguous case."}]</script>
+    </section>
+
+    <!-- ================= DAY 4 ================= -->
+    <section class="day" id="d4" data-day="d4">
+      <div class="day-kicker">Day 4 · Thursday on the Full-time pace · 4 hours</div>
+      <div class="day-head">
+        <h2>Measuring answers, and conversations</h2>
+        <label class="day-done check"><input type="checkbox" data-check="lessonDays|W3-d4"> Session done</label>
+      </div>
+      <ul class="parts session-plan">
+        <li class="part part-core"><span class="part-tag">Core · 2h</span>An LLM judge you can trust + Exercise 4; multi-turn and agentic RAG + Exercise 5</li>
+        <li class="part part-cert" data-track="cert"><span class="part-tag">Certification · 1h</span>Examples that backfire</li>
+        <li class="part part-ent" data-track="ent"><span class="part-tag">Enterprise · 1h</span>Evals after launch</li>
+      </ul>
+
+      <h3 class="part-h part-core-h">Core · Grading answers, and following a conversation</h3>
+      <div class="readings">
+        <div class="reading"><span class="kind must">Read</span><div><a href="https://hamel.dev/blog/posts/evals-faq/" target="_blank" rel="noopener">Husain &amp; Shankar: Evals FAQ ↗</a><p>This time the answers on LLM-as-judge: binary verdicts, and validating the judge on labeled data.</p></div></div>
+        <div class="reading"><span class="kind must">Read</span><div><a href="https://platform.claude.com/docs/en/test-and-evaluate/develop-tests" target="_blank" rel="noopener">Claude: grading methods and tips for LLM-based grading ↗</a></div></div>
+        <div class="reading"><span class="kind">Paper</span><div><a href="https://arxiv.org/abs/2404.12272" target="_blank" rel="noopener">Shankar et al. (2024): Who Validates the Validators? ↗</a><p>Why graders' criteria drift as they read outputs, and what that means for judges.</p></div></div>
+      </div>
+      <div class="card summary" style="max-width:760px">
+        <h4 style="margin-top:0">Summary</h4>
+        <ul>
+          <li><b>Three questions about every answer:</b> is it <i>grounded</i> (every claim supported by the retrieved sources)? Is it <i>complete</i> (it contains the fact the question needs, which is what <code>answer_contains</code> checks)? Is it <i>relevant</i> (it answers the question asked)? Unanswerable questions are right only with "I don't know".</li>
+          <li><b>Code first, judge second.</b> String checks, exact "I don't know" and citation checks are free and deterministic. Use an LLM judge only for what code can't check, such as groundedness.</li>
+          <li><b>Build the judge like a product:</b> one criterion per judge, a <b>binary</b> pass/fail (a 1–5 scale invites disagreement about the middle), explicit criteria (task 4.1), a few targeted examples (4.2), reasoning <i>before</i> the verdict, and structured output.</li>
+          <li><b>Check it before you trust it.</b> Compare the judge with human labels on data it hasn't seen: <i>train</i> examples go in the prompt, <i>dev</i> is for improving it, <i>test</i> is for the number you report. Report two rates: <b>failures caught</b> (of the answers humans failed, how many the judge failed) and <b>passes kept</b>. A judge that passes everything keeps 100% of passes and catches nothing, while its accuracy still looks fine when most answers are good.</li>
+          <li><b>Follow-ups break retrieval.</b> "And for a desk chair?" retrieves nothing useful on its own. Before searching, <b>rewrite</b> the message into a standalone query using the last few turns, <i>including the assistant's replies</i> (they hold names like <code>DAL-3F-PRINT</code> that the user never typed). Skip the call on the first turn, and log the rewritten query.</li>
+          <li><b>Agentic RAG</b> gives the model a <code>search_kb</code> tool in your Week 1 loop, and the model decides when and what to search, often searching again with other words. It helps with multi-part questions, at the price of more calls, more latency, and behavior that's harder to test. Cap the steps and evaluate it on the same set.</li>
+        </ul>
+      </div>
+
+      <div class="callout reality" style="max-width:760px">
+        <b>Production reality</b>
+        <ul style="margin:6px 0 0">
+          <li><b>Judges have biases.</b> They favor longer answers, and can favor outputs from their own model family. Keep verdicts binary, pin the judge model version, and re-check agreement with human labels whenever you change the judge's prompt or model.</li>
+          <li><b>Human criteria drift.</b> People refine what "good" means as they read outputs (Shankar et al. call it criteria drift). Label in rounds, write the rule down whenever you change your mind, and re-label earlier items when a rule changes.</li>
+          <li><b>Judging costs as much as answering.</b> One call per answer per criterion doubles the model bill if you judge everything. In production, judge a daily sample plus every answer a user flagged.</li>
+          <li><b>Rewrites can drop or invent constraints.</b> "My Windows laptop" can come back as "laptop", and a wrong reference in the history can pull in the wrong topic. Evaluate the rewriter on its own (the conversations file), and show the rewritten query in logs and traces.</li>
+          <li><b>History is billed every turn.</b> Keep the last 3 turns for the rewrite, and don't resend old retrieved sources; retrieve fresh for each question.</li>
+        </ul>
+      </div>
+      <div class="exercise">
+        <div class="ex-head"><span class="ex-tag">Exercise 4</span><h4>A groundedness judge, checked against human labels</h4><span class="chip">~60 min</span></div>
+        <div class="prose">
+          <p>In <code>judge.py</code>, write <code>judge(client, question, sources, answer) -> Verdict</code> (<code>reasoning: str</code>, then <code>grounded: bool</code>) using <code>responses.parse</code>, and <code>agreement(human, judged)</code> returning failures caught, passes kept and accuracy. Run the judge on the <b>dev</b> split of <code>labeled-answers.json</code>, read every disagreement, improve the instructions, and only then run the <b>test</b> split once. Then add a <code>check</code> command to the CLI: it answers all 40 eval questions, applies the <code>answer_contains</code> string check to each, and runs the judge only when <code>--judge</code> is given.</p>
+          <p class="expected"><b>Check:</b> <code>agreement([True, True, False, False, False], [True, False, False, True, False])</code> → failures caught 2/3, passes kept 0.5, accuracy 0.6. A scripted client that always answers "I don't know" makes <code>check</code> report <b>8/40</b> answer checks (the unanswerable ones). On the test split, aim to catch at least 3 of the 4 failures and keep at least 5 of the 6 passes. The hard items are a21 (a claim that may be true in the full knowledge base but isn't in these sources) and a24 (an invented consequence).</p>
+        </div>
+        <div class="hints" data-hints="W3-ex4">
+          <div class="hint" data-level="Concept">Put <code>reasoning</code> before <code>grounded</code> in the model: fields are generated in order, so the verdict comes after the thinking. Pass the sources exactly as the answering model saw them (<code>format_sources(hits)</code>), not the whole knowledge base: groundedness is about <i>these</i> sources.</div>
+          <div class="hint solution" data-level="Full solution">
+<pre><code>"""An LLM judge for one question: is every claim in the answer supported by the sources?"""
+from pydantic import BaseModel
+
+MODEL = "gpt-6-luna"
+JUDGE_INSTRUCTIONS = """You grade answers from an IT help desk assistant for GROUNDEDNESS only.
+
+An answer PASSES when every factual claim in it (numbers, names, steps, conditions, who/when)
+is stated in or directly follows from the sources. It FAILS if it contains even one claim that is:
+- contradicted by the sources (a different number, name, time or condition);
+- missing from the sources (added from general knowledge, even if it is probably true);
+- broader than the sources allow (the source says "engineers", the answer says "everyone").
+
+Not your job: whether the answer is complete, helpful or well written. A short answer that leaves
+out details still PASSES. "I don't know" PASSES when the sources do not contain the answer.
+Suggesting to open an IT ticket is allowed and is not a factual claim.
+
+First list each claim and the source text that supports it (or "none"), then decide."""
+
+
+class Verdict(BaseModel):
+    reasoning: str
+    grounded: bool
+
+
+def judge(client, question: str, sources: str, answer: str) -&gt; Verdict:
+    r = client.responses.parse(model=MODEL, instructions=JUDGE_INSTRUCTIONS, reasoning={"effort": "low"},
+                               text_format=Verdict,
+                               input=f"&lt;sources&gt;\n{sources}\n&lt;/sources&gt;\n&lt;question&gt;{question}&lt;/question&gt;\n&lt;answer&gt;{answer}&lt;/answer&gt;")
+    return r.output_parsed
+
+
+def agreement(human: list[bool], judged: list[bool]) -&gt; dict:
+    """True = grounded (pass). The failures are what the judge exists to catch."""
+    fails = [j for h, j in zip(human, judged) if not h]
+    passes = [j for h, j in zip(human, judged) if h]
+    return {"failures_caught": sum(not j for j in fails) / len(fails),     # true negative rate if pass = positive
+            "passes_kept": sum(passes) / len(passes),                      # true positive rate if pass = positive
+            "accuracy": sum(h == j for h, j in zip(human, judged)) / len(human),
+            "n_fail": len(fails), "n_pass": len(passes)}</code></pre></div>
+        </div>
+        <div class="ex-foot"><label class="done-toggle check"><input type="checkbox" data-check="exercises|W3-ex4"> <span class="check-text">Exercise 4 done</span></label></div>
+      </div>
+
+      <div class="exercise">
+        <div class="ex-head"><span class="ex-tag">Exercise 5</span><h4>Follow-up questions, and an agent that searches</h4><span class="chip">~50 min</span></div>
+        <div class="prose">
+          <ol>
+            <li>In <code>chat.py</code>, write <code>rewrite(client, history, message, turns=3)</code> (return the message unchanged when there's no history, without a model call) and <code>ChatSession(client, searcher, k)</code> whose <code>ask(message)</code> rewrites, searches with the rewritten query, answers with your W2 <code>answer_question</code>, stores the turn, and returns <code>(answer, cited, query)</code>. Add a <code>chat</code> command that reads questions line by line and prints the rewritten query before each answer.</li>
+            <li>Run the six conversations in <code>conversations.json</code>: for each second turn, check that the rewrite contains <code>rewrite_must_contain</code> and that a source in <code>final_relevant</code> is retrieved.</li>
+            <li>Optional (20 min): <code>agentic.run(client, searcher, question)</code>, the Week 1 loop with a <code>search_kb</code> function tool. Try the multi-source questions e32–e35 and record how many searches the model made and with which queries.</li>
+          </ol>
+          <p class="expected"><b>Check:</b> in a test with a spy searcher, the session searches <code>"What's the monitor allowance?"</code> and then the scripted rewrite <code>"desk chair allowance"</code>, never the raw "And for a chair?". Conversation c6 is the interesting one: the queue name <code>DAL-3F-PRINT</code> appears only in the assistant's first reply, so a rewriter that sees only user turns can't produce it. Target: 6/6 conversations retrieve a relevant source for the follow-up.</p>
+        </div>
+        <div class="hints" data-hints="W3-ex5">
+          <div class="hint" data-level="Concept">Format the history as <code>User: …</code> / <code>Assistant: …</code> lines from <code>history[-turns:]</code>, the <b>latest</b> turns. In the agentic loop, append the whole <code>response.output</code> to the input (reasoning items included), then one <code>function_call_output</code> per call with the matching <code>call_id</code>.</div>
+          <div class="hint solution" data-level="Full solution">
+<pre><code>"""Multi-turn RAG: rewrite each follow-up into a standalone search query, then retrieve and answer."""
+from pydantic import BaseModel
+
+from kb_assistant.answer import answer_question
+
+MODEL = "gpt-6-luna"
+REWRITE_INSTRUCTIONS = """Rewrite the user's latest message as one standalone search query for
+Lumora's IT knowledge base. Replace pronouns and references ("it", "that", "and for a chair?")
+with what they refer to in the conversation. Keep product names, codes and numbers exactly.
+If the message is already standalone, return it unchanged. Do not answer the question."""
+
+
+class Standalone(BaseModel):
+    query: str
+
+
+def rewrite(client, history: list[tuple[str, str]], message: str, turns: int = 3) -&gt; str:
+    if not history:                                   # the first message needs no rewrite: skip the call
+        return message
+    convo = "\n".join(f"User: {u}\nAssistant: {a}" for u, a in history[-turns:])
+    r = client.responses.parse(model=MODEL, instructions=REWRITE_INSTRUCTIONS, reasoning={"effort": "low"},
+                               text_format=Standalone, input=f"{convo}\n\nLatest message: {message}")
+    return r.output_parsed.query if r.output_parsed else message
+
+
+class ChatSession:
+    def __init__(self, client, searcher, k: int = 5, min_score: float = 0.0):
+        self.client, self.searcher, self.k, self.min_score = client, searcher, k, min_score
+        self.history: list[tuple[str, str]] = []
+
+    def ask(self, message: str):
+        query = rewrite(self.client, self.history, message)
+        answer, cited = answer_question(self.client, query, self.searcher.search(query, k=self.k), self.min_score)
+        self.history.append((message, answer.answer))
+        return answer, cited, query</code></pre>
+<pre><code>"""Agentic RAG: the model decides when and what to search, using the Week 1 tool loop."""
+import json
+
+MODEL = "gpt-6-luna"
+INSTRUCTIONS = """You are Lumora's IT help desk assistant. Use the search_kb tool to find sources
+before answering; search again with different words if the first results don't answer the question.
+Answer only from what the tool returned and cite the source names in brackets, e.g. [T-1004].
+If the sources don't contain the answer, say exactly "I don't know" and suggest opening a ticket."""
+SEARCH_TOOL = {"type": "function", "name": "search_kb", "strict": True,
+               "description": "Search Lumora's IT knowledge base (articles, policies, past tickets).",
+               "parameters": {"type": "object", "additionalProperties": False, "required": ["query"],
+                              "properties": {"query": {"type": "string", "description": "search words"}}}}
+
+
+def run(client, searcher, question: str, k: int = 5, max_steps: int = 6) -&gt; tuple[str, list[str]]:
+    inputs, queries = [{"role": "user", "content": question}], []
+    for _ in range(max_steps):
+        r = client.responses.create(model=MODEL, instructions=INSTRUCTIONS, tools=[SEARCH_TOOL],
+                                    reasoning={"effort": "low"}, input=inputs)
+        inputs += r.output                             # keep reasoning items and calls in the history
+        calls = [item for item in r.output if item.type == "function_call"]
+        if not calls:
+            return r.output_text, queries
+        for call in calls:
+            query = json.loads(call.arguments)["query"]
+            queries.append(query)
+            hits = searcher.search(query, k=k)
+            result = "\n\n".join(f"[{h.metadata['source']}] {h.text}" for h in hits) or "No results."
+            inputs.append({"type": "function_call_output", "call_id": call.call_id, "output": result})
+    raise RuntimeError("safety limit reached")</code></pre></div>
+        </div>
+        <div class="ex-foot"><label class="done-toggle check"><input type="checkbox" data-check="exercises|W3-ex5"> <span class="check-text">Exercise 5 done</span></label></div>
+      </div>
+
+      <div data-track="cert">
+        <h3 class="part-h part-cert-h">Certification · Examples that backfire</h3>
+        <div class="prose">
+          <p>Exam questions on task 4.2 often describe examples that made things worse. Learn the four patterns:</p>
+          <ul>
+            <li><b>All examples share a surface feature</b> (same length, same topic, same label): the model copies the feature instead of the rule. Vary everything except the rule.</li>
+            <li><b>Examples leak into outputs</b>: phrases or names from an example appear in real answers. Use realistic but clearly separate content, inside <code>&lt;example&gt;</code> tags.</li>
+            <li><b>Unbalanced labels</b>: three "fail" examples and one "pass" push verdicts toward "fail". Cover each outcome.</li>
+            <li><b>Examples taken from the test set</b>: the score goes up and means nothing. Examples come from the train split only; that's why <code>labeled-answers.json</code> has one.</li>
+          </ul>
+          <p>Then do the Domain 4 questions on the <a href="../practice.html">Practice page</a>.</p>
+        </div>
+      </div>
+
+      <div data-track="ent">
+        <h3 class="part-h part-ent-h">Enterprise · Evals after launch</h3>
+        <div class="prose">
+          <p>The acceptance eval becomes a <b>regression suite</b>: it runs on every change to the prompt, model, chunking or retriever, and a drop below threshold blocks the release. After launch you add what offline evals can't see: a daily sample of real questions graded by the (validated) judge, user feedback buttons whose "wrong answer" reports go into the next labeling round, and dashboards for "I don't know" rate, latency and cost. Anthropic's engineering post on agent evals describes the same loop for agents.</p>
+          <p><b>Task:</b> design a CI gate for P2: which commands run on each pull request (with fakes, free) and which run nightly (real models, a few cents), what the thresholds are, and what a failing report shows the reviewer.</p>
+        </div>
+        <div class="readings">
+          <div class="reading"><span class="kind must">Read</span><div><a href="https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents" target="_blank" rel="noopener">Anthropic: Demystifying evals for AI agents ↗</a></div></div>
+        </div>
+      </div>
+
+      <div class="prose"><h3>Mini-quiz</h3></div>
+      <div class="quiz mini" data-quiz="W3-d4"></div>
+      <script type="application/json" data-quiz-for="W3-d4">[{"id": "h1", "q": "On the test split of <code>labeled-answers.json<\/code> (6 grounded, 4 not), your judge passes a21 and a24, fails a19 (a good answer that combines two sources), and agrees with the humans on the other 7. The target: catch at least 3 of 4 failures and keep at least 5 of 6 passes. What does <code>agreement()<\/code> report?", "options": ["Failures caught 0.5, passes kept 0.83: it misses the failures target", "Failures caught 0.67, passes kept 0.83: it misses the failures target", "Failures caught 0.5, passes kept 0.83: accuracy 0.7, so it passes", "Failures caught 0.83, passes kept 0.5: it misses the passes target"], "answer": 0, "why": "Of the 4 human failures, the judge caught a16 and a20 but passed a21 and a24: 2/4 = 0.5. Of the 6 human passes it kept 5 (all but a19): 0.83. Accuracy is 7/10 = 0.7, but the contract is on the two rates, and the judge exists to catch failures. Swapping the two rates is a common mix-up; 0.67 divides by 3 instead of the 4 failures."}, {"id": "h2", "q": "The rewriter builds its conversation text like this. On conversation c6 (\"Which printer queue is on the 3rd floor in Dallas?\", then \"Jobs are stuck there. What should I check?\") the conversations check fails: <code>rewrite_must_contain<\/code> is <code>DAL-3F-PRINT<\/code>. Why?<pre><code>convo = \"\\n\".join(f\"User: {u}\" for u, _ in history[-turns:])<\/code><\/pre>", "options": ["The rewrite instructions don't say to keep codes, so the model paraphrases the queue name away", "The Standalone model lowercases the query, so the check for DAL-3F-PRINT fails on letter case", "The queue name appears only in the assistant's first reply, and this rewriter never sees the replies", "history[-turns:] with turns=3 drops the only earlier turn of a two-turn chat, so there's no context"], "answer": 2, "why": "The user never typed DAL-3F-PRINT; it comes from the first answer (ticket T-1004). Keep the assistant's replies in the history. On a one-item history, history[-3:] returns that item. The reference instructions do say \"Keep product names, codes and numbers exactly\", and nothing in the code lowercases the query. In our BM25 run, a user-only rewrite (\"…stuck on the Dallas 3rd floor printer\") ranked T-1004 first and the answer ticket T-1028 second."}, {"id": "h3", "q": "On e13 (\"What's on the cafeteria menu this Friday?\"), <code>agentic.run<\/code> raises <code>RuntimeError(\"safety limit reached\")<\/code>. The trace shows six <code>search_kb<\/code> calls: \"cafeteria menu\", \"lunch menu Friday\", \"food options office\"… What's the best fix?", "options": ["Have search_kb return \"No results.\" for weak hits, so the model can see the knowledge base lacks it", "Give the model a stopping rule (two searches with nothing relevant: say I don't know) and log the cap as an I don't know", "Delete the \"search again with different words\" line, so the model answers right after its first search", "Raise max_steps to 20, so the model has enough room to find the menu with other search words"], "answer": 1, "why": "The instructions tell the model to search again when results don't answer, with no rule for when to stop, so on an unanswerable question it retries until the cap. A stopping rule fixes the behavior, and turning the cap into a logged \"I don't know\" keeps users from seeing a crash. A higher cap only makes the failure slower and costlier. Removing the retry line loses the multi-part questions agentic RAG is for. \"No results.\" helps the model read the evidence, but the instruction still pushes it to try other words."}, {"id": "h4", "q": "(Enterprise) After launch, Lumora's assistant answers about 5,000 questions a day, and judging one answer costs about as much as producing it. Which monitoring plan fits this week's advice?", "options": ["Judge only the answers users flag, since those are the ones already known to have a problem", "Skip judging and track the thumbs-down rate, since users reliably report the answers that are wrong", "Judge every answer in real time, so no ungrounded answer is missed and the dashboard is complete", "Judge a daily sample plus flagged answers with the validated judge; feed wrong answers into labeling"], "answer": 3, "why": "A daily random sample gives an unbiased groundedness rate at a fraction of the cost, flagged answers catch what users noticed, and both feed the next labeling round. Judging everything doubles the model bill. Most users never click feedback, so thumbs-down alone misses silent failures. Judging only flagged answers gives a biased sample and no overall rate."}]</script>
+    </section>
+
+    <!-- ================= DAY 5 ================= -->
+    <section class="day" id="d5" data-day="d5">
+      <div class="day-kicker">Day 5 · Friday on the Full-time pace · 4 hours</div>
+      <div class="day-head">
+        <h2>Readiness check</h2>
+        <label class="day-done check"><input type="checkbox" data-check="lessonDays|W3-d5"> Session done</label>
+      </div>
+      <ul class="parts session-plan">
+        <li class="part part-core"><span class="part-tag">Core · 2h</span>Break it &amp; fix it (1h) + weekly quiz (1h)</li>
+        <li class="part part-cert" data-track="cert"><span class="part-tag">Certification · 1h</span>Domain 4 practice questions</li>
+        <li class="part part-ent" data-track="ent"><span class="part-tag">Enterprise · 1h</span>Write Lumora's acceptance contract</li>
+      </ul>
+
+      <h3 class="part-h part-core-h">Core · Explain it out loud</h3>
+      <div class="card" style="max-width:760px">
+        <label class="check"><input type="checkbox" data-check="readiness|W3-1"><span class="check-text">I can explain what BM25 rewards, why tokenization matters, and how RRF fuses two rankings.</span></label>
+        <label class="check"><input type="checkbox" data-check="readiness|W3-2"><span class="check-text">I can compute Precision@k, Recall@k, F1@k and MRR by hand, and say which one limits answer quality.</span></label>
+        <label class="check"><input type="checkbox" data-check="readiness|W3-3"><span class="check-text">I can explain why 32 questions give a wide confidence interval, and how a paired comparison helps.</span></label>
+        <label class="check"><input type="checkbox" data-check="readiness|W3-4"><span class="check-text">I can compare a bi-encoder and a cross-encoder, and explain contextual retrieval and its cost.</span></label>
+        <label class="check"><input type="checkbox" data-check="readiness|W3-5"><span class="check-text">I can design an LLM judge and show, with numbers, whether it agrees with human labels.</span></label>
+        <label class="check"><input type="checkbox" data-check="readiness|W3-6"><span class="check-text">I can explain query rewriting for follow-ups, and when agentic RAG is worth its cost.</span></label>
+      </div>
+
+      <div class="exercise drill">
+        <div class="ex-head"><span class="ex-tag">Break it &amp; fix it</span><h4>Six bugs that make RAG metrics lie</h4><span class="chip">~60 min</span></div>
+        <div class="prose">
+          <p>Download <a href="week-W3/rag2-drill.zip" download>⬇ rag2-drill.zip</a>, unzip it, install <code>pip install rank-bm25 pydantic openai httpx pytest</code>, and run <code>python -m pytest -q</code>. The package runs without errors, but <b>six tests fail</b>. Each failure is a real mistake from this week's topics: tokenizing, fusing, measuring, comparing, reranking and rewriting. Several of them don't crash anything; they make an evaluation report look better or worse than the system really is. Fix the code in <code>kb_drill2/</code>, never the tests, and for each bug write one line in <code>BUGS.md</code>: what was wrong, what a user (or the person reading your eval report) would have seen, and how you fixed it.</p>
+          <p class="expected"><b>Check:</b> all 12 tests pass, offline, in about a second. Then explain each bug out loud in one sentence, as you would to an interviewer who asks "how would this mislead you in production?"</p>
+        </div>
+        <div class="hints" data-hints="W3-drill">
+          <div class="hint" data-level="Where to look">Read each failing test's name and assertion before opening the code. Two bugs are in <code>metrics.py</code>, and one each in <code>keyword.py</code>, <code>hybrid.py</code>, <code>rerank.py</code> and <code>chat.py</code>.</div>
+          <div class="hint solution" data-level="The six bugs">
+<ol>
+  <li><b>keyword.py:</b> <code>text.lower().split()</code> keeps punctuation on the tokens, so <code>dal-3f-print?</code> and <code>t-1018?</code> never match the indexed <code>dal-3f-print</code> and <code>t-1018</code>. Users who paste a code at the end of a sentence get no keyword hits, which is exactly the case BM25 is there for. Tokenize with a regex that keeps codes whole and drops the punctuation around them: <code>re.findall(r"[a-z0-9]+(?:[-./@][a-z0-9]+)*", text.lower())</code>.</li>
+  <li><b>hybrid.py:</b> the fusion adds the raw scores (<code>+ hit.score</code>) instead of reciprocal ranks. BM25 scores run to 10 or more while cosine similarities stay below 1, so BM25 decides every ranking and the vector search is ignored: a chunk that both searches rank highly loses to one that only BM25 likes. Use Reciprocal Rank Fusion: <code>+ 1.0 / (k + rank)</code>.</li>
+  <li><b>metrics.py:</b> <code>recall_at_k</code> counts retrieved chunks from relevant sources (<code>len([...])</code>) instead of distinct relevant sources. An article split into three chunks counts three times, so recall can go above 1.0 and the eval report looks better than retrieval really is. Count sources once: <code>len(relevant &amp; set(retrieved[:k])) / len(relevant)</code>.</li>
+  <li><b>metrics.py:</b> <code>paired_bootstrap</code> resamples A's and B's scores independently, which breaks the pairs. It then measures the noise between different questions instead of the change on the same question, so the interval is far too wide: even two identical systems get an interval of about ±0.3 on 16 questions, and real improvements look like noise. Resample question indices and take the per-question differences: <code>diffs[rng.randrange(n)]</code>.</li>
+  <li><b>rerank.py:</b> <code>RerankedSearch</code> asks the first stage for <code>k</code> results instead of <code>self.candidates</code>. The reranker can only reorder the same top 5, so it never rescues a relevant chunk that stage 1 ranked 6th to 20th, and reranking adds latency for almost no gain. Pass <code>k=self.candidates</code> to the first stage and cut to <code>top_n=k</code> after reranking.</li>
+  <li><b>chat.py:</b> the rewrite prompt uses <code>history[:turns]</code>, the oldest turns, instead of <code>history[-turns:]</code>, the latest. Short chats work, but after four or more turns a follow-up like "And for a chair?" is rewritten about the first topic (the VPN), so the wrong documents are retrieved. Slice from the end: <code>history[-turns:]</code>.</li>
+</ol>
+          </div>
+        </div>
+        <div class="ex-foot"><label class="done-toggle check"><input type="checkbox" data-check="exercises|W3-drill"> <span class="check-text">Drill done: 12/12 passing and BUGS.md written</span></label></div>
+      </div>
+
+      <div class="prose"><h3 style="margin-top:28px">Weekly quiz</h3><p>15 questions at interview level: code to read, numbers to compute, failures to diagnose. Three come from earlier weeks and three from the certification track. Aim for 12 or more; every explanation says why each wrong option is wrong.</p></div>
+      <div class="quiz" data-quiz="W3-weekly"></div>
+      <script type="application/json" data-quiz-for="W3-weekly">[{"id": "w1", "q": "What does this print?<pre><code>from rank_bm25 import BM25Okapi\nbm = BM25Okapi([[\"vpn\", \"gateway\"], [\"printer\", \"queue\"], [\"vpn\", \"mfa\"]])\nprint(bm.get_scores([\"vpn\"]).round(3))<\/code><\/pre>", "options": ["[0. 0. 0.]", "[0.077 0.    0.077]", "[0.511 0.    0.511]", "[-0.511  0.    -0.511]"], "answer": 1, "why": "IDF = log((3 − 2 + 0.5) / (2 + 0.5)) = log(0.6) = −0.511, because \"vpn\" is in more than half the chunks. rank_bm25 replaces negative IDFs with 0.25 × the average IDF ((−0.511 + 4 × 0.511) / 5 ≈ 0.307), which is 0.077; all chunks have the same length, so the term-frequency part is exactly 1. −0.511 is the value before the floor, 0.511 flips the sign of the log, and all zeros is what a two-chunk corpus gives."}, {"id": "w2", "q": "With the fake embedder: vector 24/32, BM25 29/32, hybrid (RRF, 20 candidates each) 27/32. Paired against BM25, hybrid wins 0 questions and loses 2 (e31 and e36). Why does fusion lose?", "options": ["RRF weights both lists equally, so the weak word-hash vector ranking pushes BM25's correct chunks out of the top 5", "BM25 and Chroma give the same chunk different ids, so fusion counts it twice and crowds out other chunks", "k = 60 flattens rank differences too much; with k = 1, BM25's first-ranked chunk would always stay first", "Twenty candidates per retriever is too few, so the relevant chunks ranked below 20th never reach the fusion"], "answer": 0, "why": "Vector search misses both questions, so its top-ranked wrong chunks earn as much RRF credit as BM25's right ones. Fusion helps only when both retrievers are decent; measure each alone and fused. BM25 finds e31 and e36 in its top 5, so they are well inside its 20 candidates. Both indexes are built from the same chunk list and keyed by chunk_id. A smaller k sharpens the curve but still counts both lists equally."}, {"id": "w3", "q": "Four questions, their top 5 marked R (relevant source) or x. What's the MRR?<pre><code>q1: R x x x x\nq2: x x R R x\nq3: x x x x x\nq4: x R x x x<\/code><\/pre>", "options": ["0.611", "0.458", "0.521", "0.750"], "answer": 1, "why": "Reciprocal ranks are 1, 1/3 (the first relevant result only), 0 and 1/2; their mean is 1.833 / 4 = 0.458. 0.611 leaves out the miss instead of counting it as 0; 0.521 also adds q2's second relevant result (1/4); 0.750 is the hit rate (3 of 4)."}, {"id": "w4", "q": "The fake reranker gives stage-one hits [A, B, C, D] these scores. Which two hits does each version keep?<pre><code>scores = [2.0, 2.0, 1.0, 2.0]\ngood = sorted(range(4), key=lambda i: scores[i], reverse=True)[:2]\nbad  = sorted(range(4), key=lambda i: scores[i])[::-1][:2]<\/code><\/pre>", "options": ["good: A, B · bad: B, A", "good: A, B · bad: A, B", "good: B, D · bad: D, B", "good: A, B · bad: D, B"], "answer": 3, "why": "Python's sort is stable, and reverse=True keeps equal items in their original order, so ties keep stage one's ranking: A, B. Sorting ascending gives C, A, B, D; reversing that list also reverses the ties, giving D, B, A, C. With weak or coarse reranker scores, ties are common, and the stage-one order is the best tiebreaker you have."}, {"id": "w5", "q": "You run <code>contextualize<\/code> on Lumora's 27 article and PDF chunks with gpt-6-luna. Every prompt starts with the whole document, yet usage shows <code>cached_tokens = 0<\/code> on every call. What's going on?", "options": ["OpenAI caches a prefix only when the request marks the document block with a cache_control breakpoint", "Caching only starts on the second run, once contextualize has saved its JSON cache file to disk", "Each prompt ends with a different chunk, so the prompts differ and no call can reuse an earlier one", "Every document is shorter than 1,024 tokens, the minimum prefix OpenAI caches, so there's nothing to cache"], "answer": 3, "why": "OpenAI caches prompt prefixes automatically, but only from 1,024 tokens; Lumora's longest document is about 450 tokens. It doesn't matter here: the whole run is about 11,000 input tokens, a fraction of a cent. The JSON file is contextualize's own cache, which skips calls entirely; it has nothing to do with token caching. cache_control is Claude's explicit mechanism, not OpenAI's. Caching works on the shared prefix, so different endings don't prevent it."}, {"id": "w6", "q": "A customer's pgvector table holds 2 million chunks, only 300 of them with <code>doc_type = 'policy'<\/code>, and has an HNSW index. This query returns 1 row instead of 5. Why?<pre><code>SELECT id, 1 - (embedding &lt;=&gt; %s) AS score FROM chunks\nWHERE doc_type = 'policy' ORDER BY embedding &lt;=&gt; %s LIMIT 5<\/code><\/pre>", "options": ["The cosine operator returns similarity, so ascending ORDER BY puts the least similar policy chunks first", "Postgres applies LIMIT before WHERE when an index is used, so 4 of the 5 rows are cut before filtering", "The filter runs after the approximate HNSW scan, so only policy rows among its candidates survive", "HNSW indexes skip rows updated by ON CONFLICT DO UPDATE until the index is rebuilt with REINDEX"], "answer": 2, "why": "The HNSW scan returns a limited set of nearest candidates, and the WHERE clause filters them afterwards; with a rare value, few candidates match. pgvector 0.8 added SET hnsw.iterative_scan = strict_order to keep scanning (a partial index or a separate table for rare filters also works). The <=> operator is cosine distance, so ascending order is correct and 1 − distance is the similarity. SQL applies WHERE before LIMIT, and updated rows stay in the index."}, {"id": "w7", "q": "A vendor offers a groundedness judge and reports \"accuracy 0.6 on your dev split\" (10 answers: 6 grounded, 4 not). What should you ask for before trusting it?", "options": ["The judge's average confidence per verdict, so you can drop the verdicts it's least confident about", "A larger dev split: at 10 answers the interval is too wide, though accuracy is the right metric to use", "Its accuracy on the train split, since the train items are where the judge's prompt examples come from", "Failures caught and passes kept: a judge that passes everything also scores 0.6 here, catching none"], "answer": 3, "why": "With 6 of 10 answers grounded, \"always pass\" gets 0.6 accuracy, keeps every pass and catches 0 of the 4 failures, which are the answers a judge exists to catch. A bigger set narrows the interval but doesn't fix the metric. Train-split accuracy is inflated when the examples come from it. Self-reported confidence isn't calibrated."}, {"id": "w8", "q": "(Enterprise) Which success criterion for Lumora's assistant is specific, measurable, achievable and relevant?", "options": ["At least 90% of answers rated grounded by an LLM judge that runs on every eval question", "On the 8 unanswerable eval questions it says I don't know at least 7 times, on a versioned eval set", "A hit rate of 100% on all 40 eval questions, including the unanswerable ones, before the pilot", "The assistant gives accurate, helpful answers that employees trust, measured by satisfaction surveys"], "answer": 1, "why": "It names the set, the behavior and a number the team can check and reach. \"Accurate, helpful\" has no threshold. Unanswerable questions have nothing to retrieve, so a hit rate over all 40 can't be reached or even computed. A judge's grounded rate counts only after the judge has been checked against the customer's human labels; without that, 90% could come from a judge that passes everything."}, {"id": "w9", "q": "With the fake setup, BM25's mean Precision@5 is 0.238. A vendor blog reports 0.62 for its RAG. Counting the chunks each question's relevant sources produced (tickets are one chunk each), what's the highest mean Precision@5 any retriever could reach on Lumora's 32 answerable questions?", "options": ["About 0.51: 11 questions have one one-chunk source, capped at 0.2", "About 0.24: BM25 already returns every relevant chunk there is", "1.0: a perfect retriever returns only chunks from relevant sources", "0.2: every question has one relevant chunk, so at most 1 of 5"], "answer": 0, "why": "A question whose only relevant source is a single ticket can score at most 1/5; questions about multi-chunk articles can reach higher. Averaged over the 32 questions, the ceiling is about 0.51, so the blog's number says nothing about your retriever. 1.0 would need 5 relevant chunks for every question; 0.2 ignores articles that produced several chunks; BM25 misses three questions entirely, so it isn't at the ceiling."}, {"id": "w10", "q": "(Certification) A team uses Claude to review pull requests in CI. The prompt says \"Flag anything suspicious, and only report issues you are confident about.\" Developers now ignore the bot, because most comments are about naming and style. What's the most effective change?", "options": ["Run each review twice and post only the findings that appear in both runs, to filter out noise", "Spell out what to report (bugs, security, broken tests) and what to skip (style, naming), with severities", "Change the wording to \"be very conservative and report only critical, high-confidence problems\"", "Ask Claude for a confidence score with each finding and post only the findings scored 0.9 or higher"], "answer": 1, "why": "Exam task 4.1: false positives come from not knowing which cases matter; explicit categories to report and to skip, with severity definitions, fix that. Self-reported confidence isn't calibrated. Stronger vague words (\"conservative\", \"critical\") still don't say that style is out of scope. Running twice keeps the style comments that appear consistently, which they will."}, {"id": "w11", "q": "(Certification) Claude extracts due dates from vendor invoices. Most are right, but dates written like \"03/04/2026\" come out as March 4 on some invoices and April 3 on others. Each invoice shows the vendor's country. What's the best fix?", "options": ["Add 2–3 examples of exactly these ambiguous dates, showing how the vendor's country decides and why", "Tell the model to always read dates month first, because most of the vendors are in the US", "Tell the model to give a low confidence for ambiguous dates, and route those invoices to review", "Add 20 more example invoices from the most common vendors, so the model sees the typical layouts"], "answer": 0, "why": "Exam task 4.2: inconsistent output on ambiguous cases is fixed by a few targeted examples that show the deciding rule and the reasoning. Twenty typical invoices add cost without covering the ambiguous case. Self-reported confidence isn't calibrated, so it can't be relied on to find the ambiguous dates. A blanket month-first rule makes every non-US date wrong."}, {"id": "w12", "q": "(Certification) You add four examples to your judge prompt. All four are ungrounded answers, and each contains a wrong number. On the dev split, the judge now fails a07 (\"up to $400 for a monitor once every 4 years\", grounded) and a05 (\"unlocks automatically after 30 minutes\", grounded). What went wrong?", "options": ["The examples come after the criteria; move them first so the model reads them before the rules", "Examples always make a judge stricter; remove them all and rely on the explicit criteria alone", "Unbalanced labels with a shared feature taught \"numbers mean fail\"; use varied examples of each verdict", "Too few examples: add another eight ungrounded answers so the model sees more kinds of wrong numbers"], "answer": 2, "why": "Examples that all share a label and a surface feature teach the feature, not the rule. Cover each outcome and vary everything except the rule: the four train items (a01 pass, a02 wrong number, a03 unsupported true fact, a04 grounded \"I don't know\") do exactly that. More fail examples make the imbalance worse. Placement isn't the cause. Well-chosen examples help; the problem is these examples."}, {"id": "w13", "q": "(Week 2) Three hits pass <code>min_score<\/code>. The model returns <code>answerable=True<\/code>, a correct answer, and <code>citations: [0, 2, 2]<\/code> (it numbered the sources from 0 and meant the 1st and 3rd). What does <code>answer_question<\/code> return?<pre><code>valid = [n for n in dict.fromkeys(result.citations) if 1 &lt;= n &lt;= len(relevant)]\nif result.answerable and not valid:\n    return Answer(answerable=False, answer=IDK, citations=[]), []\nreturn result.model_copy(update={\"citations\": valid}), [relevant[n - 1] for n in valid]<\/code><\/pre>", "options": ["The answer, citing only source 2: 0 is dropped, the duplicate merged, and 2 is not what it meant", "\"I don't know\": 0 is out of range, so the whole answer is rejected as ungrounded", "A ValidationError: citations must be at least 1, so parsing the model's reply fails", "The answer, citing sources 1 and 3: the code shifts the numbers by one to fix zero-based lists"], "answer": 0, "why": "dict.fromkeys removes the duplicate, the range check drops 0, and 2 survives, so the answer is shown with the second source, which the model didn't mean. Citation checks catch invented numbers, not misattributed ones. \"I don't know\" happens only when no valid citation is left. Nothing shifts the numbers, and the Answer model accepts any integers."}, {"id": "w14", "q": "(Week 1) <code>agentic.run<\/code> answers a question in 3 requests. The first carries 600 input tokens (instructions, the search_kb tool and the question); each search step adds about 1,500 tokens (the call and its results). How many input tokens do the 3 requests bill in total?", "options": ["1,800", "3,600", "6,300", "10,800"], "answer": 2, "why": "The API is stateless, so each request re-sends everything so far: 600 + 2,100 + 3,600 = 6,300. 3,600 counts each item once (the size of the last request only). 10,800 bills every request at the final size. 1,800 forgets that the history is re-sent. Agentic RAG multiplies this with every extra search."}, {"id": "w15", "q": "(Week 2) Raising <code>min_score<\/code> from 0.30 to 0.50 changes the check run: \"I don't know\" on the 8 unanswerable questions goes from 6 to 8, and on the 32 answerable ones from 1 to 9. A teammate reports: \"Abstention is now perfect.\" What's the right reading?", "options": ["Safer overall: \"I don't know\" answers rose from 7 to 17, so the assistant is now more careful", "Only the unanswerable rate matters, since \"I don't know\" on an answerable question is still safe", "It now abstains on 28% of answerable questions, up from 3%: 2 fewer guesses for 8 lost answers", "An improvement: 8 of 8 unanswerable now pass, and those are the questions that cause hallucinations"], "answer": 2, "why": "Both abstention rates matter: a bot that never abstains is guessing, one that abstains too often is useless. Here 9/32 answerable questions now get no answer, so the net check score falls by 6. Counting total \"I don't know\" answers rewards the regression. Unanswered real questions send employees to the help desk, which is the cost the assistant was meant to remove."}]</script>
+
+      <div data-track="cert">
+        <h3 class="part-h part-cert-h">Certification · Domain 4 practice</h3>
+        <div class="prose">
+          <p>On the <a href="../practice.html">Practice page</a>, filter to Certification, Domain 4, and answer every question available so far. Read each explanation, including for the ones you got right. Then, from memory, write the difference between task 4.1 (criteria) and task 4.2 (examples) in two sentences, with one example of a scenario where each is the right fix.</p>
+        </div>
+      </div>
+
+      <div data-track="ent">
+        <h3 class="part-h part-ent-h">Enterprise · Lumora's acceptance contract</h3>
+        <div class="prose"><p>Combine the week's drafts into one page for Lumora's IT director: the success criteria (Day 1), where the eval set comes from and who labels it (Day 2), the thresholds with confidence intervals and who signs off (Day 3), and the regression and monitoring plan (Day 4). Add one paragraph in plain words on what the numbers do <b>not</b> promise.</p></div>
+        <div class="reflect" style="max-width:760px">
+          <label><span class="rq">Which threshold would the customer push back on, and what evidence would you bring?</span><textarea data-reflect="ent-contract"></textarea></label>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= WEEKEND 1 ================= -->
+    <section class="day" id="w1" data-day="w1">
+      <div class="day-kicker">Weekend 1 · Saturday on the Full-time pace · 7.5 hours</div>
+      <div class="day-head">
+        <h2>Finish P2: better retrieval, measured, and conversational</h2>
+        <label class="day-done check"><input type="checkbox" data-check="lessonDays|W3-w1"> Session done</label>
+      </div>
+      <ul class="parts session-plan">
+        <li class="part part-core"><span class="part-tag">Core · 6h</span>Retriever options, <code>eval</code>, <code>check</code>, <code>chat</code>, tests</li>
+        <li class="part part-cert" data-track="cert"><span class="part-tag">Certification · 1.5h</span>Lab: the judge on Claude, zero-shot vs few-shot</li>
+      </ul>
+
+      <div class="prose">
+        <h3 class="part-h part-core-h">Core · Portfolio project P2 (part 2 of 2)</h3>
+        <div class="callout"><b>The scenario</b>Lumora's IT director liked last week's demo and asked three questions before a pilot with 200 employees: "How often does it find the right document? How often is it wrong, and would we know? Can people ask follow-up questions?" This weekend you make P2 answer all three with evidence.</div>
+        <h4>Requirements</h4>
+        <ol>
+          <li><b>Retrieval options:</b> <code>--retriever vector|bm25|hybrid</code> (default hybrid), <code>--rerank none|cross-encoder|fake</code>, <code>--contextual</code>, <code>--candidates</code> (default 20). The BM25 index is built from the same chunks, with the same ids, as the vector store.</li>
+          <li><b><code>eval</code></b> (no model calls): hit rate with its 95% interval, Precision@k, Recall@k, F1@k and MRR, hits per category, and the ids of the misses.</li>
+          <li><b><code>check</code></b>: answers all 40 eval questions; <code>answer_contains</code> string checks for all of them; with <code>--judge</code>, a groundedness verdict per answer from your validated judge; totals at the end.</li>
+          <li><b><code>chat</code></b>: multi-turn, rewriting follow-ups before retrieval and printing the rewritten query.</li>
+          <li><b><code>min_score</code></b> applies only to plain vector search (cosine); other retrievers ignore it, and the README says why.</li>
+          <li><b>Tests:</b> at least 20, all offline (fakes and scripted replies), covering tokenization, RRF, metrics, bootstrap, reranking, the context cache, the rewrite and the CLI.</li>
+        </ol>
+        <h4>Targets (with a real embedder)</h4>
+        <table class="compare">
+          <tbody>
+            <tr><td>Retrieval (<code>eval</code>, k = 5, best configuration)</td><td>a relevant source in the top 5 for at least <b>29 of 32</b> answerable questions, and at least as good as plain vector search on every category</td></tr>
+            <tr><td>Answers (<code>check</code>)</td><td>at least <b>34 of 40</b> answer checks, including at least <b>7 of 8</b> "I don't know"</td></tr>
+            <tr><td>Judge</td><td>on the test split of <code>labeled-answers.json</code>: catches at least 3 of 4 failures, keeps at least 5 of 6 passes</td></tr>
+            <tr><td>Conversations</td><td>6 of 6 follow-ups retrieve a relevant source</td></tr>
+            <tr><td>Cost</td><td>a full <code>check --judge</code> run costs a few cents; print the token totals</td></tr>
+          </tbody>
+        </table>
+        <p class="small muted">These are targets, not exact predictions: results depend on the models. If you miss one, look at <i>what was retrieved</i> before touching the prompt, and use the paired comparison before claiming an improvement.</p>
+        <h4>Suggested build order (commit after each)</h4>
+        <ol>
+          <li>Move Exercises 1–5 into the package; <code>eval --embedder fake --retriever bm25</code> works with no key and no store.</li>
+          <li><code>eval</code> for every configuration with a real embedder; keep the table.</li>
+          <li><code>check</code> without the judge, then with it.</li>
+          <li><code>chat</code>, then the conversations check.</li>
+          <li>Tests to 20+, all offline.</li>
+        </ol>
+      </div>
+
+      <div class="exercise">
+        <div class="ex-head"><span class="ex-tag">Hints</span><h4>Stuck on P2?</h4></div>
+        <p class="small muted" style="margin:0">This is your portfolio project, so hints stop at snippets. Ask your AI tutor for a code review when you're done.</p>
+        <div class="hints" data-hints="W3-proj">
+          <div class="hint" data-level="Concept">Every retriever and wrapper exposes the same <code>search(query, k)</code>, so the CLI can build one searcher from the flags and the rest of the code never checks which one it got. Load and chunk once per run; build the BM25 index from those chunks every time (it takes milliseconds for Lumora).</div>
+          <div class="hint" data-level="Snippet">
+<pre><code>def make_searcher(args, kb, chunks):
+    if args.retriever == "vector":
+        searcher = kb
+    elif args.retriever == "bm25":
+        searcher = KeywordIndex(chunks)
+    else:
+        searcher = HybridSearch(kb, KeywordIndex(chunks), candidates=args.candidates)
+    if args.rerank != "none":
+        reranker = FakeReranker() if args.rerank == "fake" else CrossEncoderReranker()
+        searcher = RerankedSearch(searcher, reranker, candidates=args.candidates)
+    return searcher
+
+
+def eval_report(searcher, eval_set: list[dict], k: int, label: str) -&gt; str:
+    r = evaluate(searcher.search, eval_set, k)
+    lo, hi = bootstrap_ci([row["hit"] for row in r["rows"]])
+    by_cat: dict[str, list[float]] = {}
+    for row in r["rows"]:
+        by_cat.setdefault(row["category"], []).append(row["hit"])
+    cats = " · ".join(f"{c} {sum(v):.0f}/{len(v)}" for c, v in sorted(by_cat.items()))
+    misses = ", ".join(row["id"] for row in r["rows"] if not row["hit"]) or "none"
+    return (f"{label} (k={k}, {r['n']} answerable questions)\n"
+            f"  hit rate {r['hit']:.3f} (95% CI {lo:.2f}-{hi:.2f}) · precision@{k} {r['precision']:.3f} · "
+            f"recall@{k} {r['recall']:.3f} · F1@{k} {r['f1']:.3f} · MRR {r['rr']:.3f}\n"
+            f"  hits by category: {cats}\n  misses: {misses}")</code></pre></div>
+        </div>
+      </div>
+
+      <div data-track="cert">
+        <h3 class="part-h part-cert-h">Certification · Lab: the judge on Claude, zero-shot vs few-shot</h3>
+        <div class="prose">
+          <p>Port your judge to the Claude Messages API (<code>claude-haiku-4-5</code>), with the verdict returned through a tool call so it's structured. Run three versions on the dev split: (1) the vague "flag any problems" prompt, (2) explicit criteria (task 4.1), (3) explicit criteria plus the four train examples in <code>&lt;example&gt;</code> tags (task 4.2). Record failures caught and passes kept for each in a small table, then run only the best version on the test split. Write three sentences: which change helped most, on which items, and why.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= WEEKEND 2 ================= -->
+    <section class="day" id="w2" data-day="w2">
+      <div class="day-kicker">Weekend 2 · Sunday on the Full-time pace · 7.5 hours</div>
+      <div class="day-head">
+        <h2>The evaluation report, and the demo</h2>
+        <label class="day-done check"><input type="checkbox" data-check="lessonDays|W3-w2"> Session done</label>
+      </div>
+      <ul class="parts session-plan">
+        <li class="part part-core"><span class="part-tag">Core · 6h</span>Failure analysis, evaluation report, README, demo, release</li>
+        <li class="part part-ent" data-track="ent"><span class="part-tag">Enterprise · 1.5h</span>Interview practice: the Interview room, plus "how do you know it works?" on the clock</li>
+      </ul>
+
+      <div class="prose">
+        <h3 class="part-h part-core-h">Core · Evidence a customer can read</h3>
+        <h4>1. Failure analysis (1.5 hours)</h4>
+        <p>For every miss in your best configuration, name the stage (loading, chunking, retrieval, reranking, generation, or the label itself) and the fix you'd try next. Group the failures by cause and count them; the biggest group is your next week of work. Save it as <code>results/failure-analysis.md</code>.</p>
+        <h4>2. The evaluation report (<code>results/week3-eval.md</code>)</h4>
+        <ul>
+          <li>A table of every retrieval configuration: hit rate with interval, Recall@5, MRR, per category.</li>
+          <li>A paired comparison of your chosen configuration against Week 2's plain vector search: questions won, lost and tied.</li>
+          <li>Answer checks, "I don't know" on unanswerable questions, and groundedness from the judge, with the judge's own agreement numbers next to it.</li>
+          <li>Cost and latency per question for the chosen configuration.</li>
+          <li>One paragraph of limits: the eval set's size, how it was labeled, and what it doesn't cover.</li>
+        </ul>
+        <h4>3. README and demo</h4>
+        <p>Update the README: an architecture diagram (Mermaid) with both retrievers, fusion and the reranker; the evaluation summary; design decisions, each with its evidence ("hybrid, because it won 5 questions and lost 0 against vector search"); how to run everything offline. Record a <b>3-minute demo</b>: one keyword question, one paraphrase, a follow-up conversation, one "I don't know", then the evaluation table. Merge through a PR and tag <code>v1.0</code>.</p>
+      </div>
+
+      <div class="prose"><h4>Acceptance checklist</h4></div>
+      <div class="card" style="max-width:760px">
+        <label class="check"><input type="checkbox" data-check="accept|W3-retrievers"><span class="check-text">Vector, BM25 and hybrid retrievers, reranking and contextual chunks, chosen by flags</span></label>
+        <label class="check"><input type="checkbox" data-check="accept|W3-eval"><span class="check-text"><code>eval</code> prints metrics per category with a 95% interval; results table saved for every configuration</span></label>
+        <label class="check"><input type="checkbox" data-check="accept|W3-check"><span class="check-text"><code>check</code> meets the targets (29/32 retrieval, 34/40 answers, 7/8 "I don't know")</span></label>
+        <label class="check"><input type="checkbox" data-check="accept|W3-judge"><span class="check-text">The judge's agreement with human labels is measured on the test split and reported</span></label>
+        <label class="check"><input type="checkbox" data-check="accept|W3-chat"><span class="check-text"><code>chat</code> handles follow-ups: 6/6 conversations retrieve a relevant source</span></label>
+        <label class="check"><input type="checkbox" data-check="accept|W3-tests"><span class="check-text">20+ tests pass offline</span></label>
+        <label class="check"><input type="checkbox" data-check="accept|W3-report"><span class="check-text">Evaluation report, failure analysis, README with evidence, 3-minute demo; merged and tagged v1.0</span></label>
+      </div>
+
+      <div class="prose">
+        <div class="callout tip" style="margin-top:20px"><b>Next week (Week 4): multi-agent systems</b>One overloaded agent becomes a team: orchestrator, researcher, planner, critic. Your eval habits come with you: every agent gets a test set before it gets a second prompt. On the certification track: agentic loops and coordinator–subagent design.</div>
+      </div>
+
+      <div data-track="ent">
+        <h3 class="part-h part-ent-h">Enterprise · Interview practice: "How do you know it works?"</h3>
+        <div class="prose">
+          <p>Set a 20-minute timer and answer out loud, using your P2 as the example: <i>"You've built a RAG assistant for a customer. How do you know it's working, before launch and after?"</i> Cover the eval set and who labeled it, retrieval and answer metrics, the intervals, the judge and its validation, the thresholds agreed with the customer, and monitoring after launch. Then do the Interview room below.</p>
+        </div>
+        <div class="reflect" style="max-width:760px">
+          <label><span class="rq">Which number in your answer would an interviewer question first, and can you defend it?</span><textarea data-reflect="ent-works"></textarea></label>
+        </div>
+      </div>
+    </section>
+
+    <section class="day" id="interview">
+      <div class="day-kicker">Interview room · ~1.5h (the Sunday enterprise slot, or any time this week)</div>
+      <div class="day-head"><h2>Interview room: this week's topics as companies ask them</h2>
+        <label class="day-done check"><input type="checkbox" data-check="exercises|W3-interview"> Done</label></div>
+      <div class="prose">
+        <p>These are publicly reported interview questions for forward deployed and AI engineer roles, on this week's topics: hybrid search, reranking, retrieval metrics and their statistics, LLM judges, and evals as the customer's acceptance contract. <b>About the sources:</b> companies don't publish their questions, and candidates usually agree not to share them. Every question below comes from a public prep guide, a candidate's or an interviewer's write-up, or a public question list, and is labeled with its source; none is an official company question.</p>
+        <p><b>How to practice:</b> set a timer (10 minutes for technical questions, 30–45 for design), answer out loud or on paper, then open the outline and compare. Use your own P2 numbers wherever the outline uses Lumora's; an interviewer trusts "hybrid won 5 questions and lost 0" more than any definition.</p>
+      </div>
+
+      <div class="exercise interview">
+        <div class="ex-head"><span class="ex-tag">Q1</span><h4>How do you know your AI system is actually working well?</h4></div>
+        <p class="small" style="margin:4px 0 6px"><b>OpenAI · Forward Deployed Engineer · technical deep dive</b></p>
+        <p class="small" style="margin:0 0 8px"><span class="chip">Reported</span> <span class="small muted">A candidate's write-up of the onsite deep dive: <a href="https://gaijineer.co/openai-forward-deployed-engineer-interview-process" target="_blank" rel="noopener">write-up ↗</a>; also listed in a prep-site question list: <a href="https://igotanoffer.com/en/advice/openai-forward-deployed-engineer-interview" target="_blank" rel="noopener">IGotAnOffer ↗</a>. Secondary sources; not an official question.</span></p>
+        <p class="small muted" style="margin:0 0 10px"><b>What it probes:</b> Whether "working" becomes separate numbers you can defend, with their uncertainty, agreed with the customer before launch.</p>
+        <div class="hints" data-hints="W3-ir1">
+          <div class="hint solution" data-level="Model answer outline">
+            <ol><li>Split "working" into parts you measure separately: does it find the right source (retrieval), is the answer grounded and complete, does it say "I don't know" when it should, and is it fast and cheap enough. Agree a threshold for each with the customer before launch: that's the acceptance contract.</li><li>The evidence: an eval set of real questions (from tickets and search logs), labeled at the source level by the customer's expert, split into categories (keyword, paraphrase, multi-source, unanswerable), with a dev set for tuning and a held-out test set for the reported number.</li><li>Retrieval without model calls: hit rate@5, Recall@5 and MRR, per category, because an overall gain can hide a 20-point loss on keyword questions.</li><li>Honest error bars: with 32 answerable questions, one question moves the hit rate by about 3 points, and at 0.9 the 95% interval is about ±10 points (±3 needs about 400 questions). Compare versions paired on the same questions: "won 5, lost 0" beats two overlapping intervals.</li><li>Answers: code checks first (the expected fact, an exact "I don't know", valid citations), then an LLM judge for groundedness, trusted only after it's checked against human labels.</li><li>After launch: the same suite gates every release; a judged daily sample, user "wrong answer" flags, and dashboards for "I don't know" rate, latency and cost. Each miss gets a stage (loading, chunking, retrieval, reranking, generation, or the label), and the biggest group is the next week of work.</li></ol>
+            <p class="small" style="margin-top:8px"><b>Answers that fail:</b></p>
+            <ul><li>"We tried it on a bunch of questions and it looked good."</li><li>One accuracy number with no interval, no categories and no idea who labeled the questions.</li></ul>
+          </div>
+        </div>
+      </div>
+      <div class="exercise interview">
+        <div class="ex-head"><span class="ex-tag">Q2</span><h4>How would you measure whether this AI system is working?</h4></div>
+        <p class="small" style="margin:4px 0 6px"><b>Company not named · GenAI system design · evaluation strategy</b></p>
+        <p class="small" style="margin:0 0 8px"><span class="chip">Reported</span> <span class="small muted">An interviewer's write-up of the GenAI system design questions they ask: <a href="https://dev.to/anshulprakash/i-added-genai-system-design-to-my-interviews-then-i-tried-to-pass-one-myself-2eag" target="_blank" rel="noopener">dev.to ↗</a>. Secondary source; no company named for this question.</span></p>
+        <p class="small muted" style="margin:0 0 10px"><b>What it probes:</b> The author says the follow-ups go to what you do when you don't have ground truth, and how you'd catch regressions.</p>
+        <div class="hints" data-hints="W3-ir2">
+          <div class="hint solution" data-level="Model answer outline">
+            <ol><li>No ground truth yet? Build a small one: 30–50 real questions from ticket subjects or search logs, binary pass/fail labels, and one domain expert on the customer's side with the final say, so labels stay consistent. Include unanswerable questions, and add every real failure later.</li><li>Check with code whatever code can check (the expected fact, an exact "I don't know", citations to real sources): free and deterministic.</li><li>Use an LLM judge only for what code can't check, such as groundedness: one criterion, a binary verdict, explicit criteria, a few examples from the train split, reasoning before the verdict.</li><li>Validate the judge on human labels it hasn't seen, and report two rates: failures caught and passes kept. A judge that passes everything keeps 100% of passes and catches nothing, yet scores 90% accuracy when 90% of answers are good. This week's bar: at least 3 of 4 failures caught, 5 of 6 passes kept.</li><li>Regressions: the suite runs on every change to prompt, model, chunking or retriever, with fakes on each pull request (free) and real models nightly (a few cents); a drop below threshold blocks the release, and you compare paired on the same questions.</li><li>In production: judge a daily sample plus every flagged answer (judging everything roughly doubles the model bill), pin the judge's model version, and re-check its agreement whenever its prompt or model changes.</li></ol>
+            <p class="small" style="margin-top:8px"><b>Answers that fail:</b></p>
+            <ul><li>"Use an LLM to grade it", with no check of the grader against human labels.</li><li>Relying only on thumbs-up rates, which are sparse and skewed toward strong reactions.</li></ul>
+          </div>
+        </div>
+      </div>
+      <div class="exercise interview">
+        <div class="ex-head"><span class="ex-tag">Q3</span><h4>Explain the difference between Precision@k and Recall@k in RAG. When might you prefer one over the other?</h4></div>
+        <p class="small" style="margin:4px 0 6px"><b>Several companies (aggregated list) · technical</b></p>
+        <p class="small" style="margin:0 0 8px"><span class="chip">Aggregated</span> <span class="small muted">From a public question list with no per-question company: <a href="https://github.com/KalyanKS-NLP/RAG-Interview-Questions-and-Answers-Hub" target="_blank" rel="noopener">RAG Interview Questions and Answers Hub ↗</a>.</span></p>
+        <p class="small muted" style="margin:0 0 10px"><b>What it probes:</b> Whether you can compute the metrics on a real ranking and know which one limits answer quality.</p>
+        <div class="hints" data-hints="W3-ir3">
+          <div class="hint solution" data-level="Model answer outline">
+            <ol><li>Define them at the source level, with k = the number of chunks the model will see: Precision@k = results from relevant sources ÷ k (always divide by k); Recall@k = distinct relevant sources found ÷ all relevant sources.</li><li>Work an example out loud: retrieved [x, A, x, B, x], relevant {A, B, C}: Precision@5 = 0.4, Recall@5 = 2/3, and the reciprocal rank is 0.5 (the first relevant result is 2nd).</li><li>For RAG, recall@k usually matters most: the model can only use what's in the top k, so recall caps answer quality. Precision is about noise, tokens and cost; MRR matters because models use the start of the context best.</li><li>Precision has a ceiling: a question with one relevant source that produced one chunk can't exceed Precision@5 = 0.2. Compare precision only between systems on the same eval set.</li><li>In a two-stage pipeline you prefer each at a different point: judge stage one on recall at the candidate count (20), and the reranked top 5 on precision and MRR. Prefer precision when context is expensive or a wrong chunk misleads; prefer recall for multi-source questions.</li><li>Traps: count each source once (counting chunks lets "recall" pass 1.0 when an article splits into three chunks), and leave unanswerable questions out of retrieval metrics.</li></ol>
+            <p class="small" style="margin-top:8px"><b>Answers that fail:</b></p>
+            <ul><li>Textbook definitions with no example and no view on which one matters for RAG.</li><li>"Our Precision@5 is only 0.2, so retrieval is bad", without noticing the ceiling.</li></ul>
+          </div>
+        </div>
+      </div>
+      <div class="exercise interview">
+        <div class="ex-head"><span class="ex-tag">Q4</span><h4>How does hybrid search work in RAG retrieval? When do you opt for it instead of semantic search?</h4></div>
+        <p class="small" style="margin:4px 0 6px"><b>Several companies (aggregated list) · technical</b></p>
+        <p class="small" style="margin:0 0 8px"><span class="chip">Aggregated</span> <span class="small muted">Two consecutive questions in a public list with no per-question company: <a href="https://github.com/KalyanKS-NLP/RAG-Interview-Questions-and-Answers-Hub" target="_blank" rel="noopener">RAG Interview Questions and Answers Hub ↗</a>; the same question also appears in <a href="https://github.com/llmgenai/LLMInterviewQuestions" target="_blank" rel="noopener">LLMInterviewQuestions ↗</a>.</span></p>
+        <p class="small muted" style="margin:0 0 10px"><b>What it probes:</b> Whether you know why the two retrievers fail differently, how to fuse them correctly, and that fusion must be measured.</p>
+        <div class="hints" data-hints="W3-ir4">
+          <div class="hint solution" data-level="Model answer outline">
+            <ol><li>Why two retrievers: embeddings blur exact strings (error codes like 550 5.7.1, queue names, ticket ids, product names). BM25 matches exact tokens, weights rare ones higher (IDF), saturates repeated words and corrects for chunk length.</li><li>Tokenization decides what BM25 can match: keep codes whole, use the same function for chunks and queries, and read library defaults (some stem words and drop one-character tokens, which can delete "5.7.1" from the query).</li><li>Fuse ranks, not scores: BM25 scores are unbounded and cosine similarity stays at or below 1, so adding them lets BM25 decide everything. Reciprocal Rank Fusion scores each chunk Σ 1/(60 + rank); a chunk ranked 1st and 3rd gets 1/61 + 1/63 ≈ 0.032.</li><li>Fetch more, then cut: about 20 candidates from each retriever, fuse, keep the top 5, so a chunk ranked 12th by vectors and 3rd by BM25 can still make it.</li><li>When: almost always for enterprise content with codes, ids and names; but measure each retriever alone and fused, per category. RRF trusts both equally, so a weak one drags it down: with this week's weak fake embedder, BM25 hit 29/32 and hybrid only 27/32.</li><li>Operations: build both indexes from the same chunks with the same ids, apply deletions to both, and drop the old cosine score floor (RRF scores only reflect ranks).</li></ol>
+            <p class="small" style="margin-top:8px"><b>Answers that fail:</b></p>
+            <ul><li>"Add the BM25 score to the cosine similarity" (or a weighted sum with no normalization).</li><li>"Hybrid is always better", with no measurement of each retriever on its own.</li></ul>
+          </div>
+        </div>
+      </div>
+      <div class="exercise interview">
+        <div class="ex-head"><span class="ex-tag">Q5</span><h4>Why is the cross-encoder typically used as the re-ranker rather than the bi-encoder?</h4></div>
+        <p class="small" style="margin:4px 0 6px"><b>Several companies (aggregated list) · technical</b></p>
+        <p class="small" style="margin:0 0 8px"><span class="chip">Aggregated</span> <span class="small muted">From a public question list with no per-question company: <a href="https://github.com/KalyanKS-NLP/RAG-Interview-Questions-and-Answers-Hub" target="_blank" rel="noopener">RAG Interview Questions and Answers Hub ↗</a>.</span></p>
+        <p class="small muted" style="margin:0 0 10px"><b>What it probes:</b> The accuracy-versus-cost reason behind two-stage retrieval, and what the reranker can't fix.</p>
+        <div class="hints" data-hints="W3-ir5">
+          <div class="hint solution" data-level="Model answer outline">
+            <ol><li>A bi-encoder encodes question and chunk separately and compares vectors. Chunk vectors are computed once at index time, so a query costs one embedding plus a nearest-neighbor search, even over millions of chunks.</li><li>A cross-encoder reads the question and one chunk together, so it can weigh each word against the question and scores relevance more accurately. Nothing can be precomputed: it runs once per (question, chunk) pair at question time.</li><li>So: retrieve 20–50 candidates cheaply (hybrid), rerank them with the cross-encoder, keep the top 5. The reranker only reorders what stage one fetched: recall at the candidate count caps the final recall. Asking stage one for 5 instead of 20 turns reranking into pure latency.</li><li>Costs to name: latency on every question (on CPU, scoring 50 candidates can take longer than retrieval), so measure p95, cap candidates and batch; small cross-encoders truncate long chunks; and their scores, like cosine and BM25, aren't thresholds across queries.</li><li>Evidence, not faith: Anthropic reports top-20 retrieval failures falling from 5.7% to 1.9% with contextual retrieval plus reranking on its data. Keep a reranker only if a paired comparison on your questions wins more than it loses.</li></ol>
+            <p class="small" style="margin-top:8px"><b>Answers that fail:</b></p>
+            <ul><li>"The cross-encoder is a better model", with no word about why it can't be the first stage.</li><li>Not knowing that a reranker can't recover a chunk stage one never returned.</li></ul>
+          </div>
+        </div>
+      </div>
+      <div class="exercise interview">
+        <div class="ex-head"><span class="ex-tag">Q6</span><h4>A customer demands sub-100ms latency for an LLM-powered search. The naive RAG flow is 1.5 seconds. Walk me through getting to 100ms.</h4></div>
+        <p class="small" style="margin:4px 0 6px"><b>Forward Deployed Engineer · several companies · system design</b></p>
+        <p class="small" style="margin:0 0 8px"><span class="chip">Reported</span> <span class="small muted">Listed in a 2026 FDE interview guide covering several companies, with no company named for this question: <a href="https://www.tryexponent.com/blog/forward-deployed-engineer-interview-the-definitive-2026-guide-fde" target="_blank" rel="noopener">Exponent ↗</a>. A candidate reports a related OpenAI question on diagnosing latency across the inference pipeline: <a href="https://gaijineer.co/openai-forward-deployed-engineer-interview-process" target="_blank" rel="noopener">write-up ↗</a>.</span></p>
+        <p class="small muted" style="margin:0 0 10px"><b>What it probes:</b> Whether you question the requirement, measure per stage before optimizing, and show what each speed-up costs in quality.</p>
+        <div class="hints" data-hints="W3-ir6">
+          <div class="hint solution" data-level="Model answer outline">
+            <ol><li>Clarify the target: 100 ms to what (ranked results on screen, first token, or a complete answer?), at which percentile, and for which queries. A fully generated answer in 100 ms is rarely realistic; ranked sources in 100 ms with a streamed answer after often meets the real need.</li><li>Measure the 1.5 s by stage before changing anything, at p95: query rewrite call, query embedding, retrieval, reranking, time to first token, time to last token.</li><li>Take model calls off the critical path: skip the rewrite on first turns, embed queries locally or cache them, and move work to index time (contextual retrieval costs one model call per chunk at ingestion and nothing per query).</li><li>Retrieval: BM25 and approximate nearest-neighbor search are the cheap part; the cross-encoder usually isn't. Cap its candidates, batch, use a small local model, or drop it where the paired comparison shows little gain.</li><li>Generation: stream; keep k small and the prompt short (which also helps with "lost in the middle"); a faster model for easy questions; prompt caching for the shared prefix; cached answers for frequent questions.</li><li>Re-run the eval after each change and show hit rate and groundedness next to p95 latency, so the customer picks the trade-off with numbers.</li></ol>
+            <p class="small" style="margin-top:8px"><b>Answers that fail:</b></p>
+            <ul><li>"Use a faster model" as the whole answer.</li><li>Cutting the reranker or k without checking what it did to recall and groundedness.</li></ul>
+          </div>
+        </div>
+      </div>
+      <div class="exercise interview">
+        <div class="ex-head"><span class="ex-tag">Q7</span><h4>How would you design an enterprise search system powered by an LLM?</h4></div>
+        <p class="small" style="margin:4px 0 6px"><b>OpenAI · Forward Deployed Engineer · system design</b></p>
+        <p class="small" style="margin:0 0 8px"><span class="chip">Reported</span> <span class="small muted">Prep-site question list built from candidate reports (Glassdoor, Blind, forums) plus questions from similar roles: <a href="https://igotanoffer.com/en/advice/openai-forward-deployed-engineer-interview" target="_blank" rel="noopener">IGotAnOffer ↗</a>. The same list has "Design a RAG pipeline for a customer with millions of internal documents". Secondary source.</span></p>
+        <p class="small muted" style="margin:0 0 10px"><b>What it probes:</b> Whether each part of your design has a reason and a measurement, including the parts demos skip: permissions, follow-up questions and sign-off.</p>
+        <div class="hints" data-hints="W3-ir7">
+          <div class="hint solution" data-level="Model answer outline">
+            <ol><li>Clarify: who searches for what (exact codes and ids, how-to paraphrases, multi-part questions), which sources and how large, how often they change, who may see what, and the latency and cost targets. If the whole corpus is under about 200,000 tokens, consider no RAG at all: the knowledge base in the prompt, with caching.</li><li>Indexing: stable chunk ids; contextual prefixes where chunks don't stand alone (one model call per chunk, with a cacheable document prefix; Lumora's 27 chunks cost a fifth of a cent); vector and BM25 indexes from the same chunks, deletions applied to both, permissions stored as metadata.</li><li>Query path: rewrite follow-ups into standalone queries using recent turns, including the assistant's replies; hybrid retrieval with RRF over about 20 candidates each; security trimming in the query; a cross-encoder rerank to the top 5; best chunks first, question last; an answer with citations or "I don't know".</li><li>Agentic search (the model calls a search tool, possibly several times) only for multi-part questions, with a step cap, evaluated on the same set, because it adds calls, latency and harder testing.</li><li>Evidence and sign-off: a golden set from real search logs labeled by the customer's expert, retrieval metrics with intervals, a judge validated against their labels, and thresholds set per risk (security answers stricter than printer answers) that the customer signs as the acceptance contract.</li><li>Operations: the eval as a release gate, a judged daily sample, feedback flags into the next labeling round, and dashboards for latency, cost per question and "I don't know" rate.</li></ol>
+            <p class="small" style="margin-top:8px"><b>Answers that fail:</b></p>
+            <ul><li>A list of components (vector DB, reranker, LLM) with no reason or measurement behind any of them.</li><li>Ignoring permissions, or treating every message as a standalone query so "and for a chair?" retrieves nothing.</li></ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ================= JOURNAL ================= -->
+    <section class="day" id="journal">
+      <div class="day-kicker">Week journal · ~15 min</div>
+      <div class="day-head"><h2>Reflection</h2><span class="small muted" id="reflect-saved"></span></div>
+      <p class="muted" style="max-width:760px">Everything you typed on this page saves automatically in your browser. Download it into your folder each week.</p>
+      <div class="reflect" style="max-width:760px">
+        <label><span class="rq">What clicked this week?</span><textarea data-reflect="clicked"></textarea></label>
+        <label><span class="rq">What was hardest, and how did you get unstuck?</span><textarea data-reflect="hard"></textarea></label>
+        <label><span class="rq">What would you do differently next week?</span><textarea data-reflect="next"></textarea></label>
+        <label><span class="rq">Questions to ask your AI tutor</span><textarea data-reflect="questions"></textarea></label>
+        <button type="button" class="btn btn-ghost" id="reflect-download">Download this week's notes (HTML)</button>
+      </div>
+      <nav class="lesson-pager" aria-label="Lesson navigation">
+        <a class="btn btn-ghost" href="week-W2.html">← Week 2</a>
+        <span class="btn btn-ghost" style="opacity:.55;cursor:default">Week 4: Multi-Agent Systems (published before it starts) →</span>
+      </nav>
+    </section>
+
+  </article>
+</div>
+</main>
+
+<footer id="site-footer"></footer>
+
+<script src="../assets/js/curriculum.js"></script>
+<script src="../assets/js/tracks.js"></script>
+<script src="../assets/js/store.js"></script>
+<script src="../assets/js/ui.js"></script>
+<script src="../assets/js/lesson.js"></script>
+</body>
+</html>
