@@ -119,6 +119,8 @@ window.FDE = (function () {
     hfHub:        { k: "doc", t: "Hugging Face Hub docs", u: "https://huggingface.co/docs/hub" },
     pLoRA:        { k: "paper", t: "Paper: LoRA (2021)", u: "https://arxiv.org/abs/2106.09685" },
     pQLoRA:       { k: "paper", t: "Paper: QLoRA (2023)", u: "https://arxiv.org/abs/2305.14314" },
+    pDoRA:        { k: "paper", t: "Paper: DoRA (2024)", u: "https://arxiv.org/abs/2402.09353" },
+    peftLora:     { k: "doc", t: "PEFT: LoRA methods (incl. DoRA)", u: "https://huggingface.co/docs/peft/developer_guides/lora" },
 
     /* Cloud & deployment */
     agentcore:    { k: "doc", t: "Amazon Bedrock AgentCore guide", u: "https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/what-is-bedrock-agentcore.html" },
@@ -236,7 +238,7 @@ window.FDE = (function () {
       skills: ["Tracing", "DeepEval", "Guardrails", "PII redaction", "OWASP LLM Top 10", "Cost tracking"] },
     { id: "P8", week: "W9", domain: "Health", name: "Fine-Tuned Healthcare Q&A Model",
       pitch: "A small open model fine-tuned with QLoRA on healthcare Q&A, evaluated side by side against the base model, and published to the Hugging Face Hub.",
-      skills: ["Prompting vs RAG vs fine-tuning", "QLoRA / PEFT", "TRL", "4-bit quantization", "Model evaluation"] },
+      skills: ["Prompting vs RAG vs fine-tuning", "LoRA / QLoRA / DoRA (PEFT)", "TRL", "4-bit quantization", "Model evaluation"] },
     { id: "P9", week: "W10–11", domain: "Your choice", name: "AI Engineering Capstone",
       pitch: "Your own end-to-end agentic system. Options: a personal-finance assistant, call-center quality analytics, an IT & HR service desk, a research-driven content studio, or your own idea.",
       skills: ["Everything from W1–W9", "Multi-provider model strategy", "LLMOps", "CI evals"] },
@@ -415,13 +417,14 @@ window.FDE = (function () {
       goal: "Know when fine-tuning is the right call, and do it once properly.",
       learn: [
         "Decision ladder: prompting → RAG → fine-tuning, and when to move up",
-        "Full fine-tuning vs PEFT: LoRA, QLoRA, adapters",
+        "Full fine-tuning vs PEFT: LoRA, QLoRA, DoRA, adapters",
+        "Compare LoRA, QLoRA and DoRA on the same data: quality, memory, training time",
         "Building a dataset in chat-messages format",
         "4-bit quantization; training on a free GPU",
         "Evaluating base vs tuned models; publishing adapters"
       ],
       tools: ["Transformers", "PEFT", "TRL", "bitsandbytes", "HF Hub", "Colab"],
-      links: ["pLoRA", "pQLoRA", "peft", "trl", "transformers", "bnb", "hfHub", "colab"],
+      links: ["pLoRA", "pQLoRA", "pDoRA", "peft", "peftLora", "trl", "transformers", "bnb", "hfHub", "colab"],
       weekend: "Build P8: the fine-tuned healthcare Q&A model.",
       project: "P8" },
     { id: "W10", phase: "p1", rhythm: "learn", title: "AI Capstone I + LLMOps / AgentOps",
