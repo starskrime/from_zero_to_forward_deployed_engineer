@@ -1,0 +1,1456 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Week 4 · Multi-Agent Systems</title>
+  <meta name="description" content="Week 4: when to split one agent into a team and when not to; deterministic tools for the math; typed hand-offs and a code critic; LangGraph state, routing, parallel sub-agents with Send, checkpointers, interrupts and a memory store; end-state evaluation. Certification tasks 1.1-1.3 with Claude Agent SDK subagents; OAuth 2.0, OIDC and SAML.">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%2316191f'/%3E%3Ctext x='16' y='21' font-family='Arial' font-weight='800' font-size='11' fill='white' text-anchor='middle'%3EFDE%3C/text%3E%3C/svg%3E">
+  <link rel="stylesheet" href="../assets/css/platform.css">
+</head>
+<body data-week="W4">
+<header id="site-header"></header>
+
+<main class="wrap">
+<div class="lesson-layout">
+
+  <aside class="toc" aria-label="Lesson contents">
+    <div class="toc-group"><p>Week 4</p><a href="#overview">Overview</a></div>
+    <div class="toc-group">
+      <p>Weekdays</p>
+      <a href="#d1" data-toc="d1">Day 1 · One agent or a team?</a>
+      <a href="#d2" data-toc="d2">Day 2 · A team in Python</a>
+      <a href="#d3" data-toc="d3">Day 3 · LangGraph + parallel</a>
+      <a href="#d4" data-toc="d4">Day 4 · State + humans</a>
+      <a href="#d5" data-toc="d5">Day 5 · Readiness</a>
+    </div>
+    <div class="toc-group">
+      <p>Weekend</p>
+      <a href="#w1" data-toc="w1">Weekend 1 · Build P3</a>
+      <a href="#w2" data-toc="w2">Weekend 2 · Evaluate + ship</a>
+      <a href="#interview">Interview room</a>
+      <a href="#journal">Journal</a>
+    </div>
+  </aside>
+
+  <article>
+
+    <!-- ---------- OVERVIEW ---------- -->
+    <section class="lesson-hero" id="overview">
+      <div class="eyebrow">Week 4 · AI Engineering · <span id="week-dates"></span></div>
+      <h1>Multi-Agent Systems</h1>
+      <p class="lead">One agent with fifteen tools and a long prompt gets confused, slow and expensive. Splitting it into a team, with a coordinator, specialists and a critic, can fix that, or can make everything worse. This week you learn to tell the difference. You'll build a team first in plain Python and then in <b>LangGraph</b>: typed hand-offs, sub-agents running in parallel, a critic that is code rather than a model, a pause for human approval before anything is booked, and memory that survives between trips. The weekend delivers <b>portfolio project P3: a multi-agent EV road-trip planner</b>, evaluated on 14 trips.</p>
+      <div class="week-progress"><div class="bar"><span id="week-bar" style="width:0"></span></div><span class="small muted" id="week-bar-text"></span></div>
+
+      <div class="prose" style="margin-top:24px">
+        <h3>This week's three tracks</h3>
+        <table class="compare">
+          <thead><tr><th>Track</th><th>Hours</th><th>This week</th></tr></thead>
+          <tbody>
+            <tr><td><span class="part-tag" style="color:var(--ph-blue)">Core</span></td><td>22h</td><td>When a team beats one agent (and when it doesn't), workflow patterns, deterministic tools, typed hand-offs, a code critic, LangGraph state and routing, parallel sub-agents with <code>Send</code>, context engineering, checkpointers, interrupts, a memory store, end-state evals; ship <b>P3</b></td></tr>
+            <tr data-track="cert"><td><span class="part-tag" style="color:var(--ph-purple)">Certification</span></td><td>6.5h</td><td>Domain 1: tasks <b>1.2</b> (coordinator and subagents with isolated context) and <b>1.3</b> (invoking subagents, passing context explicitly, running them in parallel), with <b>1.1</b> revisited; a lab with Claude Agent SDK subagents</td></tr>
+            <tr data-track="ent"><td><span class="part-tag" style="color:var(--ph-green)">Enterprise</span></td><td>6.5h</td><td>Identity I: OAuth 2.0 with PKCE, OpenID Connect ID tokens, SAML single sign-on, and whose identity an agent uses when it acts</td></tr>
+          </tbody>
+        </table>
+
+        <h3>Coverage map: everything P3 needs</h3>
+        <table class="compare coverage wrap">
+          <thead><tr><th>P3 needs…</th><th>Learned</th><th>Practiced in</th></tr></thead>
+          <tbody>
+            <tr><td>Routes, energy, charging time and a greedy charging plan, in plain code; an independent validator</td><td><span class="day-pill">Day 1</span></td><td>Exercise 1</td></tr>
+            <tr><td>Agents with structured outputs, a sliced context per agent, a critic made of code, a revision limit</td><td><span class="day-pill">Day 2</span></td><td>Exercise 2</td></tr>
+            <tr><td>A LangGraph graph: state with reducers, conditional routing, one parallel sub-agent per stop with <code>Send</code></td><td><span class="day-pill">Day 3</span></td><td>Exercise 3</td></tr>
+            <tr><td>A checkpointer and thread per trip, a human approval before booking, a profile store, end-state evals</td><td><span class="day-pill">Day 4</span></td><td>Exercise 4</td></tr>
+            <tr><td>Scripted model replies routed by content, for agents that run in parallel</td><td><span class="day-pill">Day 2</span></td><td>All exercises</td></tr>
+            <tr><td>Structured outputs, the tool loop, evals and paired comparisons</td><td><span class="day-pill">W1–W3</span></td><td>Earlier projects</td></tr>
+          </tbody>
+        </table>
+
+        <div class="callout tip"><b>This week's data</b>Download <a href="week-W4/norvale-trips.zip" download>⬇ norvale-trips.zip</a> and unzip it into <code>code/week-4/data/</code>. <i>Norvale</i> is a fictional region: <code>norvale.json</code> holds 15 towns, 18 roads, 17 chargers (with power, connectors, price and status: two are out of service), 3 vehicles and a small guidebook of places; <code>trips.json</code> holds 14 trip requests in plain English with the expected structured request and the expected result, two of which can't be driven at all. Everything is offline, so every "Check" below has an exact answer. Install: <code>pip install langgraph</code>.</div>
+      </div>
+    </section>
+
+    <!-- ================= DAY 1 ================= -->
+    <section class="day" id="d1" data-day="d1">
+      <div class="day-kicker">Day 1 · Monday on the Full-time pace · 4 hours</div>
+      <div class="day-head">
+        <h2>One agent or a team?</h2>
+        <label class="day-done check"><input type="checkbox" data-check="lessonDays|W4-d1"> Session done</label>
+      </div>
+      <ul class="parts session-plan">
+        <li class="part part-core"><span class="part-tag">Core · 2h</span>Where one agent breaks, workflow patterns, what belongs in code + Exercise 1</li>
+        <li class="part part-cert" data-track="cert"><span class="part-tag">Certification · 1h</span>Task 1.2: coordinator and subagents</li>
+        <li class="part part-ent" data-track="ent"><span class="part-tag">Enterprise · 1h</span>OAuth 2.0: roles, flows and PKCE</li>
+      </ul>
+
+      <h3 class="part-h part-core-h">Core · Splitting work, and what not to give a model at all</h3>
+      <div class="readings">
+        <div class="reading"><span class="kind must">Read</span><div><a href="https://www.anthropic.com/engineering/building-effective-agents" target="_blank" rel="noopener">Anthropic: Building effective agents ↗</a><p>The workflow patterns, and the advice to start with the simplest thing that works.</p></div></div>
+        <div class="reading"><span class="kind must">Read</span><div><a href="https://www.anthropic.com/engineering/multi-agent-research-system" target="_blank" rel="noopener">Anthropic: How we built our multi-agent research system ↗</a><p>A production team of agents, with its numbers and its failures.</p></div></div>
+        <div class="reading"><span class="kind must">Read</span><div><a href="https://cognition.com/blog/dont-build-multi-agents" target="_blank" rel="noopener">Cognition: Don't Build Multi-Agents ↗</a><p>The strongest argument against. Read it right after the Anthropic post.</p></div></div>
+      </div>
+      <div class="card summary" style="max-width:760px">
+        <h4 style="margin-top:0">Summary</h4>
+        <ul>
+          <li><b>Where one agent breaks down:</b> too many tools to choose from, a context that fills with every search result, and instructions for several jobs that pull against each other. Symptoms: wrong tool choices, forgotten constraints, and cost that grows with every turn.</li>
+          <li><b>Workflows vs agents</b> (Anthropic's definitions): in a <i>workflow</i>, code decides the path and models fill in steps; in an <i>agent</i>, the model decides its own steps and tool calls. The workflow patterns: <i>prompt chaining</i>, <i>routing</i>, <i>parallelization</i> (sectioning or voting), <i>orchestrator–workers</i>, <i>evaluator–optimizer</i>. Most "multi-agent systems" in production are one of these.</li>
+          <li><b>The case for a team:</b> Anthropic's research system (a lead agent on Claude Opus 4 with Sonnet 4 subagents) beat a single Opus 4 agent by 90.2% on their internal research eval, mostly by spending more tokens in parallel. Agents use about 4× the tokens of a chat, and their multi-agent system about 15×.</li>
+          <li><b>The case against:</b> Cognition's two principles: <i>share full context and traces</i>, and <i>actions carry implicit decisions</i>, so two agents deciding separately make conflicting choices. Anthropic agrees that tasks where every agent needs the same context, or with many dependencies between agents (most coding), fit badly.</li>
+          <li><b>The rule you'll use:</b> split when sub-tasks are <b>independent</b> (they can run in parallel without talking) and each needs <b>less</b> context than the whole. Keep one agent when steps depend on each other's decisions.</li>
+          <li><b>Code for math, models for language.</b> Routes, battery percentages, charging minutes and "is this charger working?" are deterministic: write them as functions, test them, and give them to agents as tools. A model that does arithmetic in its head will eventually get it wrong in front of a customer.</li>
+        </ul>
+      </div>
+
+      <div class="callout reality" style="max-width:760px">
+        <b>Production reality</b>
+        <ul style="margin:6px 0 0">
+          <li><b>Every agent is another bill.</b> Each sub-agent re-reads its own instructions and inputs on every call. A five-agent pipeline that looks tidy in a diagram can cost several times a single call; log tokens per agent from day one (Exercise 2 does).</li>
+          <li><b>Hand-offs lose information.</b> When a coordinator writes a one-line task for a sub-agent, everything it didn't write is gone. Cognition's example: two sub-agents asked to build parts of a Flappy Bird clone produced a Super Mario background and a bird that didn't match. Pass structured inputs, not prose summaries.</li>
+          <li><b>Greedy is optimal only for the simple case.</b> "Drive as far as possible, charge at the last charger before you run out" gives the fewest stops for one car on a fixed route. It does not minimize total time once charger speeds differ, and it can't choose between routes. Say which property your algorithm guarantees.</li>
+          <li><b>Data has holes.</b> Two of Norvale's 17 chargers are out of service, one town's only charger fits one connector type, and one mountain road is longer than a small car can drive. Real charger data is worse. Every plan needs an <b>independent validator</b> that re-checks it from the raw data.</li>
+          <li><b>"Can't be done" is a valid answer.</b> A planner that always returns a plan will invent one. Make infeasibility a first-class result with a reason, and try alternatives (another route) before giving up.</li>
+        </ul>
+      </div>
+      <div class="exercise">
+        <div class="ex-head"><span class="ex-tag">Exercise 1</span><h4>The deterministic core: routes, energy, charging</h4><span class="chip">~80 min</span></div>
+        <div class="prose">
+          <p>In <code>code/week-4/road_trip/network.py</code>, write the functions every agent will use as tools:</p>
+          <ol>
+            <li><code>load_network(path)</code> and <code>shortest_route(net, origin, destination, avoid_roads=frozenset())</code>: Dijkstra on kilometers, skipping roads named in <code>avoid_roads</code>. Return a <code>Route</code> with its towns and legs.</li>
+            <li><code>usable_chargers(net, town, connector)</code>: available chargers with the car's connector, fastest first.</li>
+            <li><code>charge_minutes(vehicle, charger, soc_from, soc_to)</code>: power is the lower of the charger's and the car's maximum; above 80% charge, speed drops to 40% of that power.</li>
+            <li><code>plan_charging(net, route, vehicle, start_soc, reserve=0.10, charge_to=0.80, towing=False)</code>: the greedy plan. Never arrive anywhere below the reserve; charge to 80%, or to 100% when 80% can't reach the next usable charger or the destination; you may charge at the origin. Return an infeasible plan with a reason when the trip can't be driven.</li>
+            <li><code>validate(net, route, vehicle, plan, start_soc, reserve, towing)</code>: re-check any plan leg by leg (reserve, charger status, connector) and return a list of problems.</li>
+          </ol>
+          <p class="expected"><b>Check:</b> Ashford → Kestrel Point is <b>540 km</b> via Millbrook, Harlow, Ironbridge and Fairhaven. For the Voltra City at 90%: stop at <b>CH-10</b> in Harlow (26% → 100%, 31 minutes: Ironbridge's only charger is NACS, and 80% can't reach Fairhaven) and <b>CH-08</b> in Fairhaven (20% → 80%, 18 minutes); arrival at 51%; <code>validate</code> returns <code>[]</code>. <code>charge_minutes</code> for 20% → 80% on a 350 kW charger is 18.0 minutes, and 80% → 100% is 15.0. Cedar Falls → Wolf Ridge in the Voltra City at 90% is infeasible: from Glenrock nothing is in range, even at 100%.</p>
+        </div>
+        <div class="hints" data-hints="W4-ex1">
+          <div class="hint" data-level="Concept">Keep cumulative kilometers along the route (<code>cum[j] - cum[i]</code> is the distance between towns i and j), and a helper that returns the charge after driving from i to j. Greedy loop: if the destination is reachable with the reserve, stop; otherwise pick the <b>farthest</b> town with a usable charger you can reach, charge there, repeat. For Dijkstra, push <code>(distance, town, path)</code> onto a heap; ties then break alphabetically, which keeps results deterministic.</div>
+          <div class="hint solution" data-level="Full solution">
+<pre><code>"""Deterministic trip math: routes, energy and charging stops. No model calls here."""
+import heapq
+import json
+from dataclasses import dataclass, field
+from pathlib import Path
+
+TAPER_FROM = 0.80          # above 80% state of charge, charging slows down...
+TAPER_SPEED = 0.40         # ...to 40% of the power
+DRIVE_KMH = 80             # average speed for time estimates
+
+
+@dataclass
+class Network:
+    towns: list[str]
+    roads: dict[str, list[tuple[str, int, str]]]     # town -&gt; [(neighbor, km, road name)]
+    chargers: list[dict]
+    vehicles: dict[str, dict]
+    places: list[dict]
+
+
+def load_network(path: Path) -&gt; Network:
+    raw = json.loads(Path(path).read_text())
+    roads: dict[str, list] = {t: [] for t in raw["towns"]}
+    for r in raw["roads"]:
+        roads[r["a"]].append((r["b"], r["km"], r["road"]))
+        roads[r["b"]].append((r["a"], r["km"], r["road"]))
+    return Network(raw["towns"], roads, raw["chargers"], {v["id"]: v for v in raw["vehicles"]}, raw["places"])
+
+
+@dataclass
+class Route:
+    towns: list[str]
+    legs: list[tuple[str, str, int, str]]            # (from, to, km, road)
+
+    @property
+    def km(self) -&gt; int:
+        return sum(leg[2] for leg in self.legs)
+
+
+def shortest_route(net: Network, origin: str, destination: str, avoid_roads: frozenset = frozenset()) -&gt; Route:
+    """Dijkstra on road km, skipping any road named in avoid_roads. Ties break alphabetically."""
+    for town in (origin, destination):
+        if town not in net.roads:
+            raise ValueError(f"unknown town: {town}")
+    queue, done = [(0, origin, [origin])], set()
+    while queue:
+        dist, town, path = heapq.heappop(queue)
+        if town == destination:
+            legs = []
+            for a, b in zip(path, path[1:]):
+                km, road = next((k, r) for n, k, r in net.roads[a] if n == b)
+                legs.append((a, b, km, road))
+            return Route(path, legs)
+        if town in done:
+            continue
+        done.add(town)
+        for nxt, km, road in net.roads[town]:
+            if nxt not in done and road not in avoid_roads:
+                heapq.heappush(queue, (dist + km, nxt, path + [nxt]))
+    raise ValueError(f"no road from {origin} to {destination}")
+
+
+def kwh_per_km(vehicle: dict, towing: bool = False) -&gt; float:
+    factor = vehicle.get("towing_factor", 1.0) if towing else 1.0
+    return vehicle["kwh_per_100km"] / 100 * factor
+
+
+def usable_chargers(net: Network, town: str, connector: str) -&gt; list[dict]:
+    """Chargers in a town that work and fit the car, fastest first."""
+    return sorted((c for c in net.chargers if c["town"] == town and c["status"] == "available"
+                   and connector in c["connectors"]), key=lambda c: (-c["power_kw"], c["id"]))
+
+
+def charge_minutes(vehicle: dict, charger: dict, soc_from: float, soc_to: float) -&gt; float:
+    power = min(charger["power_kw"], vehicle["max_charge_kw"])
+    below = max(0.0, min(soc_to, TAPER_FROM) - soc_from) * vehicle["battery_kwh"]
+    above = max(0.0, soc_to - max(soc_from, TAPER_FROM)) * vehicle["battery_kwh"]
+    return (below / power + above / (power * TAPER_SPEED)) * 60
+
+
+@dataclass
+class Stop:
+    town: str
+    charger_id: str
+    arrive_soc: float
+    depart_soc: float
+    kwh: float
+    minutes: float
+    cost: float
+
+
+@dataclass
+class ChargePlan:
+    feasible: bool
+    stops: list[Stop] = field(default_factory=list)
+    arrival_soc: float = 0.0
+    reason: str = ""
+
+    @property
+    def charging_minutes(self) -&gt; float:
+        return sum(s.minutes for s in self.stops)
+
+
+def plan_charging(net: Network, route: Route, vehicle: dict, start_soc: float, reserve: float = 0.10,
+                  charge_to: float = 0.80, towing: bool = False) -&gt; ChargePlan:
+    """Greedy: drive as far as the reserve allows, charge at the farthest usable charger before that point.
+    For one car on a fixed route this gives the fewest stops."""
+    per_km = kwh_per_km(vehicle, towing)
+    towns, cum = route.towns, [0]
+    for leg in route.legs:
+        cum.append(cum[-1] + leg[2])
+
+    def soc_after(i: int, j: int, soc: float) -&gt; float:          # drive from town i to town j
+        return soc - (cum[j] - cum[i]) * per_km / vehicle["battery_kwh"]
+
+    def chargers_at(j: int) -&gt; list[dict]:
+        return usable_chargers(net, towns[j], vehicle["connector"])
+
+    stops, i, soc = [], 0, start_soc
+    while True:
+        if soc_after(i, len(towns) - 1, soc) &gt;= reserve:
+            return ChargePlan(True, stops, round(soc_after(i, len(towns) - 1, soc), 3))
+        first = i if not stops and i == 0 else i + 1          # the origin's own charger counts, once
+        reachable = [j for j in range(first, len(towns) - 1)
+                     if (j == i or soc_after(i, j, soc) &gt;= reserve) and chargers_at(j)]
+        if not reachable:
+            return ChargePlan(False, stops, reason=f"no usable charger within range after {towns[i]}")
+        j = reachable[-1]
+        if j == i and soc &gt;= charge_to:
+            return ChargePlan(False, stops, reason=f"no usable charger within range after {towns[i]}")
+        arrive = soc_after(i, j, soc)
+        target = charge_to
+        # if charge_to can't reach any usable charger or the destination beyond j, charge fuller
+        def progress(depart: float) -&gt; bool:
+            if soc_after(j, len(towns) - 1, depart) &gt;= reserve:
+                return True
+            return any(soc_after(j, k, depart) &gt;= reserve and chargers_at(k) for k in range(j + 1, len(towns) - 1))
+        if not progress(target):
+            target = 1.0
+            if not progress(target):
+                return ChargePlan(False, stops, reason=f"from {towns[j]}, no usable charger or the destination is in range, even at 100%")
+        charger = chargers_at(j)[0]
+        depart = max(arrive, target)
+        kwh = (depart - arrive) * vehicle["battery_kwh"]
+        stops.append(Stop(towns[j], charger["id"], round(arrive, 3), round(depart, 3), round(kwh, 1),
+                          round(charge_minutes(vehicle, charger, arrive, depart), 1),
+                          round(kwh * charger["price_per_kwh"], 2)))
+        i, soc = j, depart
+
+
+def validate(net: Network, route: Route, vehicle: dict, plan: ChargePlan, start_soc: float,
+             reserve: float = 0.10, towing: bool = False) -&gt; list[str]:
+    """Independent checks the critic runs on ANY plan, including one a model edited."""
+    problems, per_km = [], kwh_per_km(vehicle, towing)
+    by_id = {c["id"]: c for c in net.chargers}
+    stops = {s.town: s for s in plan.stops}
+    soc = start_soc
+    if route.towns[0] in stops:                                  # charging before leaving
+        soc = max(soc, stops[route.towns[0]].depart_soc)
+    for a, b, km, _ in route.legs:
+        soc -= km * per_km / vehicle["battery_kwh"]
+        if soc &lt; reserve - 1e-9:
+            problems.append(f"arrives in {b} with {soc:.0%}, below the {reserve:.0%} reserve")
+        if b in stops:
+            s = stops[b]
+            c = by_id.get(s.charger_id)
+            if c is None or c["town"] != b:
+                problems.append(f"{s.charger_id} is not a charger in {b}")
+            else:
+                if c["status"] != "available":
+                    problems.append(f"{c['id']} in {b} is {c['status']}")
+                if vehicle["connector"] not in c["connectors"]:
+                    problems.append(f"{c['id']} in {b} has no {vehicle['connector']} connector")
+            if s.depart_soc &gt; 1.0:
+                problems.append(f"departs {b} above 100%")
+            soc = max(soc, s.depart_soc)
+    unknown = [s.town for s in plan.stops if s.town not in route.towns]
+    problems += [f"stop in {t} is not on the route" for t in unknown]
+    return problems</code></pre></div>
+        </div>
+        <div class="ex-foot"><label class="done-toggle check"><input type="checkbox" data-check="exercises|W4-ex1"> <span class="check-text">Exercise 1 done</span></label></div>
+      </div>
+
+      <div data-track="cert">
+        <h3 class="part-h part-cert-h">Certification · Task 1.2: coordinator and subagents</h3>
+        <div class="card summary" style="max-width:760px">
+          <ul style="margin:0">
+            <li><b>Hub and spoke:</b> a coordinator (the main agent) delegates focused tasks to subagents and combines their results. Subagents report to the coordinator, not to each other.</li>
+            <li><b>Isolated context:</b> in the Claude Agent SDK, a subagent starts with a fresh conversation. It gets its own system prompt and the <i>prompt string the coordinator wrote for it</i>, not the parent's history, tool results or system prompt. Its intermediate tool calls stay inside it; only its final message returns to the parent.</li>
+            <li><b>Why that matters:</b> a subagent can read dozens of files without filling the coordinator's context, and it can't use facts it was never given. Exam questions often describe a subagent that "forgot" something the user said: the coordinator never passed it.</li>
+            <li><b>Specialized and restricted:</b> each subagent gets its own instructions and can be limited to a few tools (a reviewer that can read but not edit).</li>
+          </ul>
+        </div>
+        <div class="prose">
+          <p><b>Task:</b> read the SDK's subagent guide. Then write, in your notes, the exact prompt a coordinator should send to a "stop-guide" subagent for the Harlow stop of the Voltra City trip: everything it needs (town, minutes available, interests, the rule "only guidebook places"), and nothing it doesn't.</p>
+        </div>
+        <div class="readings">
+          <div class="reading"><span class="kind must">Read</span><div><a href="https://code.claude.com/docs/en/agent-sdk/subagents" target="_blank" rel="noopener">Claude Agent SDK: subagents ↗</a></div></div>
+          <div class="reading"><span class="kind">Course</span><div><a href="https://anthropic.skilljar.com/introduction-to-subagents" target="_blank" rel="noopener">Course: Introduction to subagents (free) ↗</a></div></div>
+        </div>
+      </div>
+
+      <div data-track="ent">
+        <h3 class="part-h part-ent-h">Enterprise · OAuth 2.0: roles, flows and PKCE</h3>
+        <div class="prose">
+          <p>Every enterprise integration you build asks "who is calling, and what may they do?" OAuth 2.0 answers the second half with <b>access tokens</b>. The roles: the <i>resource owner</i> (the user), the <i>client</i> (your app or agent), the <i>authorization server</i> (Okta, Entra ID) and the <i>resource server</i> (the API). Two flows cover most FDE work: the <b>authorization code flow with PKCE</b> when a user signs in, and <b>client credentials</b> when a service acts as itself. The current security guidance (RFC 9700, January 2025) says clients should not use the implicit grant, public clients must use PKCE (and it's recommended for all), and the password grant must not be used at all.</p>
+          <p><b>PKCE</b> in one line: the client makes a random <i>verifier</i>, sends its SHA-256 hash (the <i>challenge</i>) with the login request, and sends the verifier itself when it exchanges the code, so a stolen code is useless. <b>Task:</b> write <code>code_challenge(verifier)</code> (SHA-256, then base64url without padding) and check it against RFC 7636's own example: verifier <code>dBjftJeZ4CVP-mB92K27uhbUJU1p1r_wW1gFWFOEjXk</code> gives <code>E9Melhoa2OwvFrEMTJguCHaoeK1t8URWbuGJSstw-cM</code>.</p>
+        </div>
+        <div class="readings">
+          <div class="reading"><span class="kind must">Read</span><div><a href="https://oauth.net/2/" target="_blank" rel="noopener">OAuth 2.0 overview ↗</a> · <a href="https://datatracker.ietf.org/doc/rfc9700/" target="_blank" rel="noopener">RFC 9700: OAuth 2.0 security best practice ↗</a> · <a href="https://datatracker.ietf.org/doc/html/rfc7636" target="_blank" rel="noopener">RFC 7636: PKCE ↗</a></div></div>
+        </div>
+      </div>
+
+      <div class="prose"><h3>Mini-quiz</h3></div>
+      <div class="quiz mini" data-quiz="W4-d1"></div>
+      <script type="application/json" data-quiz-for="W4-d1">[{"id": "h1", "q": "Norvale's data team fixes a record: CH-11 in Ironbridge also has a CCS connector. Nothing else changes. What does <code>plan_charging<\/code> now return for Ashford → Kestrel Point in the Voltra City at 90% (reserve 10%, charge_to 80%)?<pre><code>chargers[CH-11][\"connectors\"] = [\"CCS\", \"NACS\"]   # was [\"NACS\"]\nplan = plan_charging(net, route, net.vehicles[\"voltra-city\"], 0.9)<\/code><\/pre>", "options": ["The same two stops: greedy gives the fewest stops, so CH-10 to 100% and CH-08 still win", "Two stops: CH-10 to 80%, then CH-11 to 100%, which reaches Kestrel Point with 23% left", "Three stops, each to 80%: CH-10, CH-11, CH-08; charging time drops from 49.2 to 40.2 minutes", "Two stops: CH-11 to 80%, then CH-08 to 80%, skipping Harlow now that Ironbridge works"], "answer": 2, "why": "Trace the loop. From Ashford at 90%, Harlow (26%) is the farthest charger in range; Ironbridge would be −6%. At Harlow, 80% now reaches a usable charger (Ironbridge, at 48%), so the plan no longer needs 100% there. From Ironbridge, 80% can't reach Kestrel Point (3%) but reaches Fairhaven (32%), so it charges to 80% again, and again at Fairhaven. The two-stop plan with CH-11 to 100% exists (arrival 23%), but this greedy never picks it: it charges to 80% whenever 80% makes progress, so \"fewest stops\" only holds when you charge full. Skipping Harlow is impossible, because Ashford at 90% can't reach Ironbridge. Say which property your algorithm guarantees."}, {"id": "h2", "q": "The Aurel Tourer (82 kWh battery, max 250 kW) charges from 10% to 100% at CH-08, a 350 kW charger. What does <code>charge_minutes<\/code> return?<pre><code>power = min(charger[\"power_kw\"], vehicle[\"max_charge_kw\"])\nbelow = max(0.0, min(soc_to, 0.80) - soc_from) * vehicle[\"battery_kwh\"]\nabove = max(0.0, soc_to - max(soc_from, 0.80)) * vehicle[\"battery_kwh\"]\nreturn (below / power + above / (power * 0.40)) * 60<\/code><\/pre>", "options": ["About 23.6 min: 57.4 kWh at 250 kW, then 16.4 kWh above 80% at 100 kW", "About 12.7 min: all 73.8 kWh at the charger's 350 kW, the power it's rated for", "About 17.7 min: 73.8 kWh at the car's 250 kW limit, since the charger is faster than the car", "About 16.9 min: 57.4 kWh at 350 kW, then 16.4 kWh above 80% at 140 kW"], "answer": 0, "why": "Power is the lower of charger and car: 250 kW. From 10% to 80% is 0.7 × 82 = 57.4 kWh at 250 kW, 13.8 min; from 80% to 100% is 16.4 kWh at 40% of 250 kW (100 kW), 9.8 min; 23.6 min in total. 17.7 min ignores the taper above 80%. 16.9 min applies the taper but uses the charger's 350 kW, which the car can't accept. 12.7 min makes both mistakes. The last 20% takes almost as long as the first 70%, which is why the planner charges to 80% by default."}, {"id": "h3", "q": "A customer asks which of four projects should be built as a team of agents, and what it will cost compared with their chat assistant. Using Anthropic's research-system numbers and Cognition's warnings, what's the best answer?", "options": ["Due diligence on 12 unrelated vendors: parallel agents cost about the same as one, only faster", "A 4-step contract review where each step needs the last: one agent per step, cheapest option", "Code migration of 40 files: give each agent a set of files; cost is about 4x chat, like any agent", "Due diligence on 12 unrelated vendors: parallel, separate sub-tasks; expect about 15x chat tokens"], "answer": 3, "why": "Split when sub-tasks are independent and each needs less context than the whole: 12 unrelated vendors fit. Anthropic's lead-plus-subagents system beat a single agent by 90.2% on its research eval, mostly by spending more tokens (token usage alone explained about 80% of the variance); agents use about 4x the tokens of a chat, multi-agent systems about 15x. So parallel agents are not cost-neutral here: the gain comes from the extra tokens. Interdependent file changes are the case Cognition and Anthropic both say fits badly (actions carry implicit decisions). A chain where each step needs the previous one is prompt chaining, a workflow; one agent per step adds hand-offs, not value."}, {"id": "h4", "q": "(Enterprise) A teammate's PKCE helper fails the RFC 7636 test (verifier <code>dBjftJeZ4CVP-mB92K27uhbUJU1p1r_wW1gFWFOEjXk<\/code> should give <code>E9Melhoa2OwvFrEMTJguCHaoeK1t8URWbuGJSstw-cM<\/code>). What's wrong, and what happens if it ships?<pre><code>def code_challenge(verifier: str) -&gt; str:\n    digest = hashlib.sha256(verifier.encode(\"ascii\")).digest()\n    return base64.urlsafe_b64encode(digest).decode(\"ascii\")\n# returns \"E9Melhoa2OwvFrEMTJguCHaoeK1t8URWbuGJSstw-cM=\"<\/code><\/pre>", "options": ["The verifier is too short: RFC 7636 needs 64 characters or more, so the server rejects the login", "The = padding isn't stripped; the server's own S256 value never matches, so no code can be exchanged", "S256 expects the hex digest of the verifier, not base64, so the challenge has the wrong alphabet", "Nothing serious: servers strip base64 padding before comparing, so only the unit test fails"], "answer": 1, "why": "S256 is BASE64URL(SHA-256(verifier)) without padding. At the code exchange the server hashes the verifier it receives and compares the result with the stored challenge; a trailing = makes the strings differ, so every login ends in a failed exchange. Don't count on servers normalizing it: the RFC defines the exact string. The hex digest is a different encoding entirely. The verifier is 43 characters, the minimum RFC 7636 allows (43 to 128). RFC 9700 makes PKCE a MUST for public clients and recommends it for all; this bug would break every one of them."}]</script>
+    </section>
+
+    <!-- ================= DAY 2 ================= -->
+    <section class="day" id="d2" data-day="d2">
+      <div class="day-kicker">Day 2 · Tuesday on the Full-time pace · 4 hours</div>
+      <div class="day-head">
+        <h2>A team in plain Python</h2>
+        <label class="day-done check"><input type="checkbox" data-check="lessonDays|W4-d2"> Session done</label>
+      </div>
+      <ul class="parts session-plan">
+        <li class="part part-core"><span class="part-tag">Core · 2h</span>Typed hand-offs, sliced context, a critic made of code + Exercise 2</li>
+        <li class="part part-cert" data-track="cert"><span class="part-tag">Certification · 1h</span>Task 1.3: configuring and invoking subagents</li>
+        <li class="part part-ent" data-track="ent"><span class="part-tag">Enterprise · 1h</span>OpenID Connect: ID tokens and what to check</li>
+      </ul>
+
+      <h3 class="part-h part-core-h">Core · Hand-offs you can test</h3>
+      <div class="readings">
+        <div class="reading"><span class="kind must">Read</span><div><a href="https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents" target="_blank" rel="noopener">Anthropic: Effective context engineering for AI agents ↗</a><p>Context is a budget: what each agent sees decides what it can do.</p></div></div>
+        <div class="reading"><span class="kind">Watch</span><div><a href="https://www.youtube.com/watch?v=D7_ipDqhtwk" target="_blank" rel="noopener">Talk: How we build effective agents (Anthropic, 15 min) ↗</a></div></div>
+      </div>
+      <div class="card summary" style="max-width:760px">
+        <h4 style="margin-top:0">Summary</h4>
+        <ul>
+          <li><b>Five roles for P3:</b> an <i>intake</i> agent turns the driver's words into a <code>TripSpec</code>; the <i>planner</i> is code (Day 1); one <i>stop guide</i> per charging stop suggests what to do there; a <i>writer</i> turns the plan into an itinerary; a <i>critic</i> checks the result. Only three of the five need a model.</li>
+          <li><b>Hand-offs are data, not prose.</b> Each agent returns a Pydantic model (structured output, Week 0C), and the next one receives exactly the fields it needs. You can test every boundary without a model.</li>
+          <li><b>Slice the context.</b> A stop guide needs one town's guidebook entries, the minutes available and the interests: about 165 characters. The trip's spec, route and plan plus every charger and place come to about 5,200. Less context means lower cost and fewer ways to go wrong.</li>
+          <li><b>The critic is code where it can be.</b> "Does the itinerary mention exactly the planned chargers?" and "does every leg keep the reserve?" are checks, not opinions. A model critic can be argued with; a failing assert can't. That's the <i>evaluator–optimizer</i> pattern with a deterministic evaluator.</li>
+          <li><b>Bound every loop.</b> Writer → critic → writer runs at most three times, then hands the problem to a human. An unbounded revision loop is how agent bills explode.</li>
+          <li><b>Test parallel agents by content, not order.</b> Scripted replies that pop from one queue break as soon as two agents run at once. Route each fake reply by something in the request (the instructions, or the town name).</li>
+        </ul>
+      </div>
+
+      <div class="callout reality" style="max-width:760px">
+        <b>Production reality</b>
+        <ul style="margin:6px 0 0">
+          <li><b>Intake errors poison everything downstream.</b> "90% charged" parsed as <code>0.09</code> produces a perfectly valid plan for the wrong trip. Evaluate the intake agent on its own, field by field (Weekend 2), and echo the parsed request back to the user.</li>
+          <li><b>Models invent names.</b> A stop guide asked for "something to do" will happily suggest a restaurant that doesn't exist. Give it the list, tell it to choose only from the list, and check its answer against the list in code.</li>
+          <li><b>The writer changes numbers.</b> Asked to "write nicely", models round 26% to "about a quarter" or swap charger ids. Give the writer a structured view with the exact values, forbid changing them, and let the critic compare ids and numbers.</li>
+          <li><b>Log per agent.</b> Record input and output tokens (and input size) for every call, tagged with the agent's name. When the bill doubles, you need to know which agent did it.</li>
+          <li><b>Fail loudly on refusals.</b> A structured call can come back with no parsed output (a refusal or a cut-off answer). Raise with the agent's name; a <code>None</code> passed along turns into a confusing error three agents later.</li>
+        </ul>
+      </div>
+      <div class="exercise">
+        <div class="ex-head"><span class="ex-tag">Exercise 2</span><h4>Intake, stop guides, writer and critic, wired by hand</h4><span class="chip">~80 min</span></div>
+        <div class="prose">
+          <ol>
+            <li>In <code>agents.py</code>: <code>TripSpec</code>, <code>StopIdeas</code> and <code>Itinerary</code> models; a <code>call(client, agent, instructions, payload, schema)</code> helper that returns the parsed output plus a usage record (agent name, tokens, input size); and the three agents <code>intake</code>, <code>stop_ideas</code> (whose input is built by <code>stop_context</code>: one town only) and <code>write_itinerary</code>.</li>
+            <li>In <code>planning.py</code>: <code>plan_trip(net, spec)</code> runs the Day 1 planner and, if the shortest route is infeasible, tries avoiding each of its roads in turn and keeps the fastest feasible alternative (80 km/h plus charging time).</li>
+            <li>In <code>critic.py</code>: <code>review(...)</code> runs <code>validate</code> and compares the charger ids in the itinerary text with the plan.</li>
+            <li>In <code>pipeline.py</code>: <code>run_trip(client, net, request, profile=None)</code> calls them in order, with at most 2 revisions.</li>
+            <li>In <code>tests/fakes.py</code>: a <code>routed_client</code> that picks the scripted reply by a text found in the request.</li>
+          </ol>
+          <p class="expected"><b>Check:</b> <code>stop_context(net, "Harlow", 31.2, ["food"])</code> is about 165 characters and mentions neither Fairhaven nor the car. With a scripted writer that first names CH-11 (not in the plan), the critic returns <code>["itinerary never mentions CH-08", "itinerary mentions CH-11, which is not in the plan"]</code>, the writer is called a second time with those problems in its input, and the result is <code>"ok"</code>. Dunmore → Juniper Bay in the Voltra City at 100% is infeasible on the 365 km coast road; <code>plan_trip</code> finds the 420 km route through Fairhaven instead.</p>
+        </div>
+        <div class="hints" data-hints="W4-ex2">
+          <div class="hint" data-level="Concept">Put the router key that is unique to an agent's <i>instructions</i> first: the writer's input also contains town names, so a fake that checks "Harlow" before the writer's instructions will answer the writer with a stop guide's reply. In the pipeline, keep the critic's problems in a variable and pass them into the next writer call.</div>
+          <div class="hint solution" data-level="Full solution">
+<pre><code>"""The model-backed agents. Each one gets only the context it needs, and returns structured output."""
+import json
+from dataclasses import asdict
+
+from pydantic import BaseModel, Field
+
+from road_trip.network import Network
+
+MODEL = "gpt-6-luna"
+
+
+class TripSpec(BaseModel):
+    origin: str
+    destination: str
+    vehicle_id: str
+    start_soc: float = Field(ge=0, le=1, description="state of charge at departure, 0 to 1")
+    reserve: float = Field(default=0.10, ge=0.05, le=0.5, description="minimum charge on arrival anywhere")
+    towing: bool = False
+    interests: list[str] = Field(default_factory=list, description="food, nature, history")
+
+
+class StopIdeas(BaseModel):
+    town: str
+    places: list[str]            # names from the guidebook only
+    note: str
+
+
+class Itinerary(BaseModel):
+    summary: str
+    steps: list[str]
+
+
+def call(client, agent: str, instructions: str, payload: str, schema):
+    """One structured model call. Returns (parsed, usage record) so the graph can total cost per agent."""
+    r = client.responses.parse(model=MODEL, instructions=instructions, input=payload,
+                               reasoning={"effort": "low"}, text_format=schema)
+    if r.output_parsed is None:
+        raise RuntimeError(f"{agent}: no structured output (refusal or truncation)")
+    usage = {"agent": agent, "input_tokens": r.usage.input_tokens, "output_tokens": r.usage.output_tokens,
+             "input_chars": len(instructions) + len(payload)}
+    return r.output_parsed, usage
+
+
+INTAKE = """You turn a driver's trip request into a TripSpec for Norvale's EV trip planner.
+Use only these town names: {towns}. Use only these vehicle ids: {vehicles}.
+If the driver gives a battery percentage, convert it to a fraction (80% -&gt; 0.8).
+If they say they are towing, set towing to true. Keep interests to: food, nature, history.
+If the driver's profile below has a vehicle or interests and the request doesn't mention them, use the profile."""
+
+
+def intake(client, net: Network, request: str, profile: dict | None = None):
+    instructions = INTAKE.format(towns=", ".join(net.towns), vehicles=", ".join(net.vehicles))
+    payload = f"Profile: {json.dumps(profile or {})}\nRequest: {request}"
+    return call(client, "intake", instructions, payload, TripSpec)
+
+
+STOP = """You suggest what to do during ONE charging stop on an EV road trip.
+Choose at most two places from the guidebook entries given, and only ones that fit in the time available.
+Prefer the driver's interests. Never invent a place that isn't listed. If nothing fits, return no places."""
+
+
+def stop_context(net: Network, town: str, minutes: float, interests: list[str]) -&gt; str:
+    """Context engineering: this agent sees one town's places, the time, and the interests. Nothing else."""
+    places = [p for p in net.places if p["town"] == town]
+    return json.dumps({"town": town, "minutes_available": round(minutes), "interests": interests, "guidebook": places})
+
+
+def stop_ideas(client, net: Network, town: str, minutes: float, interests: list[str]):
+    return call(client, f"stop:{town}", STOP, stop_context(net, town, minutes, interests), StopIdeas)
+
+
+WRITER = """You write a short, practical itinerary for an EV road trip from the plan given.
+Use the exact charger ids, towns, percentages and minutes from the plan; never change or add numbers.
+One step per leg or stop. Mention the places suggested for each stop."""
+
+
+def write_itinerary(client, plan_view: dict, feedback: list[str]):
+    payload = json.dumps(plan_view) + (f"\nFix these problems from review: {feedback}" if feedback else "")
+    return call(client, "writer", WRITER, payload, Itinerary)
+
+
+def plan_view(spec: TripSpec, route, plan, ideas: list[dict]) -&gt; dict:
+    """The compact, structured view the writer and the critic both read."""
+    return {"trip": f"{spec.origin} to {spec.destination}", "km": route.km, "vehicle": spec.vehicle_id,
+            "start_soc": spec.start_soc, "arrival_soc": plan.arrival_soc,
+            "stops": [{**asdict(s), "ideas": next((i["places"] for i in ideas if i["town"] == s.town), [])}
+                      for s in plan.stops]}</code></pre>
+<pre><code>"""Route and charging, with a fallback: if the shortest route can't be driven, try avoiding one road at a time."""
+from road_trip.network import DRIVE_KMH, Network, plan_charging, shortest_route
+
+
+def plan_trip(net: Network, spec) -&gt; tuple:
+    vehicle = net.vehicles[spec.vehicle_id]
+    route = shortest_route(net, spec.origin, spec.destination)
+    plan = plan_charging(net, route, vehicle, spec.start_soc, spec.reserve, towing=spec.towing)
+    if plan.feasible:
+        return route, plan, []
+    tried = [f"{route.km} km via {', '.join(route.towns)}: {plan.reason}"]
+    options = []
+    for road in sorted({leg[3] for leg in route.legs}):
+        try:
+            alt = shortest_route(net, spec.origin, spec.destination, frozenset({road}))
+        except ValueError:
+            continue
+        alt_plan = plan_charging(net, alt, vehicle, spec.start_soc, spec.reserve, towing=spec.towing)
+        if alt_plan.feasible:
+            options.append((alt.km / DRIVE_KMH * 60 + alt_plan.charging_minutes, alt, alt_plan))   # total minutes
+    if options:
+        _, route, plan = min(options, key=lambda o: o[0])
+    return route, plan, tried</code></pre>
+<pre><code>"""Programmatic gates: the critic is code, so it can't be talked out of a failed check."""
+import re
+
+from road_trip.network import validate
+
+
+def review(net, route, vehicle: dict, plan, spec, itinerary_text: str) -&gt; list[str]:
+    problems = validate(net, route, vehicle, plan, spec.start_soc, spec.reserve, spec.towing)
+    planned = {s.charger_id for s in plan.stops}
+    mentioned = set(re.findall(r"CH-\d{2}", itinerary_text))
+    problems += [f"itinerary never mentions {c}" for c in sorted(planned - mentioned)]
+    problems += [f"itinerary mentions {c}, which is not in the plan" for c in sorted(mentioned - planned)]
+    return problems</code></pre>
+<pre><code>"""Day 1: the whole team in plain Python. Every hand-off is an explicit, typed value."""
+from road_trip import agents
+from road_trip.critic import review
+from road_trip.planning import plan_trip
+
+MAX_REVISIONS = 2
+
+
+def run_trip(client, net, request: str, profile: dict | None = None) -&gt; dict:
+    usage = []
+    spec, u = agents.intake(client, net, request, profile)
+    usage.append(u)
+    route, plan, tried = plan_trip(net, spec)
+    if not plan.feasible:
+        return {"status": "infeasible", "reason": plan.reason, "tried": tried, "usage": usage}
+    ideas = []
+    for stop in plan.stops:                                   # sequential here; parallel on Day 3
+        idea, u = agents.stop_ideas(client, net, stop.town, stop.minutes, spec.interests)
+        ideas.append(idea.model_dump())
+        usage.append(u)
+    view = agents.plan_view(spec, route, plan, ideas)
+    feedback: list[str] = []
+    for attempt in range(MAX_REVISIONS + 1):
+        itinerary, u = agents.write_itinerary(client, view, feedback)
+        usage.append(u)
+        text = itinerary.summary + "\n" + "\n".join(itinerary.steps)
+        feedback = review(net, route, net.vehicles[spec.vehicle_id], plan, spec, text)
+        if not feedback:
+            return {"status": "ok", "itinerary": text, "view": view, "tried": tried, "usage": usage}
+    return {"status": "needs_human", "problems": feedback, "itinerary": text, "usage": usage}</code></pre>
+<pre><code>"""Fake Responses API replies, routed by content, so parallel agents can be tested with no network."""
+import itertools
+import json
+import threading
+
+import httpx
+from openai import OpenAI
+
+_ids = itertools.count(1)
+USAGE = {"input_tokens": 100, "output_tokens": 20, "total_tokens": 120,
+         "input_tokens_details": {"cached_tokens": 0}, "output_tokens_details": {"reasoning_tokens": 0}}
+
+
+def reply(obj: dict) -&gt; dict:
+    """A completed response whose text is the JSON of obj (what responses.parse reads)."""
+    n = next(_ids)
+    return {"id": f"resp_{n}", "object": "response", "created_at": 0, "model": "gpt-6-luna",
+            "status": "completed", "usage": USAGE, "parallel_tool_calls": True, "tool_choice": "auto", "tools": [],
+            "output": [{"type": "message", "id": f"msg_{n}", "status": "completed", "role": "assistant",
+                        "content": [{"type": "output_text", "text": json.dumps(obj), "annotations": []}]}]}
+
+
+def routed_client(routes: dict[str, list[dict]], requests: list | None = None) -&gt; OpenAI:
+    """routes maps a text that appears in the request (instructions + input) to a queue of replies.
+    Parallel calls may arrive in any order, so we route by content instead of by position."""
+    lock = threading.Lock()
+    queues = {k: list(v) for k, v in routes.items()}
+
+    def handler(request: httpx.Request) -&gt; httpx.Response:
+        body = json.loads(request.content)
+        text = str(body.get("instructions", "")) + json.dumps(body.get("input", ""))
+        with lock:
+            if requests is not None:
+                requests.append(body)
+            key = next((k for k in queues if k in text), None)
+            if key is None or not queues[key]:
+                return httpx.Response(500, json={"error": {"message": f"no scripted reply for: {text[:120]}"}})
+            return httpx.Response(200, json=reply(queues[key].pop(0)))
+
+    return OpenAI(api_key="test", max_retries=0, http_client=httpx.Client(transport=httpx.MockTransport(handler)))
+
+
+class FakeBooking:
+    def __init__(self):
+        self.calls = []
+
+    def reserve(self, charger_id: str, user_id: str) -&gt; str:
+        self.calls.append((charger_id, user_id))
+        return f"R-{charger_id}"</code></pre></div>
+        </div>
+        <div class="ex-foot"><label class="done-toggle check"><input type="checkbox" data-check="exercises|W4-ex2"> <span class="check-text">Exercise 2 done</span></label></div>
+      </div>
+
+      <div data-track="cert">
+        <h3 class="part-h part-cert-h">Certification · Task 1.3: configuring and invoking subagents</h3>
+        <div class="card summary" style="max-width:760px">
+          <ul style="margin:0">
+            <li><b>Definition:</b> an <code>AgentDefinition</code> has a <code>description</code> (tells the coordinator <i>when</i> to use it; required), a <code>prompt</code> (its system prompt; required), and optionally <code>tools</code>, <code>model</code> and <code>maxTurns</code>. Pass them in <code>ClaudeAgentOptions(agents={...})</code>.</li>
+            <li><b>Invocation:</b> the coordinator calls subagents through the <code>Agent</code> tool (shown as <code>Task</code> in older versions), which must be allowed. Claude picks a subagent from its description, or you name it in the prompt to force it.</li>
+            <li><b>Explicit context passing:</b> the only thing that travels from parent to subagent is the Agent tool's prompt string. File paths, decisions, constraints and earlier results must be written into it.</li>
+            <li><b>Tool restriction:</b> a tool not listed in <code>tools</code> simply doesn't exist for that subagent. Give each one the smallest set that does its job.</li>
+          </ul>
+        </div>
+        <div class="prose">
+          <p><b>Task:</b> write (don't run yet) two <code>AgentDefinition</code>s for P3, "charging-planner" and "stop-guide", with descriptions that make the choice obvious and a minimal tool list each. You'll run them in Saturday's lab.</p>
+        </div>
+      </div>
+
+      <div data-track="ent">
+        <h3 class="part-h part-ent-h">Enterprise · OpenID Connect: ID tokens and what to check</h3>
+        <div class="prose">
+          <p>OAuth says what a client may do; <b>OpenID Connect</b> (OIDC) adds <i>who the user is</i>, with an <b>ID token</b>: a signed JWT for your app. The access token is for the API; never use one in place of the other. Before trusting an ID token, check the signature with the issuer's published keys (JWKS) and an algorithm <b>you</b> choose (never the token's own <code>alg</code>, and never <code>none</code>), the issuer (<code>iss</code>), that you are the audience (<code>aud</code>), expiry (<code>exp</code>), and the <code>nonce</code> you sent at login (it stops replays).</p>
+          <p><b>Task:</b> with PyJWT and a key pair you generate, write <code>verify_id_token(token, public_key, issuer, client_id, nonce)</code> and tests showing it rejects a wrong audience, a wrong issuer, an expired token, a wrong nonce and an unsigned (<code>alg: none</code>) token.</p>
+        </div>
+        <div class="hints" data-hints="W4-ent-oidc">
+          <div class="hint solution" data-level="Solution">
+<pre><code>"""Enterprise track: PKCE and ID-token checks, offline."""
+import base64
+import hashlib
+import secrets
+
+import jwt
+
+
+def pkce_pair() -&gt; tuple[str, str]:
+    verifier = secrets.token_urlsafe(64)[:96]                       # 43-128 characters
+    return verifier, code_challenge(verifier)
+
+
+def code_challenge(verifier: str) -&gt; str:
+    digest = hashlib.sha256(verifier.encode("ascii")).digest()
+    return base64.urlsafe_b64encode(digest).rstrip(b"=").decode("ascii")   # S256, no padding
+
+
+def verify_id_token(token: str, public_key, issuer: str, client_id: str, nonce: str) -&gt; dict:
+    claims = jwt.decode(token, public_key, algorithms=["RS256"],    # never accept the token's own "alg" blindly
+                        audience=client_id, issuer=issuer, options={"require": ["exp", "iat", "sub"]})
+    if claims.get("nonce") != nonce:
+        raise jwt.InvalidTokenError("nonce mismatch: possible replay")
+    return claims</code></pre>
+<pre><code>import time
+
+import jwt
+import pytest
+from cryptography.hazmat.primitives.asymmetric import rsa
+
+from identity import code_challenge, pkce_pair, verify_id_token
+
+KEY = rsa.generate_private_key(public_exponent=65537, key_size=2048)
+ISS, CID = "https://login.lumora.example", "trip-planner"
+
+
+def token(**over):
+    now = int(time.time())
+    claims = {"iss": ISS, "aud": CID, "sub": "u-123", "iat": now, "exp": now + 300, "nonce": "n-1", **over}
+    return jwt.encode(claims, KEY, algorithm="RS256")
+
+
+def test_rfc7636_vector():
+    assert code_challenge("dBjftJeZ4CVP-mB92K27uhbUJU1p1r_wW1gFWFOEjXk") == "E9Melhoa2OwvFrEMTJguCHaoeK1t8URWbuGJSstw-cM"
+    v, c = pkce_pair()
+    assert 43 &lt;= len(v) &lt;= 128 and c == code_challenge(v)
+
+
+def test_valid_token():
+    assert verify_id_token(token(), KEY.public_key(), ISS, CID, "n-1")["sub"] == "u-123"
+
+
+@pytest.mark.parametrize("over,err", [({"aud": "other-app"}, jwt.InvalidAudienceError),
+                                      ({"iss": "https://evil.example"}, jwt.InvalidIssuerError),
+                                      ({"exp": int(time.time()) - 60}, jwt.ExpiredSignatureError),
+                                      ({"nonce": "n-2"}, jwt.InvalidTokenError)])
+def test_rejects(over, err):
+    with pytest.raises(err):
+        verify_id_token(token(**over), KEY.public_key(), ISS, CID, "n-1")
+
+
+def test_rejects_alg_none():
+    unsigned = jwt.encode({"iss": ISS, "aud": CID, "sub": "x", "iat": 0, "exp": 9999999999, "nonce": "n-1"}, None, algorithm="none")
+    with pytest.raises(jwt.InvalidAlgorithmError):
+        verify_id_token(unsigned, KEY.public_key(), ISS, CID, "n-1")</code></pre></div>
+        </div>
+        <div class="readings">
+          <div class="reading"><span class="kind must">Read</span><div><a href="https://openid.net/specs/openid-connect-core-1_0.html#IDTokenValidation" target="_blank" rel="noopener">OpenID Connect Core: ID token validation ↗</a> · <a href="https://pyjwt.readthedocs.io/en/stable/usage.html" target="_blank" rel="noopener">PyJWT usage ↗</a></div></div>
+        </div>
+      </div>
+
+      <div class="prose"><h3>Mini-quiz</h3></div>
+      <div class="quiz mini" data-quiz="W4-d2"></div>
+      <script type="application/json" data-quiz-for="W4-d2">[{"id": "h1", "q": "A teammate reorders the routes of the fake client. <code>run_trip<\/code> for Ashford → Kestrel Point now fails, although the writer's queue holds two replies. Why?<pre><code>routes = {'\\\\\"town\\\\\": \\\\\"Harlow\\\\\"': [HARLOW_IDEAS],\n          \"You write a short, practical itinerary\": [GOOD, GOOD],\n          \"You turn a driver's trip request\": [SPEC],\n          '\\\\\"town\\\\\": \\\\\"Fairhaven\\\\\"': [FAIRHAVEN_IDEAS]}\n\nopenai.InternalServerError: Error code: 500 - {'error': {'message':\n  'no scripted reply for: You write a short, practical itinerary ...'}}<\/code><\/pre>", "options": ["The Fairhaven stop guide ran in parallel with the writer and popped one of the writer's replies", "The writer's input names Harlow too, so the first key that matches is Harlow's, whose queue is empty", "routed_client matches only the input, not the instructions, so the writer's key can never match", "A key must equal the full instructions text, and the writer's key is only their first sentence"], "answer": 1, "why": "The router takes the first key, in dict order, that appears in instructions + input. The writer's input is the plan view, whose stops contain \"town\": \"Harlow\", so the Harlow key wins; the Harlow guide already used its only reply, and the fake returns 500. With two Harlow replies queued, the writer would get stop ideas instead and fail with a pydantic ValidationError. Put the key that is unique to an agent's instructions first. The pipeline runs the guides one after another, so nothing ran in parallel; the fake concatenates instructions and input and matches substrings."}, {"id": "h2", "q": "A teammate refactors the revision loop in <code>run_trip<\/code> as below. With the scripted writer replies [BAD, GOOD] (BAD names CH-11), which assertion in <code>test_pipeline_revises_until_the_critic_passes<\/code> fails?<pre><code>feedback: list[str] = []\nfor attempt in range(MAX_REVISIONS + 1):\n    itinerary, u = agents.write_itinerary(client, view, feedback)\n    usage.append(u)\n    text = itinerary.summary + \"\\n\" + \"\\n\".join(itinerary.steps)\n    problems = review(net, route, net.vehicles[spec.vehicle_id], plan, spec, text)\n    if not problems:\n        return {\"status\": \"ok\", \"itinerary\": text, \"usage\": usage, ...}\n\n# test\nassert out[\"status\"] == \"ok\" and [u[\"agent\"] for u in out[\"usage\"]].count(\"writer\") == 2\nassert \"Fix these problems\" in reqs[-1][\"input\"]<\/code><\/pre>", "options": ["None: the critic re-checks every draft, so passing the problems back to the writer is optional", "The status check: without feedback the writer repeats CH-11, and the run ends in needs_human", "The writer count: once the first review fails, the loop exits early with just one writer call", "Only the last one: status is ok after 2 writer calls, but the second request never lists the problems"], "answer": 3, "why": "problems is computed but never assigned to feedback, so the second writer call gets the same input as the first. Scripted replies don't read their input: the second reply is GOOD whatever the writer was sent, so the status is ok with two writer calls, and only the check on the request content fails. That's why the test inspects what was sent, not only what came back. With a real model the writer would likely repeat CH-11 and burn all three attempts; the feedback is how the evaluator–optimizer loop improves the draft."}, {"id": "h3", "q": "For Ashford → Kestrel Point (plan: CH-10 in Harlow 26% → 100%, CH-08 in Fairhaven 20% → 80%), the writer returns this text. What does <code>review<\/code> return?<pre><code>Charge at CH-10 in Harlow to 80% (16 min), then at charger ch-08 in Fairhaven.\n\n# critic.py\nmentioned = set(re.findall(r\"CH-\\d{2}\", itinerary_text))<\/code><\/pre>", "options": ["[\"itinerary never mentions CH-08\"]; the wrong 80% at Harlow passes, since only ids are compared", "[\"arrives in Fairhaven with 0%, below the 10% reserve\"], because the text charges only to 80%", "Two problems: \"itinerary never mentions CH-08\" and \"itinerary mentions ch-08, which is not in the plan\"", "An empty list: both chargers are mentioned, and validate re-checks the percentages anyway"], "answer": 0, "why": "The regex is case-sensitive, so \"ch-08\" isn't found: CH-08 is reported missing, and nothing lowercase is ever \"mentioned\". validate checks the plan object, not the text, and the plan is still correct, so it adds nothing; the 0% arrival would only appear if the plan itself charged to 80%. The text's \"80% (16 min)\" contradicts the plan (100%, 31.2 min) and no check catches it. That's a gap to close: compare the numbers too, or have the writer fill a template from plan_view instead of retyping values."}, {"id": "h4", "q": "(Enterprise) A teammate's ID-token check is below (PyJWT 2.x, RS256 keys from the IdP). Which token does it wrongly accept?<pre><code>def verify_id_token(token, public_key, issuer, client_id, nonce):\n    return jwt.decode(token, public_key, algorithms=[\"RS256\"], issuer=issuer,\n                      options={\"verify_aud\": False})<\/code><\/pre>", "options": ["An expired token, because passing options replaces PyJWT's default checks with only the ones listed", "A token signed with HS256 using the IdP's public key as the secret, the classic algorithm confusion", "A validly signed ID token the same IdP issued to the expense app, even one replayed from another login", "An unsigned token with alg none, since turning off one check turns off signature checks too"], "answer": 2, "why": "With verify_aud off, any token the IdP signed for any app passes (a token issued to the expense app can be replayed at the trip planner), and the nonce is never compared, so a replayed login passes too. The other three are rejected: algorithms=[\"RS256\"] rejects both alg none and HS256 (InvalidAlgorithmError), and options only overrides the keys you name, so exp is still checked (ExpiredSignatureError). The full list: signature with an algorithm you choose, iss, aud, exp and your nonce."}]</script>
+    </section>
+
+    <!-- ================= DAY 3 ================= -->
+    <section class="day" id="d3" data-day="d3">
+      <div class="day-kicker">Day 3 · Wednesday on the Full-time pace · 4 hours</div>
+      <div class="day-head">
+        <h2>LangGraph, and agents in parallel</h2>
+        <label class="day-done check"><input type="checkbox" data-check="lessonDays|W4-d3"> Session done</label>
+      </div>
+      <ul class="parts session-plan">
+        <li class="part part-core"><span class="part-tag">Core · 2h</span>State, reducers, routing, <code>Send</code> fan-out, context per agent + Exercise 3</li>
+        <li class="part part-cert" data-track="cert"><span class="part-tag">Certification · 1h</span>Parallel subagents and their limits</li>
+        <li class="part part-ent" data-track="ent"><span class="part-tag">Enterprise · 1h</span>SAML single sign-on</li>
+      </ul>
+
+      <h3 class="part-h part-core-h">Core · The same team as a graph</h3>
+      <div class="readings">
+        <div class="reading"><span class="kind must">Read</span><div><a href="https://docs.langchain.com/oss/python/langgraph/graph-api" target="_blank" rel="noopener">LangGraph: Graph API overview ↗</a><p>State, reducers, nodes, edges, conditional edges, <code>Send</code> and <code>Command</code>.</p></div></div>
+        <div class="reading"><span class="kind must">Read</span><div><a href="https://docs.langchain.com/oss/python/langgraph/workflows-agents" target="_blank" rel="noopener">LangGraph: Workflows and agents ↗</a><p>Anthropic's patterns as LangGraph code; the orchestrator–worker example uses <code>Send</code>.</p></div></div>
+      </div>
+      <div class="card summary" style="max-width:760px">
+        <h4 style="margin-top:0">Summary</h4>
+        <ul>
+          <li><b>A graph is your Day 2 pipeline made explicit:</b> a typed <b>state</b> (a <code>TypedDict</code>), <b>nodes</b> (plain functions that take the state and return the keys they change), and <b>edges</b> (who runs next). <code>START</code> and <code>END</code> mark the entry and exit.</li>
+          <li><b>Reducers decide how updates merge.</b> By default a node's value replaces the old one. For a key that several nodes write in the same step, declare a reducer: <code>Annotated[list[dict], operator.add]</code> appends instead. Without it, parallel writes to one key fail.</li>
+          <li><b>Conditional edges route.</b> <code>add_conditional_edges("plan", after_plan, [...])</code> calls <code>after_plan(state)</code>, which returns the next node's name: <i>infeasible</i>, <i>writer</i>, or a list of <code>Send</code>s.</li>
+          <li><b><code>Send</code> fans out.</b> <code>[Send("stop", {"town": ..., "minutes": ..., "interests": ...}) for each stop]</code> starts one <code>stop</code> task per charging stop, <b>in parallel</b>, and each task receives <i>only its payload</i>, not the whole state. That's context engineering built into the framework. Their results merge through the reducer, and the next node runs once all of them finish.</li>
+          <li><b>Loops are edges back.</b> <code>critic → writer</code> when there are problems and revisions are left, <code>critic → approve</code> when there are none. Keep the counter in the state, so the limit survives restarts (Day 4).</li>
+          <li><b>Latency:</b> in parallel, the stop guides take as long as the <i>slowest</i> one, not the sum. The total cost is the same; only the waiting changes.</li>
+        </ul>
+      </div>
+
+      <div class="callout reality" style="max-width:760px">
+        <b>Production reality</b>
+        <ul style="margin:6px 0 0">
+          <li><b>Parallel calls meet rate limits.</b> Ten stops fan out into ten simultaneous requests. Cap concurrency (LangGraph's <code>max_concurrency</code> in the run config), and keep the Week 0B retry-with-backoff in the model client.</li>
+          <li><b>One failed branch fails the step.</b> If one parallel task raises, the whole super-step fails. Decide per agent: retry, return an empty result ("no suggestions for this stop"), or stop the trip. A missing restaurant tip should never cancel a road trip.</li>
+          <li><b>Match by key, not by position.</b> Parallel tasks finish in any order (LangGraph then merges their updates in a fixed task order), but a stop guide that returns nothing, or a replan that changes the stops, shifts every position after it. Pair ideas with stops by town, as <code>plan_view</code> does.</li>
+          <li><b>State grows.</b> Reducers that append never forget. Keep large blobs (full search results, documents) out of the graph state; store a reference or a summary.</li>
+          <li><b>A framework hides the calls.</b> When a graph misbehaves, you need a trace of every node's input and output. Turn on tracing (LangSmith, or OpenTelemetry in Week 8) before your first customer demo, not after the first incident.</li>
+        </ul>
+      </div>
+      <div class="exercise">
+        <div class="ex-head"><span class="ex-tag">Exercise 3</span><h4>P3 as a LangGraph graph with parallel stop guides</h4><span class="chip">~80 min</span></div>
+        <div class="prose">
+          <p>In <code>graph.py</code>, write <code>build_graph(client, net, booking, checkpointer=None, store=None)</code> with a <code>TripState</code> whose <code>ideas</code> and <code>usage</code> keys use <code>operator.add</code>. Nodes: <code>intake</code>, <code>plan</code>, <code>stop</code> (one per <code>Send</code>), <code>writer</code>, <code>critic</code>, <code>infeasible</code>, <code>needs_human</code>. Route after <code>plan</code>: infeasible → <code>infeasible</code>; no stops → <code>writer</code>; otherwise one <code>Send</code> per stop. Route after <code>critic</code>: no problems → the next step (for today, <code>END</code>); problems and revisions left → <code>writer</code>; otherwise → <code>needs_human</code>. Tomorrow you add approval, booking and the store.</p>
+          <p>Then compare the input size (the <code>input_chars</code> in each usage record) of one stop guide with what it would be if you passed it the whole state.</p>
+          <p class="expected"><b>Check:</b> for Ashford → Kestrel Point (Voltra City, 90%), the state after the run holds two ideas (Harlow and Fairhaven), merged by the reducer, and the writer ran once. A writer that keeps naming CH-11 runs exactly 3 times before the status becomes <code>needs_human</code>. Cedar Falls → Wolf Ridge ends at <code>infeasible</code> and never calls a stop guide. A stop guide's payload is about 165 characters (its <code>input_chars</code>, which also counts its instructions, is about 440); the trip's spec, route and plan plus every charger and guidebook entry come to about 5,200, over 30 times the payload.</p>
+        </div>
+        <div class="hints" data-hints="W4-ex3">
+          <div class="hint" data-level="Concept">A node that receives a <code>Send</code> gets the payload dict as its only argument. The routing function may return a node name <i>or</i> a list of <code>Send</code>s; list every possible target in <code>add_conditional_edges(..., path_map)</code>. Store the plan in the state as plain dicts (<code>dataclasses.asdict</code>) so the checkpointer can save it tomorrow.</div>
+          <div class="hint solution" data-level="Full solution (includes Day 4's additions)">
+<pre><code>"""Days 2-4: the same team as a LangGraph graph, with parallel stop agents, a critic loop,
+a human approval before any booking, a checkpointer and a per-user profile store."""
+import operator
+from dataclasses import asdict
+from typing import Annotated, TypedDict
+
+from langgraph.graph import END, START, StateGraph
+from langgraph.runtime import Runtime
+from langgraph.types import Send, interrupt
+
+from road_trip import agents
+from road_trip.critic import review
+from road_trip.network import ChargePlan, Route, Stop
+from road_trip.planning import plan_trip
+
+MAX_REVISIONS = 2
+
+
+class TripState(TypedDict, total=False):
+    request: str
+    user_id: str
+    spec: dict
+    route: dict
+    plan: dict
+    tried: list[str]
+    ideas: Annotated[list[dict], operator.add]        # written by parallel stop agents: must merge
+    usage: Annotated[list[dict], operator.add]
+    itinerary: str
+    problems: list[str]
+    revisions: int
+    status: str
+    booked: list[str]
+
+
+def _route(d: dict) -&gt; Route:
+    return Route(d["towns"], [tuple(leg) for leg in d["legs"]])
+
+
+def _plan(d: dict) -&gt; ChargePlan:
+    return ChargePlan(d["feasible"], [Stop(**s) for s in d["stops"]], d["arrival_soc"], d["reason"])
+
+
+def build_graph(client, net, booking, checkpointer=None, store=None):
+    def intake(state: TripState, runtime: Runtime):
+        key = ("profiles", state.get("user_id", "anonymous"))
+        saved = runtime.store.get(key, "profile") if runtime.store else None
+        spec, u = agents.intake(client, net, state["request"], saved.value if saved else None)
+        if runtime.store:                                    # remember the car and interests for next time
+            runtime.store.put(key, "profile", {"vehicle_id": spec.vehicle_id, "interests": spec.interests})
+        return {"spec": spec.model_dump(), "usage": [u]}
+
+    def plan(state: TripState):
+        route, plan_, tried = plan_trip(net, agents.TripSpec(**state["spec"]))
+        return {"route": {"towns": route.towns, "legs": route.legs}, "plan": asdict(plan_), "tried": tried}
+
+    def after_plan(state: TripState):
+        if not state["plan"]["feasible"]:
+            return "infeasible"
+        stops = state["plan"]["stops"]
+        if not stops:
+            return "writer"
+        interests = state["spec"]["interests"]
+        return [Send("stop", {"town": s["town"], "minutes": s["minutes"], "interests": interests}) for s in stops]
+
+    def stop(task: dict):                                    # receives ONLY its Send payload, not the state
+        idea, u = agents.stop_ideas(client, net, task["town"], task["minutes"], task["interests"])
+        return {"ideas": [idea.model_dump()], "usage": [u]}
+
+    def writer(state: TripState):
+        spec = agents.TripSpec(**state["spec"])
+        view = agents.plan_view(spec, _route(state["route"]), _plan(state["plan"]), state.get("ideas", []))
+        itinerary, u = agents.write_itinerary(client, view, state.get("problems", []))
+        return {"itinerary": itinerary.summary + "\n" + "\n".join(itinerary.steps), "usage": [u]}
+
+    def critic(state: TripState):
+        spec = agents.TripSpec(**state["spec"])
+        problems = review(net, _route(state["route"]), net.vehicles[spec.vehicle_id], _plan(state["plan"]),
+                          spec, state["itinerary"])
+        return {"problems": problems, "revisions": state.get("revisions", 0) + (1 if problems else 0)}
+
+    def after_critic(state: TripState):
+        if not state["problems"]:
+            return "approve"
+        return "writer" if state["revisions"] &lt;= MAX_REVISIONS else "needs_human"
+
+    def approve(state: TripState):
+        # Pauses the graph. On resume the node runs again from the top, so nothing before interrupt()
+        # may have side effects.
+        decision = interrupt({"itinerary": state["itinerary"],
+                              "reserve": [s["charger_id"] for s in state["plan"]["stops"]]})
+        return {"status": "approved" if decision is True else "declined"}
+
+    def reserve(state: TripState):
+        booked = [booking.reserve(s["charger_id"], state.get("user_id", "anonymous")) for s in state["plan"]["stops"]]
+        return {"booked": booked, "status": "booked"}
+
+    g = StateGraph(TripState)
+    g.add_node("intake", intake)
+    g.add_node("plan", plan)
+    g.add_node("stop", stop)
+    g.add_node("writer", writer)
+    g.add_node("critic", critic)
+    g.add_node("approve", approve)
+    g.add_node("reserve", reserve)
+    g.add_node("infeasible", lambda s: {"status": "infeasible"})
+    g.add_node("needs_human", lambda s: {"status": "needs_human"})
+    g.add_edge(START, "intake")
+    g.add_edge("intake", "plan")
+    g.add_conditional_edges("plan", after_plan, ["stop", "writer", "infeasible"])
+    g.add_edge("stop", "writer")
+    g.add_edge("writer", "critic")
+    g.add_conditional_edges("critic", after_critic, ["writer", "approve", "needs_human"])
+    g.add_conditional_edges("approve", lambda s: "reserve" if s["status"] == "approved" else END, ["reserve", END])
+    for node in ("reserve", "infeasible", "needs_human"):
+        g.add_edge(node, END)
+    return g.compile(checkpointer=checkpointer, store=store)</code></pre></div>
+        </div>
+        <div class="ex-foot"><label class="done-toggle check"><input type="checkbox" data-check="exercises|W4-ex3"> <span class="check-text">Exercise 3 done</span></label></div>
+      </div>
+
+      <div data-track="cert">
+        <h3 class="part-h part-cert-h">Certification · Parallel subagents and their limits</h3>
+        <div class="card summary" style="max-width:760px">
+          <ul style="margin:0">
+            <li><b>Parallel spawning:</b> independent subagents (a style checker, a security scanner and a test-coverage agent) can run at the same time; the work finishes in the time of the slowest one. The coordinator asks for several Agent calls in one turn.</li>
+            <li><b>Background by default:</b> in current Claude Code versions, subagents run in the background unless the coordinator needs the result before continuing.</li>
+            <li><b>Caps you should set:</b> nesting depth (<code>CLAUDE_CODE_MAX_SUBAGENT_SPAWN_DEPTH</code>, default 3 layers; 1 means subagents can't spawn their own), concurrency (<code>CLAUDE_CODE_MAX_CONCURRENT_SUBAGENTS</code>, default 20) and spend (<code>max_budget_usd</code>). Subagent requests count toward the query's cost.</li>
+            <li><b>Explicit beats implicit:</b> each parallel subagent needs its own complete prompt. "Check the other file too" means nothing to an agent that never saw the first one.</li>
+          </ul>
+        </div>
+        <div class="readings">
+          <div class="reading"><span class="kind must">Read</span><div><a href="https://code.claude.com/docs/en/agent-sdk/subagents" target="_blank" rel="noopener">Agent SDK subagents: "Cap subagent depth, concurrency, and spend" ↗</a></div></div>
+        </div>
+      </div>
+
+      <div data-track="ent">
+        <h3 class="part-h part-ent-h">Enterprise · SAML single sign-on</h3>
+        <div class="prose">
+          <p>Many large customers still sign employees in with <b>SAML 2.0</b>, an older XML-based standard. The <i>identity provider</i> (IdP: Okta, Entra ID, ADFS) authenticates the user and sends the <i>service provider</i> (SP: your app) a signed <b>assertion</b> saying who they are, often with group memberships as attributes. In the common <i>SP-initiated</i> flow the user opens your app, is redirected to the IdP, signs in, and the browser posts the assertion back to your app's assertion consumer URL. Your app must check the signature, the audience, the time window and that each assertion is used once.</p>
+          <p><b>When you'll meet which:</b> SAML for signing employees into web apps in older enterprise stacks; OIDC for newer apps and mobile; OAuth access tokens whenever your code calls an API. <b>Task:</b> draw the SP-initiated flow for "a Lumora employee opens the trip planner", label where the assertion's signature, audience and expiry are checked, and write two sentences on why the groups in the assertion matter for Week 2's permission-aware retrieval.</p>
+        </div>
+        <div class="readings">
+          <div class="reading"><span class="kind must">Read</span><div><a href="https://developer.okta.com/docs/concepts/saml/" target="_blank" rel="noopener">Okta: SAML concepts ↗</a></div></div>
+        </div>
+      </div>
+
+      <div class="prose"><h3>Mini-quiz</h3></div>
+      <div class="quiz mini" data-quiz="W4-d3"></div>
+      <script type="application/json" data-quiz-for="W4-d3">[{"id": "h1", "q": "A teammate drops the reducer from <code>ideas<\/code> in <code>TripState<\/code>. Trip t01 (Voltra City, stops in Harlow and Fairhaven) and t02 (Aurel Tourer, one stop at CH-11) run through the graph. What happens?<pre><code>class TripState(TypedDict, total=False):\n    ...\n    ideas: list[dict]                               # was Annotated[list[dict], operator.add]\n    usage: Annotated[list[dict], operator.add]<\/code><\/pre>", "options": ["t01 finishes with Harlow's ideas only, because LangGraph keeps the first write to a key per step", "Both raise: any key written by a Send task needs a reducer, even when only one task runs", "Both finish: without a reducer the last stop task's ideas overwrite the first ones, silently", "t01 raises InvalidUpdateError (two stop tasks write ideas in one step); t02 has one stop and works"], "answer": 3, "why": "Without a reducer a key accepts one value per super-step. t01's two parallel stop tasks both write ideas, and LangGraph raises InvalidUpdateError: \"At key 'ideas': Can receive only one value per step. Use an Annotated key to handle multiple values.\" t02 has a single stop, so one write, and it passes, which is how this bug slips through tests that only cover one-stop trips. LangGraph doesn't silently overwrite or keep the first value; it fails loudly. usage keeps its reducer, so it isn't the problem."}, {"id": "h2", "q": "To \"slim the payload\", a teammate changes the fan-out and the stop node as below. What happens on t01?<pre><code>return [Send(\"stop\", {\"town\": s[\"town\"], \"minutes\": s[\"minutes\"]}) for s in stops]\n\ndef stop(task: dict):\n    idea, u = agents.stop_ideas(client, net, task[\"town\"], task[\"minutes\"],\n                                task[\"spec\"][\"interests\"])\n    return {\"ideas\": [idea.model_dump()], \"usage\": [u]}<\/code><\/pre>", "options": ["KeyError: 'spec': a node reached by Send gets only its payload, never the graph state", "It works: LangGraph merges the Send payload into the current state before the node runs", "InvalidUpdateError: a node may only read the keys that its Send payload declared", "The guides run with no interests, because a missing TypedDict key reads as an empty value"], "answer": 0, "why": "A Send task's only argument is the payload dict, so task[\"spec\"] raises KeyError and the whole invoke fails. That isolation is the point: each stop guide sees one town, the minutes and the interests, and nothing else. Put everything the task needs into the payload. There is no merge with the state, a plain dict has no default for a missing key (TypedDict total=False only affects type checking), and InvalidUpdateError is about writes, not reads."}, {"id": "h3", "q": "The graph is compiled with a checkpointer. On t01 the Fairhaven stop guide gets a 429 (retries exhausted); the Harlow guide succeeds. The rate limit clears and you call <code>app.invoke(None, cfg)<\/code> on the same thread. What happens in each call?", "options": ["LangGraph retries the failed task three times by default, then skips it and runs the writer", "The first raises and the writer never runs; the resume re-runs only Fairhaven, reusing Harlow's result", "The first raises; the resume re-runs both stop guides, because the whole super-step failed", "The first returns normally with Harlow's ideas; the writer runs without Fairhaven's suggestions"], "answer": 1, "why": "One failed task fails the step, and invoke raises: the writer never runs. With a checkpointer, the writes of tasks that succeeded in that step are saved, so invoking the thread again with None re-runs only the failed task and continues to the writer. Nodes have no retry policy unless you add one. Decide per agent: a missing restaurant tip should become an empty result, not a failed trip."}, {"id": "h4", "q": "(Certification) In the lab, stop-guide subagents started spawning helper subagents of their own, and one run cost $3. You want: subagents can't spawn their own, at most 4 run at once, and the run stops at $0.50. Which configuration?", "options": ["env CLAUDE_CODE_MAX_SUBAGENT_SPAWN_DEPTH=3, concurrency 4, and max_turns=10 to cap the spend", "Remove Agent from allowed_tools, set CLAUDE_CODE_MAX_CONCURRENT_SUBAGENTS=4, max_budget_usd=0.50", "env CLAUDE_CODE_MAX_SUBAGENT_SPAWN_DEPTH=1 and CLAUDE_CODE_MAX_CONCURRENT_SUBAGENTS=4, max_budget_usd=0.50", "Omit tools from each AgentDefinition, set CLAUDE_CODE_MAX_CONCURRENT_SUBAGENTS=4, max_budget_usd=0.50"], "answer": 2, "why": "Depth 1 means subagents can't spawn their own; the concurrency variable caps parallel subagents (default 20); max_budget_usd stops the run on spend, and subagent requests count toward it. Depth 3 is the default, which is what allowed the nesting, and max_turns limits turns, not dollars. Removing Agent from allowed_tools stops the coordinator from delegating at all. Omitting tools gives each subagent every tool, which is the opposite of a restriction, and sets no depth cap."}]</script>
+    </section>
+
+    <!-- ================= DAY 4 ================= -->
+    <section class="day" id="d4" data-day="d4">
+      <div class="day-kicker">Day 4 · Thursday on the Full-time pace · 4 hours</div>
+      <div class="day-head">
+        <h2>State that survives, humans who approve</h2>
+        <label class="day-done check"><input type="checkbox" data-check="lessonDays|W4-d4"> Session done</label>
+      </div>
+      <ul class="parts session-plan">
+        <li class="part part-core"><span class="part-tag">Core · 2h</span>Checkpointers, threads, interrupts, a memory store, end-state evals + Exercise 4</li>
+        <li class="part part-cert" data-track="cert"><span class="part-tag">Certification · 1h</span>Task 1.1 in a team: loops, traps and the exam's favorite mistakes</li>
+        <li class="part part-ent" data-track="ent"><span class="part-tag">Enterprise · 1h</span>Whose identity does the agent use?</li>
+      </ul>
+
+      <h3 class="part-h part-core-h">Core · Pause, resume, remember, and measure</h3>
+      <div class="readings">
+        <div class="reading"><span class="kind must">Read</span><div><a href="https://docs.langchain.com/oss/python/langgraph/persistence" target="_blank" rel="noopener">LangGraph: persistence ↗</a> · <a href="https://docs.langchain.com/oss/python/langgraph/interrupts" target="_blank" rel="noopener">interrupts ↗</a></div></div>
+      </div>
+      <div class="card summary" style="max-width:760px">
+        <h4 style="margin-top:0">Summary</h4>
+        <ul>
+          <li><b>A checkpointer</b> saves the state after every step, per <b>thread</b> (<code>config={"configurable": {"thread_id": ...}}</code>). With it you can pause and resume, inspect state (<code>get_state</code>), and survive a crash. <code>InMemorySaver</code> is for tests; use a database-backed saver (SQLite locally, Postgres in production) for anything real.</li>
+          <li><b>An interrupt</b> pauses the graph for a human: <code>decision = interrupt({"itinerary": ..., "reserve": [...]})</code>. The run returns with <code>__interrupt__</code>; you resume the same thread with <code>Command(resume=True)</code>, and that value becomes <code>interrupt()</code>'s return value. It needs a checkpointer and a thread id.</li>
+          <li><b>The node restarts on resume.</b> LangGraph re-runs the whole node from its first line, not from the <code>interrupt()</code> call. Anything before it runs twice, so keep side effects (booking, emailing, charging a card) in a <b>separate node after</b> the approval.</li>
+          <li><b>A store remembers across threads.</b> The checkpointer is one trip's memory; the <b>store</b> (<code>InMemoryStore</code>, keyed by a namespace such as <code>("profiles", user_id)</code>) is what you know about the user across trips: their car and interests. Nodes reach it through the runtime.</li>
+          <li><b>Evaluate the end state</b>, as Anthropic recommends for agents: did intake get every field right, is the trip's feasibility right, are the stops right, does the plan pass <code>validate</code>? Score each agent on its own and the whole trip together; a pass overall can hide an intake agent that's right only by luck. Anthropic suggests starting with about 20 queries that represent real use.</li>
+        </ul>
+      </div>
+
+      <div class="callout reality" style="max-width:760px">
+        <b>Production reality</b>
+        <ul style="margin:6px 0 0">
+          <li><b>One thread per task.</b> Reuse a thread id for a new trip and the old state comes back: the <code>ideas</code> list, with its append reducer, now holds last week's stops too. Generate a new thread id per trip, and keep a user id separately.</li>
+          <li><b>Approvals wait for days.</b> People approve on Monday what the agent planned on Friday. Check that the data is still valid on resume (is the charger still available?) before acting, and expire pending approvals.</li>
+          <li><b>Checkpoints accumulate.</b> Every step of every thread is stored. Set a retention policy, and keep personal data out of the state, or treat the checkpoint store as regulated data.</li>
+          <li><b>Memory can be wrong forever.</b> If the intake agent misreads the car once and you store it, every future trip starts wrong. Store only what the user confirmed, show it, and let them change it.</li>
+          <li><b>Deploy without breaking running threads.</b> A paused thread resumes with whatever code is deployed then. Keep state shapes backward compatible, or drain old threads first (Anthropic describes gradual "rainbow" deployments for exactly this).</li>
+        </ul>
+      </div>
+      <div class="exercise">
+        <div class="ex-head"><span class="ex-tag">Exercise 4</span><h4>Approval before booking, a profile store, and an end-state eval</h4><span class="chip">~80 min</span></div>
+        <div class="prose">
+          <ol>
+            <li>Add <code>approve</code> (calls <code>interrupt</code> with the itinerary and the chargers to reserve) and <code>reserve</code> (calls <code>booking.reserve</code> for each stop) to the graph. Route approve → reserve only when the human said <code>True</code>.</li>
+            <li>In <code>intake</code>, read the profile from <code>runtime.store</code> at <code>("profiles", user_id)</code> and pass it to the agent; after intake, save the vehicle and interests.</li>
+            <li>In <code>evals.py</code>, write <code>evaluate_trips(client, net, trips)</code>: for each trip, run intake, compare the six fields with <code>expected_spec</code>, plan the trip, and score <code>intake_ok</code>, <code>feasible_ok</code>, <code>stops_ok</code> and <code>valid</code>.</li>
+            <li>A CLI (<code>plan "request"</code> asks for approval in the terminal; <code>eval</code> runs <code>trips.json</code>).</li>
+          </ol>
+          <p class="expected"><b>Check:</b> the first <code>invoke</code> returns an interrupt whose <code>reserve</code> is <code>["CH-10", "CH-08"]</code>, and the fake booking has <b>no</b> calls yet. <code>invoke(Command(resume=True), config)</code> ends with status <code>booked</code> and two reservations; <code>resume=False</code> ends <code>declined</code> with none. The store then holds <code>{"vehicle_id": "voltra-city", "interests": ["food"]}</code> for that user. In the eval, an intake reply that turns "90%" into 0.09 scores <code>intake_ok</code> 0.5 over two trips, with <code>wrong_fields == ["start_soc"]</code>, and its stops don't match the expected ones.</p>
+        </div>
+        <div class="hints" data-hints="W4-ex4">
+          <div class="hint" data-level="Concept">The interrupt value is in <code>result["__interrupt__"][0].value</code>. A node can take a second parameter <code>runtime: Runtime</code>; <code>runtime.store</code> is the store you passed to <code>compile</code>. Compare specs field by field, and keep the list of wrong fields: "which fields fail" is what you'll fix.</div>
+          <div class="hint solution" data-level="Full solution">
+<pre><code>"""End-state evaluation: judge the outcome, per agent and for the whole trip, not every intermediate turn."""
+from road_trip import agents
+from road_trip.network import validate
+from road_trip.planning import plan_trip
+
+FIELDS = ["origin", "destination", "vehicle_id", "start_soc", "reserve", "towing"]
+
+
+def evaluate_trips(client, net, trips: list[dict]) -&gt; dict:
+    rows = []
+    for t in trips:
+        spec, _ = agents.intake(client, net, t["request"])
+        got, want = spec.model_dump(), t["expected_spec"]
+        wrong = [f for f in FIELDS if got[f] != want[f]]
+        route, plan, _ = plan_trip(net, spec)
+        valid = not plan.feasible or not validate(net, route, net.vehicles[spec.vehicle_id], plan,
+                                                  spec.start_soc, spec.reserve, spec.towing)
+        rows.append({"id": t["id"], "intake_ok": not wrong, "wrong_fields": wrong,
+                     "feasible_ok": plan.feasible == t["expected"]["feasible"],
+                     "stops_ok": [s.charger_id for s in plan.stops] == t["expected"]["stops"], "valid": valid})
+    n = len(rows)
+    return {"rows": rows, **{k: sum(r[k] for r in rows) / n for k in ("intake_ok", "feasible_ok", "stops_ok", "valid")}}</code></pre>
+<pre><code>import argparse
+import json
+import sys
+import uuid
+from pathlib import Path
+
+from dotenv import load_dotenv
+from langgraph.checkpoint.memory import InMemorySaver
+from langgraph.store.memory import InMemoryStore
+from langgraph.types import Command
+
+from road_trip.evals import evaluate_trips
+from road_trip.graph import build_graph
+from road_trip.network import load_network
+
+
+class PrintBooking:
+    def reserve(self, charger_id: str, user_id: str) -&gt; str:
+        print(f"  reserved {charger_id} for {user_id}")
+        return f"R-{charger_id}"
+
+
+def main(argv=None, client=None) -&gt; int:
+    load_dotenv()
+    p = argparse.ArgumentParser(description="Norvale EV road-trip planner (multi-agent).")
+    p.add_argument("command", choices=["plan", "eval"])
+    p.add_argument("request", nargs="?")
+    p.add_argument("--data", type=Path, default=Path("data"))
+    p.add_argument("--user", default="demo")
+    args = p.parse_args(argv)
+    net = load_network(args.data / "norvale.json")
+    if client is None:
+        from openai import OpenAI
+        client = OpenAI()
+    if args.command == "eval":
+        result = evaluate_trips(client, net, json.loads((args.data / "trips.json").read_text()))
+        for r in result["rows"]:
+            print(r)
+        print({k: round(v, 3) for k, v in result.items() if k != "rows"})
+        return 0
+    app = build_graph(client, net, PrintBooking(), InMemorySaver(), InMemoryStore())
+    cfg = {"configurable": {"thread_id": str(uuid.uuid4())}}           # one thread per trip
+    state = app.invoke({"request": args.request, "user_id": args.user}, cfg)
+    if "__interrupt__" in state:
+        ask = state["__interrupt__"][0].value
+        print(ask["itinerary"])
+        ok = input(f"\nReserve {', '.join(ask['reserve'])}? [y/N] ").strip().lower() == "y"
+        state = app.invoke(Command(resume=ok), cfg)
+    print("status:", state["status"], *(state.get("problems") or []), sep="\n  ")
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())</code></pre>
+<p class="small muted">The approve and reserve nodes and the store access are in Exercise 3's solution.</p></div>
+        </div>
+        <div class="ex-foot"><label class="done-toggle check"><input type="checkbox" data-check="exercises|W4-ex4"> <span class="check-text">Exercise 4 done</span></label></div>
+      </div>
+
+      <div data-track="cert">
+        <h3 class="part-h part-cert-h">Certification · Task 1.1 in a team</h3>
+        <div class="prose">
+          <p>Every subagent is an agentic loop of its own, so task 1.1 still applies inside each one: stop on <code>stop_reason</code>, not on text or an iteration cap. Exam scenarios for Domain 1 often combine it with 1.2 and 1.3. Learn to spot these:</p>
+          <ul>
+            <li><b>The subagent "doesn't know" something the user said:</b> the coordinator didn't put it in the subagent's prompt. Fix the hand-off, not the subagent.</li>
+            <li><b>The coordinator's context fills with raw search results:</b> the work wasn't delegated; move it into a subagent that returns a summary.</li>
+            <li><b>Two subagents make conflicting choices:</b> the task wasn't independent. Make one of them decide, or have the coordinator decide and pass the decision to both.</li>
+            <li><b>A subagent uses a tool it shouldn't have:</b> its <code>tools</code> list was omitted, so it inherited everything.</li>
+          </ul>
+          <p>Then do the Domain 1 questions on the <a href="../practice.html">Practice page</a>.</p>
+        </div>
+      </div>
+
+      <div data-track="ent">
+        <h3 class="part-h part-ent-h">Enterprise · Whose identity does the agent use?</h3>
+        <div class="prose">
+          <p>When P3 reserves a charger, the booking API must know <i>who</i> is booking. Three options: the agent's own service identity (<b>client credentials</b>; simple, but every booking looks like the agent's and it needs broad rights); the <b>user's delegated token</b> (the booking is the user's, limited to what they may do); or a token issued <b>for this API on the user's behalf</b> by exchanging the user's token (OAuth token exchange, RFC 8693, or Microsoft's on-behalf-of flow). The rule from Week 2 applies: the broad identity reads, the user's identity decides what they may see and do. Week 6 covers what goes wrong (confused deputy, token passthrough).</p>
+          <p><b>Task:</b> for P3's booking step, choose one option for Lumora and write half a page: which token the agent holds, what the booking API checks, and what the audit log shows when an employee disputes a reservation.</p>
+        </div>
+        <div class="readings">
+          <div class="reading"><span class="kind">Read</span><div><a href="https://datatracker.ietf.org/doc/html/rfc8693" target="_blank" rel="noopener">RFC 8693: OAuth 2.0 token exchange ↗</a></div></div>
+        </div>
+      </div>
+
+      <div class="prose"><h3>Mini-quiz</h3></div>
+      <div class="quiz mini" data-quiz="W4-d4"></div>
+      <script type="application/json" data-quiz-for="W4-d4">[{"id": "h1", "q": "To \"hold\" the chargers while the driver decides, a teammate reserves them at the top of <code>approve<\/code>, before <code>interrupt<\/code> (the <code>reserve<\/code> node is unchanged). On t01 (two stops) the driver declines. How many times was <code>booking.reserve<\/code> called?<pre><code>def approve(state):\n    for s in state[\"plan\"][\"stops\"]:\n        booking.reserve(s[\"charger_id\"], state.get(\"user_id\", \"anonymous\"))\n    decision = interrupt({\"itinerary\": state[\"itinerary\"], \"reserve\": [...]})\n    return {\"status\": \"approved\" if decision is True else \"declined\"}<\/code><\/pre>", "options": ["2: the holds are placed once, before the pause, and the resume continues after interrupt()", "6: the two holds, then the reserve node's two bookings, then the holds are repeated", "0: a declined decision rolls back everything the approve node did before it paused", "4: on resume, approve runs again from its first line, so both chargers are reserved twice"], "answer": 3, "why": "LangGraph re-runs an interrupted node from the top on resume; interrupt() then returns the resume value instead of pausing. So the loop runs on the first invoke (2 calls) and again on resume (2 more), declined or not, and nothing is rolled back: the graph can't undo an external API call. With an approval it would be 6, because reserve adds two more. Keep side effects in a node after the approval."}, {"id": "h2", "q": "A web UI resumes the paused thread with the value from its form. The driver clicks \"Approve\". What's the final status, and what was booked?<pre><code>decision = interrupt({\"itinerary\": ..., \"reserve\": [\"CH-10\", \"CH-08\"]})   # in approve\nreturn {\"status\": \"approved\" if decision is True else \"declined\"}\n\n# UI handler\napp.invoke(Command(resume={\"approved\": True}), cfg)<\/code><\/pre>", "options": ["It pauses again: approve re-runs from the top on resume, so interrupt() asks a second time", "An error: Command(resume=...) only accepts True or False, so the invoke is rejected", "\"declined\", nothing booked: interrupt() returns the dict, and a dict is not True", "\"booked\", with CH-10 and CH-08 reserved, since any truthy resume value counts as approval"], "answer": 2, "why": "The value passed in Command(resume=...) becomes interrupt()'s return value, whatever its type. The node compares it with \"is True\", so a dict, \"y\" or 1 all end declined, and nothing is booked. That's safe, but the approval is lost. Agree on one resume shape and validate it. There's no type restriction on resume. The node does re-run from the top, but on resume interrupt() returns the value instead of pausing."}, {"id": "h3", "q": "Trip t01 was approved and booked on thread <code>trip-1<\/code>. The same driver plans a new trip and the app reuses <code>trip-1<\/code>. The graph pauses for approval, and the UI already shows \"Booked\". What's in the returned state?<pre><code>app.invoke({\"request\": \"Ashford to Kestrel Point again\", \"user_id\": \"u1\"},\n           {\"configurable\": {\"thread_id\": \"trip-1\"}})<\/code><\/pre>", "options": ["The old values: status \"booked\" and last trip's reservations remain, and ideas now has 4 entries", "An error: a thread that reached END can't be invoked again, so the UI showed stale data", "The old values, and the new trip was booked again, since the thread already holds an approval", "A fresh state: new input replaces the saved one, and the UI read status from the store"], "answer": 0, "why": "The checkpointer restores the thread's last state and applies the new input on top. Keys the new run hasn't written yet keep their values (status \"booked\", booked), and ideas, with its append reducer, now holds last trip's two entries plus the new two. Nothing new was booked: the graph is paused before reserve. The store holds only the profile. A finished thread can be invoked again; that's what makes the bug easy to miss. One thread per trip, with the user id kept separately."}, {"id": "h4", "q": "(Enterprise) Lumora's booking API logs show every reservation as made by <code>svc-trip-planner<\/code>, which holds a client-credentials token that may book for anyone. An employee disputes a booking. Security wants each booking tied to the employee and limited to what they may book. What should the agent use?", "options": ["Keep client credentials and add the employee's id to each request body, so the audit log shows it", "Exchange the employee's token for one issued to the booking API for them (RFC 8693), naming the agent", "Send the employee's ID token to the booking API, since it's a signed proof of who the user is", "Forward the employee's access token for the trip planner to the booking API unchanged"], "answer": 1, "why": "Token exchange (or Microsoft's on-behalf-of flow) gives the agent a token for the booking API with the employee as subject (and the agent as actor), so the API enforces the employee's rights and the log names both. A user id in the body is only the agent's claim: the API still grants the service's broad rights (a confused deputy waiting to happen). An ID token is issued to the planner app, not to the API, and says nothing about permissions. Forwarding a token meant for another audience is token passthrough; the booking API should reject it."}]</script>
+    </section>
+
+    <!-- ================= DAY 5 ================= -->
+    <section class="day" id="d5" data-day="d5">
+      <div class="day-kicker">Day 5 · Friday on the Full-time pace · 4 hours</div>
+      <div class="day-head">
+        <h2>Readiness check</h2>
+        <label class="day-done check"><input type="checkbox" data-check="lessonDays|W4-d5"> Session done</label>
+      </div>
+      <ul class="parts session-plan">
+        <li class="part part-core"><span class="part-tag">Core · 2h</span>Break it &amp; fix it (1h) + weekly quiz (1h)</li>
+        <li class="part part-cert" data-track="cert"><span class="part-tag">Certification · 1h</span>Domain 1 practice questions</li>
+        <li class="part part-ent" data-track="ent"><span class="part-tag">Enterprise · 1h</span>An identity design for P3</li>
+      </ul>
+
+      <h3 class="part-h part-core-h">Core · Explain it out loud</h3>
+      <div class="card" style="max-width:760px">
+        <label class="check"><input type="checkbox" data-check="readiness|W4-1"><span class="check-text">I can say when a team of agents beats one agent, and when it doesn't, with evidence from both sides.</span></label>
+        <label class="check"><input type="checkbox" data-check="readiness|W4-2"><span class="check-text">I can name the workflow patterns and point to one in P3.</span></label>
+        <label class="check"><input type="checkbox" data-check="readiness|W4-3"><span class="check-text">I can explain why the math is code, the critic is code, and only three agents use a model.</span></label>
+        <label class="check"><input type="checkbox" data-check="readiness|W4-4"><span class="check-text">I can explain LangGraph state, reducers, conditional edges and <code>Send</code>, and what each parallel task sees.</span></label>
+        <label class="check"><input type="checkbox" data-check="readiness|W4-5"><span class="check-text">I can explain checkpointers, threads, interrupts and the store, and why side effects go after the approval.</span></label>
+        <label class="check"><input type="checkbox" data-check="readiness|W4-6"><span class="check-text">I can explain PKCE, the checks on an ID token, and SAML's SP-initiated flow to a customer's identity team.</span></label>
+      </div>
+
+      <div class="exercise drill">
+        <div class="ex-head"><span class="ex-tag">Break it &amp; fix it</span><h4>Six bugs in a team of agents</h4><span class="chip">~60 min</span></div>
+        <div class="prose">
+          <p>Download <a href="week-W4/team-drill.zip" download>⬇ team-drill.zip</a>, unzip it, install <code>pip install langgraph pydantic openai httpx pytest</code>, and run <code>python -m pytest -q</code>. The package runs, but <b>six tests fail</b>. Each failure is a mistake from this week's topics: the charging math, the validator, a hand-off, the graph's state, the revision loop and the approval step. Fix the code, never the tests, and for each bug write one line in <code>BUGS.md</code>: what was wrong, what a driver (or the booking system) would have seen, and how you fixed it.</p>
+          <p class="expected"><b>Check:</b> all 14 tests pass, offline. Then explain each bug in one sentence, as you would to an interviewer who asks "how would this fail in production?"</p>
+        </div>
+        <div class="hints" data-hints="W4-drill">
+          <div class="hint" data-level="Where to look">Three bugs are in graph.py, two in network.py, and one in agents.py; critic.py has none.</div>
+          <div class="hint solution" data-level="The six bugs">
+<ol>
+  <li><b>network.py:</b> <code>charge_minutes</code> uses <code>power = charger["power_kw"]</code>, the charger's power only. A car charges at the slower of the two, so on a 350 kW charger the 100 kW Voltra City "charges" 3.5 times too fast: 20% to 80% shows as about 5 minutes instead of 18. Drivers get itineraries with charging stops far shorter than reality, and every arrival time after the first stop is wrong. Use the slower of the two: <code>power = min(charger["power_kw"], vehicle["max_charge_kw"])</code>.</li>
+  <li><b>network.py:</b> <code>validate</code> only checks the reserve inside <code>if b in stops:</code>, that is, when the car arrives at a charging stop. The destination is never a charging stop, so the last leg is never checked: a plan (for example one a model edited) that reaches Harlow with 4% passes the critic, and the driver arrives nearly empty. Check the reserve after every leg, before the <code>if b in stops:</code> block.</li>
+  <li><b>agents.py:</b> <code>stop_context</code> filters the guidebook by interest (<code>p["kind"] in interests</code>) instead of by town, so the stop agent for Harlow receives food places from Cedar Falls, Millbrook, Elmstead and Juniper Bay. It can then suggest lunch at a diner 60 km away during a 30-minute charge, and every stop call sends more tokens than it needs. Filter by the stop's town: <code>p["town"] == town</code>, and let the prompt handle the interests.</li>
+  <li><b>graph.py:</b> <code>ideas</code> is declared as a plain <code>list[dict]</code> with no reducer. When two stop agents run in parallel (two <code>Send</code> tasks in the same step), both write <code>ideas</code> and LangGraph raises <code>InvalidUpdateError: At key 'ideas': Can receive only one value per step</code>. One-stop trips work, so it slips through a quick test; every trip with two or more charging stops crashes. Give the key a reducer that merges the lists: <code>ideas: Annotated[list[dict], operator.add]</code>.</li>
+  <li><b>graph.py:</b> <code>after_critic</code> compares <code>state["revisions"] &lt; MAX_REVISIONS</code>, so the writer gets one revision instead of two: 2 writer calls, not 3, before the trip goes to <code>needs_human</code>. More drafts that one more rewrite would have fixed land in a person's queue. The counter counts failed reviews, so allow a rewrite while <code>state["revisions"] &lt;= MAX_REVISIONS</code> (first draft + <code>MAX_REVISIONS</code> revisions).</li>
+  <li><b>graph.py:</b> <code>approve</code> calls <code>booking.reserve(...)</code> before <code>interrupt()</code>. The chargers are reserved while the plan is only being shown, even if the driver then says no, and because a node runs again from the top when the graph resumes, approving reserves every charger a second time. The booking system sees reservations nobody approved and duplicates for the ones they did. Nothing with side effects may run before <code>interrupt()</code>: call <code>interrupt()</code> first, return if the answer is not <code>True</code>, and only then reserve.</li>
+</ol>
+          </div>
+        </div>
+        <div class="ex-foot"><label class="done-toggle check"><input type="checkbox" data-check="exercises|W4-drill"> <span class="check-text">Drill done: all tests passing and BUGS.md written</span></label></div>
+      </div>
+
+      <div class="prose"><h3 style="margin-top:28px">Weekly quiz</h3><p>15 questions at interview level: code to read, numbers to compute, failures to diagnose. Three come from earlier weeks and three from the certification track. Aim for 12 or more; every explanation says why each wrong option is wrong.</p></div>
+      <div class="quiz" data-quiz="W4-weekly"></div>
+      <script type="application/json" data-quiz-for="W4-weekly">[{"id": "w1", "q": "The driver sets the reserve to 5% (the lowest <code>TripSpec<\/code> allows). What does <code>plan_trip<\/code> return for Dunmore → Juniper Bay in the Voltra City at 100%?", "options": ["Infeasible: Dunmore's chargers are NACS-only or out of service, so the car can't start full enough", "The 365 km coast road, charging at Glenrock to 80%, since a 5% reserve leaves more usable range", "The 420 km route through Fairhaven: even at 100% from Glenrock, the coast road is too far", "The 365 km coast road: charge at Glenrock from 76% to 100% (16.2 min), arrive with about 7%"], "answer": 3, "why": "Glenrock → Juniper Bay is 290 km, 46.4 kWh, 92.8% of the 50 kWh battery. From 100% the car arrives at 7.2%: below the default 10% reserve (hence the 420 km fallback on the page), but above 5%, so the shortest route is feasible and tried stays empty. 80% would arrive at −12.8%. The car already starts at 100%, so Dunmore's chargers don't matter. The charge takes 1.2 min to 80% and 15 min above it: the taper again."}, {"id": "w2", "q": "A trip has 6 charging stops, and each stop guide takes about 1 s. You run <code>app.invoke(inputs, {\"max_concurrency\": 2, \"configurable\": {...}})<\/code>. What happens during the fan-out?", "options": ["At most 2 guides run at a time, so the fan-out takes about 3 s instead of about 1 s", "All 6 run at once: max_concurrency limits how many graph runs a process starts, not tasks", "Only the first step is capped; Send tasks are scheduled separately and all 6 start together", "At most 2 run; the other 4 Send tasks are dropped, so those stops get no suggestions"], "answer": 0, "why": "max_concurrency caps the tasks that run at the same time within the run, Send tasks included. In a check with six 0.5 s tasks, the peak was 6 and the step took 0.5 s without it, and the peak was 2 and the step took 1.5 s with max_concurrency=2. No task is dropped: they wait their turn. Use it with retry-with-backoff to stay under a provider's rate limit; the cost is the same, only the waiting changes."}, {"id": "w3", "q": "A teammate's critic forgets the counter, and the router reads it with a default. The writer keeps naming CH-11. No <code>recursion_limit<\/code> is set (langgraph 1.2). What happens?<pre><code>def critic(state):\n    problems = review(...)\n    return {\"problems\": problems}                 # revisions is never written\n\ndef after_critic(state):\n    if not state[\"problems\"]:\n        return \"approve\"\n    return \"writer\" if state.get(\"revisions\", 0) &lt;= MAX_REVISIONS else \"needs_human\"<\/code><\/pre>", "options": ["3 writer calls, then needs_human: MAX_REVISIONS still bounds the loop", "11 writer calls, then GraphRecursionError at LangGraph's 25-step default limit", "About 5,000 writer calls, then GraphRecursionError at the 10,007-step default", "It never stops: LangGraph has no step limit unless you pass recursion_limit"], "answer": 2, "why": "revisions stays 0, so the router sends every draft back to the writer. In langgraph 1.2 the default recursion limit is 10,007 super-steps (LANGGRAPH_DEFAULT_RECURSION_LIMIT); each loop is two steps (writer, critic), so the run makes about 5,000 paid writer calls (5,002 in the check) before GraphRecursionError. 25 was the default in older versions and gives 11 writer calls. MAX_REVISIONS only helps if the counter moves. Keep the counter in the state, test the limit, and set recursion_limit yourself."}, {"id": "w4", "q": "The eval runs t01 and t02 (t02: \"Aurel Tourer, Ashford to Kestrel Point, 90% charged.\", expected stops [\"CH-11\"]). It prints the totals below, and t02's row has <code>wrong_fields == [\"start_soc\"]<\/code>. What happened on t02?<pre><code>{'intake_ok': 0.5, 'feasible_ok': 1.0, 'stops_ok': 0.5, 'valid': 1.0}<\/code><\/pre>", "options": ["The plan failed validate, but valid counts infeasible plans as passing, which hides the failure", "The trip was infeasible from 9%, but feasible_ok compares only the two booleans, so it passed", "Intake read 90% as 0.09: the plan charges at Ashford first, then CH-11, valid but for the wrong trip", "stops_ok is flaky: the parallel stop guides return stops in either order between runs"], "answer": 2, "why": "At 0.09 the car starts below the 10% reserve, so the greedy plan charges at the origin (CH-01, 9% → 80%, 23.3 min) and then at CH-11. That plan is feasible and passes validate, just for a trip the driver didn't ask for: feasible_ok and valid are 1.0, stops_ok and intake_ok are 0.5. That's why the eval scores each agent on its own, and why the app should echo the parsed request back. eval compares the planner's stops, which come from code, not from the stop guides."}, {"id": "w5", "q": "A customer's chat assistant uses about 2,000 tokens per question. They want a deep-research feature built like Anthropic's multi-agent research system. Roughly what token budget per question should you plan for?", "options": ["About 2,000: the subagents split one question's work, so the total stays about the same", "About 30,000: Anthropic's multi-agent system used about 15x the tokens of a chat", "About 120,000: about 4x per agent, times the 15 subagents such a system typically runs", "About 8,000: agents use about 4x the tokens of a chat, however many of them there are"], "answer": 1, "why": "Anthropic reports that agents use about 4x the tokens of a chat and their multi-agent system about 15x: 2,000 × 15 = 30,000. The gain (90.2% over a single agent on their research eval) came largely from spending more tokens, and token usage alone explained about 80% of the performance variance, so a team that costs the same as one agent would lose most of the benefit. 4x is a single agent. 120,000 multiplies figures that are already totals. Budget for it, and use a team only where the task's value pays for it."}, {"id": "w6", "q": "Driver u1 declines trip t01 on thread <code>trip-1<\/code>. A week later they plan a new trip on a new thread, <code>trip-9<\/code>, with a request that doesn't mention the car. What does the intake agent's input start with?", "options": ["Profile: {}, because the profile is only stored after a trip is approved, and t01 wasn't", "Profile: {\"vehicle_id\": \"voltra-city\", \"interests\": [\"food\"]}, read from the store", "The whole trip-1 state, since the checkpointer loads the user's latest thread by user id", "Profile: {}, because a new thread starts empty and the profile lived in trip-1's state"], "answer": 1, "why": "The store is keyed by (\"profiles\", user_id), not by thread, so it survives across trips; the intake node writes it right after intake, before approval, so a declined trip still saves it. The checkpointer is per thread: trip-9 starts empty and knows nothing about trip-1, and threads aren't looked up by user id. Saving the profile before the driver confirms is itself a risk: a misread car would follow them to every trip."}, {"id": "w7", "q": "To cut latency, a teammate runs a route agent and a charging agent in parallel on the driver's request. For Dunmore → Juniper Bay, the route agent picks the 420 km road through Fairhaven, while the charging agent plans (and pre-books) a stop at Glenrock on the coast road. Which change fixes the cause?", "options": ["Give each agent a higher turn limit, so it can re-check its own plan before returning", "Add a model critic after both finish that picks the more consistent of the two plans", "Run both agents on the same model with temperature 0, so they reason the same way", "Decide the route once, then pass it to the charging step; or let one agent do both"], "answer": 3, "why": "Cognition's second principle: actions carry implicit decisions, and two agents deciding separately make conflicting choices. Choosing the route is a decision the charging plan depends on, so the tasks aren't independent: make it once and pass it on (as P3 does: plan, then stop guides). Same model and temperature don't make two separate agents see each other's choices. A critic after the fact can only pick a loser, and here a booking was already made. More turns let each agent re-check its own plan, not the other's."}, {"id": "w8", "q": "A model \"improves\" t01's plan: it replaces the Harlow stop with CH-11 in Ironbridge, and fills in a plausible arrival charge. What does <code>validate<\/code> return (start 90%, reserve 10%)?<pre><code>plan.stops[0] = Stop(\"Ironbridge\", \"CH-11\", arrive_soc=0.48, depart_soc=0.8,\n                     kwh=16.0, minutes=9.6, cost=7.52)<\/code><\/pre>", "options": ["None: CH-11 is available, and departing Ironbridge at 80% is within the allowed range", "Two: it arrives in Ironbridge with -6%, below the reserve, and CH-11 has no CCS connector", "One problem, CH-11 has no CCS connector; the charge check starts from the stop's 48% arrival", "One problem, the arrival below reserve; validate stops at the first problem that it finds"], "answer": 1, "why": "validate re-computes the charge from the start and the road distances, ignoring the plan's own arrive_soc: 90% minus 300 km × 0.16 kWh / 50 kWh = −6% at Ironbridge. It then checks the charger against the raw data (available, but NACS only) and collects every problem rather than stopping at the first. That independence is the point: a validator that trusts the numbers in the plan checks nothing a model edited."}, {"id": "w9", "q": "(Enterprise) A security review of the trip planner's SAML login finds that its assertion consumer URL accepts the same signed SAMLResponse when it is posted a second time, within the assertion's 5-minute validity window. The signature and audience checks pass. What's missing?", "options": ["One-time use: remember each assertion's ID until it expires and reject any assertion seen before", "A signature check on the whole response, since checking only the assertion's signature lets it be copied", "Switching to IdP-initiated login, so the identity provider decides when assertions are sent", "A shorter window: set NotOnOrAfter to one minute, so a captured assertion expires sooner"], "answer": 0, "why": "A replayed assertion is genuine: its signature, audience and time window all check out, so only a record of used assertion IDs (kept until they expire) stops the second use. Signing the whole response doesn't change that the copy is identical. A shorter window narrows the gap but still allows replay inside it. IdP-initiated login is weaker, not stronger: there's no request of yours for the response to match. The app's checks are signature, audience, time window, and each assertion used once."}, {"id": "w10", "q": "(Certification) A research coordinator built with the Claude Agent SDK calls WebSearch and WebFetch itself for 12 vendors. By vendor 8 its context is full of raw pages, and its final comparison ignores requirements the user gave at the start. What's the best fix?", "options": ["Tell the coordinator to summarize each tool result in its next message before continuing", "Switch the coordinator to a model with a larger context window, so all 12 vendors' pages fit", "A researcher subagent per vendor with only the web tools, each returning a short structured summary", "Let the vendor subagents message each other, so they can share findings and avoid duplicate work"], "answer": 2, "why": "Task 1.2: the raw results should never reach the coordinator. A subagent starts with a fresh context, does its searching inside it, and only its final message returns, so the coordinator keeps the user's requirements plus 12 short summaries (and the vendors can run in parallel). Summarizing after the fact leaves the raw pages in the context. A bigger window postpones the problem and still buries the early instructions. In the hub-and-spoke model subagents report to the coordinator, not to each other."}, {"id": "w11", "q": "(Certification) The user tells the coordinator: \"We're driving the Aurel Tourer, and our dog comes along.\" The stop-guide subagent then suggests a museum that doesn't allow dogs. Its AgentDefinition prompt says \"Take the user's needs into account.\" What's the fix?", "options": ["Give the stop-guide the Read tool, so it can open the coordinator's conversation history", "Add \"read the user's earlier messages before answering\" to the stop-guide's system prompt", "Have the coordinator write the constraints (dog, car, minutes) into the Agent tool's prompt", "Switch the stop-guide to a stronger model, which will infer the missing needs more reliably"], "answer": 2, "why": "Task 1.3: the only thing that travels from parent to subagent is the Agent tool's prompt string, on top of the subagent's own system prompt. It never sees the parent's conversation, so \"the user's needs\" refers to nothing. Fix the hand-off, not the subagent. There are no earlier messages for it to read, and the parent's history isn't a file. A stronger model can't use facts it was never given."}, {"id": "w12", "q": "(Certification) A reviewer subagent runs in your own loop on the Claude API. It often returns \"Let me also check the tests.\" to the coordinator as its final report, without checking them. What's wrong?<pre><code>while True:\n    r = client.messages.create(model=MODEL, system=SYSTEM, tools=TOOLS, messages=messages, max_tokens=4096)\n    messages.append({\"role\": \"assistant\", \"content\": r.content})\n    text = [b.text for b in r.content if b.type == \"text\"]\n    if text:\n        return text[0]\n    messages.append({\"role\": \"user\", \"content\": run_tools(r.content)})<\/code><\/pre>", "options": ["Subagents must return JSON, so a plain-text reply is treated as the end of the task", "max_tokens is too low, so the reply is cut off right after the first sentence of text", "The loop needs an iteration cap of about 10, which would force it to finish the review", "It stops when a reply contains text, but that reply also has tool_use; loop on stop_reason instead"], "answer": 3, "why": "Task 1.1 holds inside every subagent: Claude often writes a sentence and a tool_use block in the same reply, with stop_reason \"tool_use\". Checking for text ends the loop early and returns the sentence as the report. Continue while stop_reason is \"tool_use\" (run the tools, send the results), and stop on \"end_turn\". A cut-off reply would say \"max_tokens\", not stop mid-plan with a complete sentence. An iteration cap is a safety net, not the stop condition. Nothing requires JSON."}, {"id": "w13", "q": "(Week 3) A teammate proposes hybrid search with a reranker over Norvale's guidebook, so each stop guide gets \"the most relevant places\". The guidebook has 15 entries (about 1,300 characters of JSON), and <code>stop_context<\/code> already selects one town's entries in code. What does Week 3 suggest?", "options": ["Skip retrieval: the guidebook is tiny, and code already selects the town's entries exactly", "Contextual retrieval: prefix each entry with its town, so every chunk makes sense on its own", "A reranker: put the best places first, since models use the middle of a context the worst", "Hybrid search: place names are rare terms that embeddings blur, so BM25 has to back up vectors"], "answer": 0, "why": "Week 3: a knowledge base under about 200,000 tokens can go straight into the prompt, and RAG earns its place with large, changing corpora, per-user permissions and cost at volume. Here the selection is an exact filter (town equals Harlow), which code does perfectly, and the stop guide's payload is about 165 characters. Hybrid search, contextual retrieval and reranking all fix problems of ranking many chunks; with two or three entries per town there's nothing to rank, only latency and failure modes to add."}, {"id": "w14", "q": "(Week 1) In the one-agent baseline, the model gets shortest_route, plan_charging, charge_minutes, usable_chargers and validate as separate tools. Traces show it often calls shortest_route, then passes plan_charging a route it retyped, with Millbrook missing. Following Week 1, what's the best fix?", "options": ["Merge the tools always called together into one plan_trip tool that does both steps in code", "Raise the step limit, so the model has room to call validate after every plan it makes", "Turn on strict mode for plan_charging, so the route argument must match its JSON schema", "Add \"copy the route exactly as returned\" to the description of plan_charging's route argument"], "answer": 0, "why": "Week 1: merge tools that are always called together, and keep the tool set small. One plan_trip(origin, destination, vehicle_id, start_soc) tool keeps the route inside code, so the model can't mangle it; that's also the lab's design. Strict mode checks shape, and a route with a town missing is still valid JSON. A description helps but guarantees nothing. validate checks the plan against the route it's given, so a mangled route in both places still passes, and more steps mean more tokens."}, {"id": "w15", "q": "(Week 0C) Every call has a time to first token of 0.5 s and streams 100 output tokens per second. Intake outputs 60 tokens, the two stop guides (run in parallel) 80 and 150, and the writer 250; the planner and critic are code and take no measurable time. About how long until the itinerary is ready?", "options": ["About 3.0 s: the agents run concurrently, so the slowest call, the writer, sets the time", "About 6.1 s: 1.1 s for intake, 2.0 s for the slower guide, then 3.0 s for the writer", "About 5.9 s: the first token arrives once, then 540 output tokens stream at 100 per second", "About 7.4 s: the two stop guides take 1.3 s and 2.0 s, and those times add up"], "answer": 1, "why": "Week 0C: latency ≈ time to first token + output tokens ÷ output speed, per call. Intake 0.5 + 0.6 = 1.1 s; the guides run in parallel, so the slower one counts (0.5 + 1.5 = 2.0 s); the writer 0.5 + 2.5 = 3.0 s: 6.1 s. Adding both guides (7.4 s) is the sequential pipeline. Each call waits for its own first token, so it's not paid once. Only the guides are parallel: intake must finish before planning, and the writer needs the guides' results."}]</script>
+
+      <div data-track="cert">
+        <h3 class="part-h part-cert-h">Certification · Domain 1 practice</h3>
+        <div class="prose">
+          <p>On the <a href="../practice.html">Practice page</a>, filter to Certification, Domain 1, and answer every question available so far. Read each explanation. Then, from memory, write one sentence each for tasks 1.1, 1.2 and 1.3, with the most common wrong answer the exam offers for each.</p>
+        </div>
+      </div>
+
+      <div data-track="ent">
+        <h3 class="part-h part-ent-h">Enterprise · An identity design for P3</h3>
+        <div class="prose"><p>One page for Lumora's identity team: how employees sign in to the trip planner (SAML or OIDC, and why), which flow the web app uses (authorization code with PKCE), what the app checks on every ID token, which token the agent uses to reserve chargers (Day 4), where tokens are stored and for how long, and what the audit log records.</p></div>
+        <div class="reflect" style="max-width:760px">
+          <label><span class="rq">Which part of your design would the identity team question first?</span><textarea data-reflect="ent-identity"></textarea></label>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= WEEKEND 1 ================= -->
+    <section class="day" id="w1" data-day="w1">
+      <div class="day-kicker">Weekend 1 · Saturday on the Full-time pace · 7.5 hours</div>
+      <div class="day-head">
+        <h2>Build P3: the Multi-Agent EV Road-Trip Planner</h2>
+        <label class="day-done check"><input type="checkbox" data-check="lessonDays|W4-w1"> Session done</label>
+      </div>
+      <ul class="parts session-plan">
+        <li class="part part-core"><span class="part-tag">Core · 6h</span>The graph, the CLI, the eval, the tests</li>
+        <li class="part part-cert" data-track="cert"><span class="part-tag">Certification · 1.5h</span>Lab: the same team with Claude Agent SDK subagents</li>
+      </ul>
+
+      <div class="prose">
+        <h3 class="part-h part-core-h">Core · Portfolio project P3</h3>
+        <div class="callout"><b>The scenario</b>Norvale's regional tourism office wants a trip planner for electric-car drivers: tell it where you're going, in plain words, and get a route, charging stops that actually work for your car, something to do while you charge, and reservations at the chargers once you approve. It must say clearly when a trip can't be done, and it must never book anything without the driver's yes.</div>
+        <h4>Requirements</h4>
+        <ol>
+          <li>A new public repository, <code>ev-road-trip</code>: <code>network.py</code>, <code>planning.py</code>, <code>agents.py</code>, <code>critic.py</code>, <code>graph.py</code>, <code>evals.py</code>, <code>cli.py</code>; <code>data/</code> with the unzipped files; <code>tests/</code>.</li>
+          <li><b>The graph:</b> intake → plan → one parallel stop guide per stop → writer → critic (at most 2 revisions) → human approval → reservations; <i>infeasible</i> and <i>needs_human</i> exits with a reason. A checkpointer, one thread per trip, and a profile store per user.</li>
+          <li><b>Guards in code:</b> the stop guides may only name places from the guidebook (check it), the critic checks the plan and the itinerary's charger ids, and nothing is reserved before approval.</li>
+          <li><b>CLI:</b> <code>plan "request" --user NAME</code> (shows the itinerary and asks before reserving) and <code>eval</code> (runs <code>trips.json</code> and prints per-trip rows and totals).</li>
+          <li><b>Usage report:</b> input and output tokens per agent for one trip, and the total cost.</li>
+          <li><b>Tests:</b> at least 15, all offline, including the approval, the declined path, the revision limit and an infeasible trip.</li>
+        </ol>
+        <h4>Targets</h4>
+        <table class="compare">
+          <tbody>
+            <tr><td>Intake (<code>eval</code>, real model)</td><td>all six fields right on at least <b>13 of 14</b> trips</td></tr>
+            <tr><td>End state</td><td>feasibility right on <b>14 of 14</b> when intake is right; every feasible plan passes <code>validate</code></td></tr>
+            <tr><td>Critic</td><td>no itinerary reaches approval with a charger id that isn't in the plan</td></tr>
+            <tr><td>Safety</td><td>zero reservations without an explicit yes, including after a crash and resume</td></tr>
+            <tr><td>Cost</td><td>one trip costs well under a cent on <code>gpt-6-luna</code>; report the per-agent split</td></tr>
+          </tbody>
+        </table>
+        <p class="small muted">Targets depend on the model's answers. If intake misses, look at which field: percentages, towing and the reserve are the usual ones. Fix the instructions, then re-run the whole eval, not just the failing trip.</p>
+        <h4>Suggested build order (commit after each)</h4>
+        <ol>
+          <li>Exercises 1–4 into the package; all tests green offline.</li>
+          <li><code>plan</code> end to end with a real model on trip t01; read the whole state.</li>
+          <li><code>eval</code> on all 14 trips; save the output as <code>results/eval.md</code>.</li>
+          <li>The guidebook check and the usage report.</li>
+        </ol>
+      </div>
+
+      <div class="exercise">
+        <div class="ex-head"><span class="ex-tag">Hints</span><h4>Stuck on P3?</h4></div>
+        <p class="small muted" style="margin:0">This is your portfolio project, so hints stop at snippets. Ask your AI tutor for a code review when you're done.</p>
+        <div class="hints" data-hints="W4-proj">
+          <div class="hint" data-level="Concept">To check stop ideas against the guidebook, keep the allowed names per town in a set and drop (and log) anything else before it reaches the writer. For the usage report, the <code>usage</code> key already collects one record per call: group by <code>agent</code> and multiply by the model's prices from Week 0C.</div>
+          <div class="hint" data-level="Snippet">
+<pre><code>def per_agent(usage: list[dict], price_in: float = 0.10, price_out: float = 0.50) -> dict:
+    """Prices per 1M tokens (gpt-6-luna). Returns agent -> (calls, input, output, dollars)."""
+    out: dict[str, list] = {}
+    for u in usage:
+        name = u["agent"].split(":")[0]                       # "stop:Harlow" -> "stop"
+        row = out.setdefault(name, [0, 0, 0, 0.0])
+        row[0] += 1
+        row[1] += u["input_tokens"]
+        row[2] += u["output_tokens"]
+        row[3] += (u["input_tokens"] * price_in + u["output_tokens"] * price_out) / 1_000_000
+    return {k: tuple(v) for k, v in out.items()}</code></pre></div>
+        </div>
+      </div>
+
+      <div data-track="cert">
+        <h3 class="part-h part-cert-h">Certification · Lab: Claude Agent SDK subagents</h3>
+        <div class="prose">
+          <p>Build the same team with the <b>Claude Agent SDK</b>: expose <code>plan_trip</code> and the guidebook as in-process tools, define a <code>charging-planner</code> and a <code>stop-guide</code> subagent, and let the coordinator run one stop guide per stop in parallel. Cap nesting at 1 layer, concurrency at 4 and spend at $0.50. Print every delegation (the <code>Agent</code> tool calls) and the total cost. Then answer in your notes: what did each subagent receive in its prompt, and did the coordinator pass everything it needed?</p>
+<pre><code><span class="p">(.venv) $ </span>pip install claude-agent-sdk</code></pre>
+        </div>
+        <div class="hints" data-hints="W4-cert-lab">
+          <div class="hint solution" data-level="Solution">
+<pre><code>"""Certification lab: the same planner as Claude Agent SDK subagents."""
+import asyncio
+import json
+from pathlib import Path
+
+from claude_agent_sdk import (AgentDefinition, ClaudeAgentOptions, ResultMessage, ToolUseBlock, create_sdk_mcp_server,
+                              query, tool)
+
+from road_trip import agents
+from road_trip.network import load_network
+from road_trip.planning import plan_trip
+
+NET = load_network(Path("data/norvale.json"))
+
+
+@tool("plan_trip", "Route and charging stops for one trip. Deterministic; use it for every number.",
+      {"origin": str, "destination": str, "vehicle_id": str, "start_soc": float})
+async def plan_trip_tool(args):
+    spec = agents.TripSpec(**args)
+    route, plan, tried = plan_trip(NET, spec)
+    return {"content": [{"type": "text", "text": json.dumps({"towns": route.towns, "km": route.km,
+            "feasible": plan.feasible, "reason": plan.reason, "tried": tried,
+            "stops": [s.__dict__ for s in plan.stops]})}]}
+
+
+@tool("places", "Guidebook entries for one town.", {"town": str})
+async def places_tool(args):
+    return {"content": [{"type": "text", "text": json.dumps([p for p in NET.places if p["town"] == args["town"]])}]}
+
+
+SERVER = create_sdk_mcp_server("trip", tools=[plan_trip_tool, places_tool])
+OPTIONS = ClaudeAgentOptions(
+    mcp_servers={"trip": SERVER},
+    allowed_tools=["Agent", "mcp__trip__plan_trip", "mcp__trip__places"],
+    agents={
+        "charging-planner": AgentDefinition(
+            description="Plans the route and charging stops for an EV trip in Norvale.",
+            prompt="Call plan_trip once with the exact values you were given. Return its stops unchanged.",
+            tools=["mcp__trip__plan_trip"]),
+        "stop-guide": AgentDefinition(
+            description="Suggests what to do during ONE charging stop, from the guidebook.",
+            prompt="Call places for the town you were given. Pick at most two places that fit the minutes.",
+            tools=["mcp__trip__places"], model="haiku"),
+    },
+    env={"CLAUDE_CODE_MAX_SUBAGENT_SPAWN_DEPTH": "1", "CLAUDE_CODE_MAX_CONCURRENT_SUBAGENTS": "4"},
+    max_budget_usd=0.50,
+)
+
+
+async def main(request: str) -&gt; None:
+    async for message in query(prompt=request, options=OPTIONS):
+        for block in getattr(message, "content", None) or []:
+            if isinstance(block, ToolUseBlock) and block.name in ("Agent", "Task"):
+                print("delegated to:", block.input.get("subagent_type"), "|", block.input.get("prompt", "")[:80])
+        if isinstance(message, ResultMessage):
+            print(message.result, f"\ncost: ${message.total_cost_usd}")
+
+
+if __name__ == "__main__":
+    asyncio.run(main("Plan Ashford to Kestrel Point in a Voltra City at 90%. Use charging-planner first, "
+                     "then one stop-guide per charging stop, in parallel. Pass each subagent everything it needs."))</code></pre>
+<p class="small muted">Tool names for MCP tools are <code>mcp__{server}__{tool}</code>; the <code>Agent</code> tool must be allowed for the coordinator to delegate. Match both <code>"Agent"</code> and <code>"Task"</code>: older versions used the second name.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= WEEKEND 2 ================= -->
+    <section class="day" id="w2" data-day="w2">
+      <div class="day-kicker">Weekend 2 · Sunday on the Full-time pace · 7.5 hours</div>
+      <div class="day-head">
+        <h2>Evaluate, compare, ship</h2>
+        <label class="day-done check"><input type="checkbox" data-check="lessonDays|W4-w2"> Session done</label>
+      </div>
+      <ul class="parts session-plan">
+        <li class="part part-core"><span class="part-tag">Core · 6h</span>Eval report, one-agent baseline, README, demo</li>
+        <li class="part part-ent" data-track="ent"><span class="part-tag">Enterprise · 1.5h</span>Interview practice: the Interview room</li>
+      </ul>
+
+      <div class="prose">
+        <h3 class="part-h part-core-h">Core · Was the team worth it?</h3>
+        <h4>1. A one-agent baseline (2 hours)</h4>
+        <p>Build the honest comparison: a single agent in your Week 1 loop, with <code>plan_trip</code> and <code>places</code> as tools and one system prompt that asks for the whole itinerary. Run it on the 14 trips and compare with the team: intake accuracy, plans that pass <code>validate</code>, itineraries with a wrong charger id, tokens and cost per trip, and wall-clock time. Use Week 3's paired comparison on the same trips. Write down which one you'd ship, and why.</p>
+        <h4>2. Report and README</h4>
+        <p><code>results/eval.md</code> with both systems' numbers; a Mermaid diagram of the graph; the per-agent cost table; design decisions with evidence ("the critic is code because…"); what happens on an infeasible trip; how approval and resume work; how to run everything offline.</p>
+        <h4>3. Demo (3 minutes)</h4>
+        <p>A trip with two stops (show the parallel stop guides in the trace), an infeasible trip and its reason, a declined approval with nothing booked, then a second trip where the planner remembers the driver's car. Merge through a PR and tag <code>v1.0</code>.</p>
+      </div>
+
+      <div class="prose"><h4>Acceptance checklist</h4></div>
+      <div class="card" style="max-width:760px">
+        <label class="check"><input type="checkbox" data-check="accept|W4-graph"><span class="check-text">Graph with intake, planner, parallel stop guides, writer, code critic (2 revisions max), approval and reservations</span></label>
+        <label class="check"><input type="checkbox" data-check="accept|W4-safe"><span class="check-text">Nothing is reserved without approval; declined and resumed paths tested</span></label>
+        <label class="check"><input type="checkbox" data-check="accept|W4-memory"><span class="check-text">One thread per trip; the profile store remembers the car and interests</span></label>
+        <label class="check"><input type="checkbox" data-check="accept|W4-eval"><span class="check-text"><code>eval</code> meets the targets on 14 trips (13/14 intake, 14/14 feasibility)</span></label>
+        <label class="check"><input type="checkbox" data-check="accept|W4-baseline"><span class="check-text">One-agent baseline compared on the same trips, with a paired comparison and a decision</span></label>
+        <label class="check"><input type="checkbox" data-check="accept|W4-tests"><span class="check-text">15+ tests pass offline</span></label>
+        <label class="check"><input type="checkbox" data-check="accept|W4-ship"><span class="check-text">README with diagram, cost per agent and decisions; 3-minute demo; merged and tagged v1.0</span></label>
+      </div>
+
+      <div class="prose">
+        <div class="callout tip" style="margin-top:20px"><b>Next week (Week 5): conversational and multimodal agents</b>Voice and vision, and a human who can approve what the agent does, which builds on this week's interrupts. On the certification track: structured output with tools and schemas, and validation-retry loops.</div>
+      </div>
+
+      <div data-track="ent">
+        <h3 class="part-h part-ent-h">Enterprise · Interview practice</h3>
+        <div class="prose">
+          <p>Do the Interview room below on the clock. For the design question, use P3 as your example, and say out loud where you'd use one agent instead of a team.</p>
+        </div>
+        <div class="reflect" style="max-width:760px">
+          <label><span class="rq">Where did you reach for more agents when fewer would have done?</span><textarea data-reflect="ent-team"></textarea></label>
+        </div>
+      </div>
+    </section>
+
+<section class="day" id="interview">
+      <div class="day-kicker">Interview room · ~1.5h (the Sunday enterprise slot, or any time this week)</div>
+      <div class="day-head"><h2>Interview room: this week's topics as companies ask them</h2>
+        <label class="day-done check"><input type="checkbox" data-check="exercises|W4-interview"> Done</label></div>
+      <div class="prose">
+        <p>These are publicly reported interview questions for forward deployed and AI engineer roles, on this week's topics: when a team of agents beats one agent, orchestration, human approval, agent evals, memory, and whose identity an agent uses. <b>About the sources:</b> companies don't publish their questions, and candidates usually agree not to share them. Every question below comes from a public prep guide or a public question list and is labeled with its source; none is an official company question. One is an original practice question in a documented interview format, and is labeled "Format practice".</p>
+        <p><b>How to practice:</b> set a timer (10 minutes for technical questions, 30–45 for design), answer out loud or on paper, then open the outline and compare. Use your own P3 numbers wherever the outline uses Norvale's; an interviewer trusts "each stop guide sees 165 characters instead of 5,200" more than any definition.</p>
+      </div>
+
+      <div class="exercise interview">
+        <div class="ex-head"><span class="ex-tag">Q1</span><h4>When is an agentic architecture the wrong solution?</h4></div>
+        <p class="small" style="margin:4px 0 6px"><b>Several companies (aggregated list) · AI engineering · agents</b></p>
+        <p class="small" style="margin:0 0 8px"><span class="chip">Aggregated</span> <span class="small muted">From a public question bank compiled from interview write-ups, Reddit threads and prep guides, with no per-question company: <a href="https://github.com/alexeygrigorev/ai-engineering-field-guide/blob/main/interview/questions/questions.md" target="_blank" rel="noopener">AI Engineering Field Guide ↗</a>. Its prep notes name "when NOT to use agents" as a key question.</span></p>
+        <p class="small muted" style="margin:0 0 10px"><b>What it probes:</b> Whether you start from the simplest thing that works, and can say with evidence when a team of agents (or any agent) costs more than it earns.</p>
+        <div class="hints" data-hints="W4-ir1">
+          <div class="hint solution" data-level="Model answer outline">
+            <ol><li>Separate the options first, using Anthropic's definitions: in a workflow, code decides the path and models fill in steps; in an agent, the model picks its own steps. Start with one call, then a workflow, and use an agent only where the path can't be known in advance.</li><li>Wrong when the work is deterministic: routes, battery percentages and charging minutes are functions you can test. P3's planner is code, and only three of its five roles use a model; a model doing arithmetic will eventually get it wrong in front of a customer.</li><li>Wrong when the budget can't carry it: agents use about 4× the tokens of a chat and Anthropic's multi-agent system about 15×. Its 90.2% gain over a single agent came on broad research, mostly from spending more tokens in parallel.</li><li>A team is wrong when the sub-tasks share context or depend on each other's decisions. Cognition's principles: share full context and traces, and actions carry implicit decisions (two sub-agents built a Super Mario background and a bird that didn't match). Split only when sub-tasks are independent and each needs less context than the whole, like P3's stop guides.</li><li>Decide with numbers, not diagrams: run a one-agent baseline on the same 14 trips and compare paired on intake accuracy, plans that pass validate, wrong charger ids, cost and wall-clock time, then say which one you'd ship.</li></ol>
+            <p class="small" style="margin-top:8px"><b>Answers that fail:</b></p>
+            <ul><li>"Agents are more flexible, so they're the better default."</li><li>Splitting by job title (researcher, planner, writer) because it looks like a human team, with no check that the parts are independent.</li></ul>
+          </div>
+        </div>
+      </div>
+      <div class="exercise interview">
+        <div class="ex-head"><span class="ex-tag">Q2</span><h4>A logistics firm wants an agent that automatically reroutes shipments using SAP, weather APIs, and 500 warehouse managers' input.</h4></div>
+        <p class="small" style="margin:4px 0 6px"><b>Forward Deployed Engineer · several companies · decomposition</b></p>
+        <p class="small" style="margin:0 0 8px"><span class="chip">Reported</span> <span class="small muted">Listed as a decomposition question in a 2026 FDE interview guide covering several companies, with no company named for this question: <a href="https://www.tryexponent.com/blog/forward-deployed-engineer-interview-the-definitive-2026-guide-fde" target="_blank" rel="noopener">Exponent ↗</a>. The same guide asks you to design an evaluation harness for this agent with a 99% delivery-rate target. Secondary source.</span></p>
+        <p class="small muted" style="margin:0 0 10px"><b>What it probes:</b> Whether you break a vague "agent" request into code, models and people, and put approval and identity around the step that changes SAP.</p>
+        <div class="hints" data-hints="W4-ir2">
+          <div class="hint solution" data-level="Model answer outline">
+            <ol><li>Clarify "automatically": which reroutes may happen without a person (a small delay within one region?) and which need a manager's yes, what a wrong reroute costs, how fast decisions are needed, and who owns each warehouse.</li><li>Decompose: capacity, distance, cost and delivery-date math is code, tested like P3's planner and given to models as tools. Models read the messy parts: weather alerts, managers' free-text notes. An independent validator re-checks every proposed reroute against SAP data.</li><li>Parallel workers only where the work is independent: one assessment per affected shipment or region, fanned out with Send, each receiving a sliced payload rather than the whole state. Capacity is shared, so one allocator (code) decides it; two agents each routing trucks into the same half-empty warehouse is Cognition's "implicit decisions" failure.</li><li>Humans: pause before any SAP write (an interrupt with a checkpointer), send each approval to the owning manager with exactly what will change, re-check capacity and weather on resume, and expire approvals that wait too long. The write runs in its own step after approval, with an idempotency key.</li><li>Identity and audit: the agent reads broadly with a service identity, but the write to SAP carries the approving manager's identity (a delegated token or token exchange), so the log shows who approved what.</li><li>Evidence: replay past disruptions as an end-state eval (right reroutes, capacity respected, no write without approval), against a rules-only baseline, and report cost per decision.</li></ol>
+            <p class="small" style="margin-top:8px"><b>Answers that fail:</b></p>
+            <ul><li>One agent with SAP write access and a prompt that says "be careful".</li><li>A box per data source (a SAP agent, a weather agent, a manager agent) with no word on who decides when they disagree.</li></ul>
+          </div>
+        </div>
+      </div>
+      <div class="exercise interview">
+        <div class="ex-head"><span class="ex-tag">Q3</span><h4>Describe how you would architect an AI agent system, including the agent loop, tool interfaces, memory design, orchestration technologies, and safety considerations.</h4></div>
+        <p class="small" style="margin:4px 0 6px"><b>Salesforce · AI/ML and software engineering · generative AI system design</b></p>
+        <p class="small" style="margin:0 0 8px"><span class="chip">Reported</span> <span class="small muted">Prep-site list "based on real candidate reports from Glassdoor and Reddit", lightly edited: <a href="https://igotanoffer.com/en/advice/generative-ai-system-design-interview" target="_blank" rel="noopener">IGotAnOffer ↗</a>; the same wording appears in the <a href="https://github.com/alexeygrigorev/ai-engineering-field-guide/blob/main/interview/questions/questions.md" target="_blank" rel="noopener">AI Engineering Field Guide ↗</a>. Secondary sources.</span></p>
+        <p class="small muted" style="margin:0 0 10px"><b>What it probes:</b> Whether each of the five parts has a concrete design and a reason, and whether "memory" and "safety" mean something you could test.</p>
+        <div class="hints" data-hints="W4-ir3">
+          <div class="hint solution" data-level="Model answer outline">
+            <ol><li>Loop: the model calls tools until the stop reason says it's done, never "until the text looks finished", with a step cap and a spend cap. Where the path is known, use a workflow instead of a loop, and say which parts of your design are which.</li><li>Tools: deterministic functions with typed schemas (plan_trip, places); every hand-off a Pydantic model, so each boundary is testable without a model; checks in code on what comes back (stop guides may only name guidebook places).</li><li>Orchestration: a LangGraph graph with a typed state, reducers for keys that parallel nodes write (operator.add), conditional edges for routing, and Send for one worker per item, each seeing only its payload (about 165 characters instead of the 5,200-character state). A code critic with a revision limit (2), then a human.</li><li>Memory: short-term is a checkpointer per thread, one thread per task (SQLite locally, Postgres in production); long-term is a store keyed by user (("profiles", user_id)), holding only what the user confirmed, with a retention policy.</li><li>Safety: an interrupt before any side effect, the side effect in its own node after approval, the smallest tool set per sub-agent, and actions under the user's identity (delegated token or token exchange) with an audit record.</li><li>Evidence: end-state evals per agent and for the whole task, tokens logged per agent, and a trace of every node's input and output before the first demo.</li></ol>
+            <p class="small" style="margin-top:8px"><b>Answers that fail:</b></p>
+            <ul><li>A list of products (LangChain, a vector DB, GPT) with no reason and no failure mode for any of them.</li><li>"Memory is the whole chat history in the prompt."</li></ul>
+          </div>
+        </div>
+      </div>
+      <div class="exercise interview">
+        <div class="ex-head"><span class="ex-tag">Q4</span><h4>This LangGraph trip planner passes its unit tests. In production, some chargers were reserved twice after a server restart, and a driver who asked for food stops got only museums. Find the causes and fix them.</h4></div>
+        <p class="small" style="margin:4px 0 6px"><b>Palantir-style · Forward Deployed Software Engineer · re-engineering (format practice)</b></p>
+        <p class="small" style="margin:0 0 8px"><span class="chip">Format practice</span> <span class="small muted">Original practice question in the style of Palantir's re-engineering round (60 minutes: unfamiliar code, a description of how it should behave, find and fix what's broken), described in <a href="https://www.tryexponent.com/guides/palantir-forward-deployed-engineer-interview" target="_blank" rel="noopener">Exponent ↗</a> and <a href="https://www.coditioning.com/blog/704/palantir-swe-learning-reengineering-interview" target="_blank" rel="noopener">Coditioning ↗</a>. Not a reported question.</span></p>
+        <p class="small muted" style="margin:0 0 10px"><b>What it probes:</b> Whether you debug a team of agents from its hand-offs and its state, reproduce each bug offline, and prove each fix with a test.</p>
+        <div class="hints" data-hints="W4-ir4">
+          <div class="hint solution" data-level="Model answer outline">
+            <ol><li>Reproduce before guessing: run the graph offline with a routed fake client and an in-memory checkpointer, and read each node's input and output. With parallel agents, fake replies must be routed by content, not by order.</li><li>Double reservations: booking.reserve is called inside the approve node, before interrupt(). On resume LangGraph re-runs the whole node from its first line, so the booking runs again. Fix: nothing with side effects before an interrupt; reserve in its own node after approval, plus an idempotency key on the booking call.</li><li>Food stops ignored: the Send payload for each stop carries the town and minutes but not the interests, and a stop task sees only its payload. Fix the hand-off, not the stop guide's prompt: the sub-agent can't use what it was never given.</li><li>Check the neighbors of each bug: a reused thread id brings back last trip's ideas through the append reducer; ideas must be paired with stops by town, not by position.</li><li>One test per bug: resume after approval makes exactly two reservations and resume=False makes none; the stop request contains the driver's interests. Then say what you'd log to catch it sooner (every booking with thread and user id, tokens per agent).</li></ol>
+            <p class="small" style="margin-top:8px"><b>Answers that fail:</b></p>
+            <ul><li>Rewording the stop guide's prompt ("always respect the driver's interests") when the interests never reached it.</li><li>Deduplicating reservations afterwards instead of fixing where the side effect runs.</li></ul>
+          </div>
+        </div>
+      </div>
+      <div class="exercise interview">
+        <div class="ex-head"><span class="ex-tag">Q5</span><h4>How do you evaluate agent performance? What metrics matter (tool selection quality, action advancement, context adherence)?</h4></div>
+        <p class="small" style="margin:4px 0 6px"><b>Several companies (aggregated list) · AI engineering · testing and evaluation</b></p>
+        <p class="small" style="margin:0 0 8px"><span class="chip">Aggregated</span> <span class="small muted">From a public question bank with no per-question company: <a href="https://github.com/alexeygrigorev/ai-engineering-field-guide/blob/main/interview/questions/questions.md" target="_blank" rel="noopener">AI Engineering Field Guide ↗</a>. A related design version (an evaluation harness for a shipment-rerouting agent with a 99% delivery-rate target) is in <a href="https://www.tryexponent.com/blog/forward-deployed-engineer-interview-the-definitive-2026-guide-fde" target="_blank" rel="noopener">Exponent's FDE guide ↗</a>.</span></p>
+        <p class="small muted" style="margin:0 0 10px"><b>What it probes:</b> Whether you measure outcomes first, per agent and end to end, and treat step-level metrics as diagnostics rather than the goal.</p>
+        <div class="hints" data-hints="W4-ir5">
+          <div class="hint solution" data-level="Model answer outline">
+            <ol><li>Judge the end state first, as Anthropic recommends for agents: did the task end right? Agents can reach a correct result by different valid paths, so scoring against one "golden" sequence of tool calls punishes good runs.</li><li>Score each agent on its own and the whole task together. In P3: intake field by field, feasibility, the chosen stops, and whether the plan passes validate. An intake reply that turns "90%" into 0.09 shows up as wrong_fields == ["start_soc"], while the whole-trip score only says "wrong stops".</li><li>Data: start with about 20 real requests (Anthropic's suggestion); P3 uses 14 trips, two of them impossible. Compute expected results with code where you can, so labels don't depend on a model.</li><li>Checks in code before any judge: the validator, charger ids in the itinerary against the plan, place names against the guidebook. Use an LLM judge only for what code can't check, such as the itinerary's clarity, and validate it on human labels.</li><li>Step metrics as diagnostics: tool choice, revisions used, needs_human rate, tokens per agent, latency (parallel steps take as long as the slowest). Safety as a hard metric: zero reservations without a yes, including after a crash and resume.</li><li>Compare against a one-agent baseline on the same trips, paired, and re-run the whole eval after every prompt change, not just the trip that failed.</li></ol>
+            <p class="small" style="margin-top:8px"><b>Answers that fail:</b></p>
+            <ul><li>"An LLM judge rates the final answer from 1 to 10."</li><li>Tool-selection accuracy against one fixed trajectory as the headline number.</li></ul>
+          </div>
+        </div>
+      </div>
+      <div class="exercise interview">
+        <div class="ex-head"><span class="ex-tag">Q6</span><h4>How do you implement human-in-the-loop (HIL) patterns and decide when to trigger human review?</h4></div>
+        <p class="small" style="margin:4px 0 6px"><b>Several companies (aggregated list) · agentic system design</b></p>
+        <p class="small" style="margin:0 0 8px"><span class="chip">Aggregated</span> <span class="small muted">From a public question bank with no per-question company (it cites a 2026 Reddit thread on agentic system design interviews): <a href="https://github.com/alexeygrigorev/ai-engineering-field-guide/blob/main/interview/questions/questions.md" target="_blank" rel="noopener">AI Engineering Field Guide ↗</a>.</span></p>
+        <p class="small muted" style="margin:0 0 10px"><b>What it probes:</b> Whether approval is a real gate in the orchestration (durable, resumable, impossible to skip) rather than a sentence in a prompt, and whether you place it by risk.</p>
+        <div class="hints" data-hints="W4-ir6">
+          <div class="hint solution" data-level="Model answer outline">
+            <ol><li>When: by risk and reversibility. Actions with outside effects (booking, emailing, payments, writes to a customer system) need a yes; reads don't. Also escalate on signals: the critic still failing after the revision limit (P3's needs_human), an infeasible request, amounts over a threshold.</li><li>How: the graph pauses with its state saved. In LangGraph, interrupt() with a checkpointer and a thread id; show the human exactly what will happen (the itinerary and the chargers to reserve, ["CH-10", "CH-08"]); resume the same thread with Command(resume=True) or False.</li><li>The trap: on resume the node re-runs from its first line, so anything before interrupt() runs twice. Put the side effect in its own node after approval, and give it an idempotency key.</li><li>Time: people approve on Monday what the agent planned on Friday. Re-check the data on resume (is the charger still available?), expire old approvals, and keep state shapes compatible across deploys so paused threads still resume.</li><li>Keep it usable: few approvals, each clear and specific; record who approved, under their own identity; test the declined path (nothing booked) and the crash-and-resume path; watch approval and edit rates to tune the thresholds.</li></ol>
+            <p class="small" style="margin-top:8px"><b>Answers that fail:</b></p>
+            <ul><li>"The system prompt tells the agent to ask the user before booking."</li><li>A human review of every step, which people soon approve without reading.</li></ul>
+          </div>
+        </div>
+      </div>
+      <div class="exercise interview">
+        <div class="ex-head"><span class="ex-tag">Q7</span><h4>A Fortune 500 wants to deploy our platform in their AWS VPC with SSO via Okta and Snowflake as the data source.</h4></div>
+        <p class="small" style="margin:4px 0 6px"><b>Forward Deployed Engineer · several companies · system design</b></p>
+        <p class="small" style="margin:0 0 8px"><span class="chip">Reported</span> <span class="small muted">Listed as a system design question in a 2026 FDE interview guide covering several companies, with no company named for this question: <a href="https://www.tryexponent.com/blog/forward-deployed-engineer-interview-the-definitive-2026-guide-fde" target="_blank" rel="noopener">Exponent ↗</a>. Secondary source. Snowflake's own docs list Okta among supported external OAuth servers: <a href="https://docs.snowflake.com/en/user-guide/oauth-ext-overview" target="_blank" rel="noopener">Snowflake ↗</a>.</span></p>
+        <p class="small muted" style="margin:0 0 10px"><b>What it probes:</b> Whether you can speak to the customer's identity team: which protocol, which checks, and whose identity each query and action runs under.</p>
+        <div class="hints" data-hints="W4-ir7">
+          <div class="hint solution" data-level="Model answer outline">
+            <ol><li>Clarify: who signs in (employees through Okta), whether their Okta app uses OIDC or SAML, what the platform does in Snowflake (reads only, or writes too), and what their security team requires in logs.</li><li>Sign-in: OIDC with the authorization code flow and PKCE (RFC 9700: no implicit grant, never the password grant); SAML if their stack requires it, SP-initiated, with the assertion's signature, audience, time window and one-time use checked. Okta group claims map to roles in the platform.</li><li>On every ID token: the signature against Okta's published keys with the algorithm you choose (never the token's own alg, never none), iss, aud, exp and the nonce. The ID token is for your app; the access token is for APIs; never swap them.</li><li>Whose identity queries Snowflake: a service identity (client credentials) is simple, but every query looks like the platform's and it needs broad rights; better, the user's identity, through token exchange (RFC 8693) or on-behalf-of, since Snowflake accepts external OAuth tokens from Okta and maps them to a user and role. The broad identity indexes; the user's identity decides what they see.</li><li>Inside the VPC: tokens short-lived and kept server-side, never in agent state or checkpoints (or treat the checkpoint store as regulated data), secrets in their secret manager, and an audit record per query: user, token subject, role, query.</li></ol>
+            <p class="small" style="margin-top:8px"><b>Answers that fail:</b></p>
+            <ul><li>One shared Snowflake service user, password in an environment variable, for every user's questions.</li><li>Decoding the ID token and trusting its claims without checking the signature, issuer, audience and nonce.</li></ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ================= JOURNAL ================= -->
+    <section class="day" id="journal">
+      <div class="day-kicker">Week journal · ~15 min</div>
+      <div class="day-head"><h2>Reflection</h2><span class="small muted" id="reflect-saved"></span></div>
+      <p class="muted" style="max-width:760px">Everything you typed on this page saves automatically in your browser. Download it into your folder each week.</p>
+      <div class="reflect" style="max-width:760px">
+        <label><span class="rq">What clicked this week?</span><textarea data-reflect="clicked"></textarea></label>
+        <label><span class="rq">What was hardest, and how did you get unstuck?</span><textarea data-reflect="hard"></textarea></label>
+        <label><span class="rq">What would you do differently next week?</span><textarea data-reflect="next"></textarea></label>
+        <label><span class="rq">Questions to ask your AI tutor</span><textarea data-reflect="questions"></textarea></label>
+        <button type="button" class="btn btn-ghost" id="reflect-download">Download this week's notes (HTML)</button>
+      </div>
+      <nav class="lesson-pager" aria-label="Lesson navigation">
+        <a class="btn btn-ghost" href="week-W3.html">← Week 3</a>
+        <span class="btn btn-ghost" style="opacity:.55;cursor:default">Week 5: Conversational &amp; Multimodal Agents (published before it starts) →</span>
+      </nav>
+    </section>
+
+  </article>
+</div>
+</main>
+
+<footer id="site-footer"></footer>
+
+<script src="../assets/js/curriculum.js"></script>
+<script src="../assets/js/tracks.js"></script>
+<script src="../assets/js/store.js"></script>
+<script src="../assets/js/ui.js"></script>
+<script src="../assets/js/lesson.js"></script>
+</body>
+</html>

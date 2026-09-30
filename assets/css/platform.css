@@ -439,6 +439,7 @@ figure.diagram figcaption { font-size: 13px; color: var(--ink-3); margin-top: 10
 .q.right { border-color: var(--ok); }
 .q.wrong { border-color: var(--warn); }
 .opt { display: flex; gap: 10px; align-items: flex-start; padding: 7px 10px; border-radius: 8px; cursor: pointer; font-size: 14.5px; clear: both; }
+.opt > span { min-width: 0; overflow-wrap: anywhere; }
 .opt:hover { background: var(--surface-2); }
 .opt input { margin-top: 4px; accent-color: var(--accent); }
 .opt.is-answer { background: var(--ok-soft); }

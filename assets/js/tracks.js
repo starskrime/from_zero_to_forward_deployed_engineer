@@ -158,7 +158,8 @@
            note: "Read the exam guide end to end. Start the official Claude API course. Build a raw agent loop that stops on stop_reason, not on text." },
     W3:  { focus: "Prompt precision and few-shot examples", tasks: ["4.1", "4.2"], links: ["apiPrompt", "claudePrompt", "cApi"],
            note: "Rewrite a vague reviewer prompt with explicit criteria, add a few targeted examples, and measure both changes on labeled answers." },
-    W4:  { focus: "Agentic loops and coordinator–subagent design", tasks: ["1.1", "1.2", "1.3"], links: ["sdkLoop", "sdkSub", "cSubagents", "anthResearch", "claudeAgentSdk"] },
+    W4:  { focus: "Agentic loops and coordinator–subagent design", tasks: ["1.1", "1.2", "1.3"], links: ["sdkLoop", "sdkSub", "cSubagents", "anthResearch", "claudeAgentSdk"],
+           note: "Define subagents with AgentDefinition, pass every fact they need in the Agent prompt, run them in parallel with depth, concurrency and spend caps." },
     W5:  { focus: "Structured output with tools and schemas; validation-retry loops", tasks: ["4.3", "4.4"], links: ["apiStruct", "apiDefTools", "pydantic"] },
     W6:  { focus: "Tool design, structured MCP errors, tool distribution, tool_choice", tasks: ["2.1", "2.2", "2.3"], links: ["apiDefTools", "mcpToolsSpec", "anthTools", "cMcp"] },
     W7:  { focus: "MCP inside Claude Code; built-in tools", tasks: ["2.4", "2.5"], links: ["ccMcp", "cCode", "cMcpAdv"] },
@@ -222,6 +223,7 @@
   F.weeks.find(w => w.id === "W1").lesson = "lessons/week-W1.html";
   F.weeks.find(w => w.id === "W2").lesson = "lessons/week-W2.html";
   F.weeks.find(w => w.id === "W3").lesson = "lessons/week-W3.html";
+  F.weeks.find(w => w.id === "W4").lesson = "lessons/week-W4.html";
   F.weeks.forEach(w => {
     if (certWeeks[w.id]) w.cert = certWeeks[w.id];
     if (deepWeeks[w.id]) w.deep = deepWeeks[w.id];
