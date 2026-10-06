@@ -363,9 +363,9 @@ window.FDE = (function () {
         "Voice architectures: chained STT → LLM → TTS vs realtime speech-to-speech",
         "Vision input: images, screenshots, photos of documents",
         "LangGraph subgraphs for reusable parts",
-        "Stateless vs stateful persistence",
-        "Human-in-the-loop with interrupts: pause, review, approve, resume",
-        "Parallel dispatch with Send() and a synthesizer"
+        "Session state for voice and vision conversations (builds on Week 4's checkpointers)",
+        "Human review UX: what to show, edit-before-approve, timeouts and escalation (builds on Week 4's interrupts)",
+        "Latency for live conversations: streaming partial results, turn-taking, interruptions"
       ],
       tools: ["Speech-to-text", "Text-to-speech", "Vision models", "LangGraph interrupts"],
       links: ["oaiSTT", "oaiTTS", "oaiVision", "lgInterrupt", "langgraph"],
@@ -389,7 +389,7 @@ window.FDE = (function () {
       goal: "Combine RAG with live APIs and numbers, and put it in front of a user.",
       learn: [
         "Vertical patterns: finance, health, SaaS",
-        "REST APIs for agents: OAuth 2.0, rate limits, caching, retries",
+        "REST APIs for agents: OAuth 2.0 client flows in code (Week 4 covered the concepts), rate limits, caching, retries",
         "Hybrid RAG + API workflows; structured JSON outputs",
         "Extractive vs abstractive summarization",
         "Sentiment scores and top-N recommendations: LLM output combined with math",
@@ -403,7 +403,7 @@ window.FDE = (function () {
       goal: "Prove your agent works, keep it safe, and know what it costs.",
       learn: [
         "Traces, runs and spans: reading an agent trace",
-        "Evaluation datasets from real traces; LLM-as-judge and its biases",
+        "Evaluation datasets from real traces; judges at scale: sampling, drift and re-validation (builds on Week 3)",
         "DeepEval metrics: faithfulness, relevancy, hallucination; custom criteria",
         "OWASP Top 10 for LLM apps; prompt injection attacks and defenses",
         "Output guardrails; PII detection and redaction",
@@ -523,7 +523,7 @@ window.FDE = (function () {
         "Queues and background jobs for slow work",
         "Hardened MCP server: per-tenant scoping, role-based access at the tool boundary, audit logs, kill switch",
         "MCP clients inside the Agents SDK",
-        "Auth patterns: API keys, OAuth 2.0, workload identity, passing user context"
+        "Auth patterns in production: API keys, workload identity, token exchange to pass user context (building on Week 4)"
       ],
       tools: ["FastAPI", "AWS Lambda", "FastMCP", "IAM Identity Center / Cognito"],
       links: ["fastapi", "lambda", "fastmcp", "mcp", "idc", "cognito"],
@@ -573,7 +573,7 @@ window.FDE = (function () {
     { id: "W20", phase: "p4", rhythm: "interview", title: "Multi-Agent Coordination + System Design Basics",
       goal: "Design multi-agent systems that don't loop forever or cost a fortune.",
       learn: [
-        "Centralized vs decentralized coordination; shared memory",
+        "Beyond Week 4's coordinator: decentralized coordination, shared memory, agents that negotiate",
         "Disagreement, cascading failures, infinite loops",
         "System-design basics: caching, queues, idempotency, back-pressure",
         "Cross-agent observability; stress testing; cost control"

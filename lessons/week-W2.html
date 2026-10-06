@@ -29,6 +29,7 @@
       <a href="#w1" data-toc="w1">Weekend 1 · Build P2 core</a>
       <a href="#w2" data-toc="w2">Weekend 2 · Check + test</a>
       <a href="#interview">Interview room</a>
+      <a href="#gym">Coding gym</a>
       <a href="#journal">Journal</a>
     </div>
   </aside>
@@ -380,6 +381,16 @@ def chunk_documents(docs: list[Document]) -> list[Document]:
           <li><b>Approximate search misses some neighbors.</b> HNSW trades recall for speed; parameters such as <code>ef_search</code> (Chroma's default is 100) control the trade-off. At millions of vectors, measure recall against exact search.</li>
           <li><b>Filters can shrink results.</b> Some engines apply metadata filters after the neighbor search, returning fewer than k even when more matches exist. Test filtered queries with rare values.</li>
           <li><b>Changing models means re-embedding everything.</b> Build the new index next to the old one, backfill, compare on your eval set, switch reads, and keep the old index for rollback. The cost is mostly time: 2M chunks × 300 tokens is about $12 with <code>text-embedding-3-small</code>.</li>
+        </ul>
+      </div>
+      <div class="card summary" style="max-width:760px">
+        <h4 style="margin-top:0">How to choose an embedding model</h4>
+        <ul>
+          <li><b>Start from the constraints, not the leaderboard.</b> May the customer's text leave their network? If not, you need a model you can run yourself (like BGE through FastEmbed) or one hosted in their cloud. Which languages? An English-only model will quietly fail on German tickets. How long are the chunks? The model's token limit caps them (512 for <code>bge-small-en-v1.5</code>, 8,192 for OpenAI's).</li>
+          <li><b>Then shortlist with the <a href="https://huggingface.co/spaces/mteb/leaderboard" target="_blank" rel="noopener">MTEB leaderboard ↗</a></b>, filtered to <i>retrieval</i> tasks and your languages. Treat its averages as a hint: the benchmarks may look nothing like the customer's documents, and a model can be tuned toward them.</li>
+          <li><b>Size is cost.</b> Dimensions drive storage, memory and search time: 1M chunks × 1,536 float32 numbers is about 6 GB of vectors before index overhead. OpenAI's <code>text-embedding-3</code> models accept a <code>dimensions</code> parameter that shortens vectors (say to 512) while keeping most of their meaning; measure what it costs you in hit rate.</li>
+          <li><b>Decide on your own eval set.</b> Embed the corpus with the top two or three candidates and compare hit rate on the same labeled questions (Week 3 shows how). A model that wins on MTEB can lose on product codes and ticket jargon.</li>
+          <li><b>Price the whole life:</b> the first embedding run is cheap; re-embedding at every model change, and the vector store's monthly bill, are not.</li>
         </ul>
       </div>
       <div class="exercise">
@@ -984,6 +995,322 @@ print(chain.invoke("Which printer queue should I use on the 3rd floor of the Dal
             <p class="small" style="margin-top:8px"><b>Answers that fail:</b></p>
             <ul><li>"Just use bigger chunks."</li><li>Never checking what the extracted text actually looks like.</li></ul>
           </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= CODING GYM ================= -->
+    <section class="day" id="gym">
+      <div class="day-kicker">Coding gym · ~1h, timed (any day this week)</div>
+      <div class="day-head">
+        <h2>Coding gym: two timed problems</h2>
+        <label class="day-done check"><input type="checkbox" data-check="exercises|W2-gym"> Done</label>
+      </div>
+      <div class="prose">
+        <p>Forward deployed and AI engineer loops include a timed coding screen, often on a platform like CodeSignal or in a shared editor. The problems are standard algorithms, but this gym themes them on this week's work. Practice them the way you'll be tested.</p>
+        <ul>
+          <li><b>Set a 30-minute timer per problem.</b> When it rings, stop and note where you got to.</li>
+          <li><b>Write the tests yourself first:</b> the examples, then the edge cases (empty input, ties, limits). Then write the code.</li>
+          <li><b>Say the complexity out loud</b> before you code, and again when you finish. Interviewers listen for it.</li>
+          <li>Plain Python, standard library only. Open the hints only after the timer, or when you're truly stuck.</li>
+        </ul>
+      </div>
+
+      <div class="exercise">
+        <div class="ex-head"><span class="ex-tag">Problem 1</span><h4>Top-k chunks from a score stream</h4><span class="chip">~30 min</span></div>
+        <div class="prose">
+          <p>Your retriever scores every chunk in a large index against a question and yields <code>(chunk_id, score)</code> pairs, one at a time. There are millions of them, so you can't keep them all in memory or sort them. Return the <code>k</code> best chunk ids.</p>
+          <p>Order the result by score, highest first. When two chunks have the same score, the smaller <code>chunk_id</code> comes first, and it also wins a place at the cutoff. This makes results reproducible across runs.</p>
+          <p><b>Signature</b></p>
+<pre><code>def top_k(stream: Iterable[tuple[str, float]], k: int) -&gt; list[str]: ...</code></pre>
+          <p><b>Examples</b></p>
+<pre><code>stream = [("c3", 0.71), ("c1", 0.92), ("c7", 0.40), ("c2", 0.92), ("c5", 0.88)]
+top_k(stream, 3)                      # ["c1", "c2", "c5"]
+top_k([("z", 0.3), ("a", 0.3)], 1)    # ["a"]   (tie at the cutoff: smaller id wins)
+top_k([("x", 0.1), ("y", 0.9)], 10)   # ["y", "x"]
+top_k([("x", 0.1)], 0)                # []</code></pre>
+          <p><b>Constraints</b></p>
+          <ul>
+            <li><code>n</code> (stream length) up to 10^7; 0 &le; <code>k</code> &le; 10^4. Chunk ids are unique.</li>
+            <li>Read the stream once (it may be a generator). O(n log k) time, O(k) memory.</li>
+            <li>Standard library only (<code>heapq</code> is fine).</li>
+          </ul>
+          <p class="small muted"><b>What interviewers look for:</b> A size-k min-heap whose root is the worst chunk kept so far, and a correct tie rule inside the heap, not only in the final sort. Say why O(n log k) beats sorting (O(n log n)) when k is small.</p>
+          <p class="expected"><b>Check:</b> (1) The first example gives <code>["c1", "c2", "c5"]</code>. (2) <code>top_k([("z", 0.3), ("a", 0.3)], 1)</code> &rarr; <code>["a"]</code>. If you get <code>["z"]</code>, your heap ignores ties. (3) 200 random streams match <code>sorted(pairs, key=lambda p: (-p[1], p[0]))[:k]</code> (the tests do this).</p>
+        </div>
+        <div class="hints" data-hints="W2-gym1">
+          <div class="hint" data-level="Concept">Keep a min-heap of at most <code>k</code> entries whose root is the <i>worst</i> chunk kept: lowest score, and on a tie the <i>larger</i> id. For each new pair: if the heap has room, push; else, if the new pair beats the root, <code>heapreplace</code>. Strings can't be negated, so put the tie rule in a small class with <code>__lt__</code> (or compare <code>(score, id)</code> tuples by hand). Sort the k survivors at the end.</div>
+          <div class="hint" data-level="Tests">Save as <code>test_solution.py</code> next to your <code>solution.py</code> and run <code>pytest -q</code>. Try to write your own tests before you open this.
+<pre><code>import random
+
+from solution import top_k
+
+
+def brute(pairs, k):
+    return [c for c, _ in sorted(pairs, key=lambda p: (-p[1], p[0]))[:max(k, 0)]]
+
+
+def test_example():
+    stream = [("c3", 0.71), ("c1", 0.92), ("c7", 0.40), ("c2", 0.92), ("c5", 0.88)]
+    assert top_k(stream, 3) == ["c1", "c2", "c5"]
+
+
+def test_ties_broken_by_id_ascending():
+    stream = [("b", 0.5), ("d", 0.5), ("a", 0.5), ("c", 0.5)]
+    assert top_k(stream, 2) == ["a", "b"]
+
+
+def test_tie_at_the_cutoff_replaces_larger_id():
+    # "z" is kept first, then "a" arrives with the same score and must win
+    assert top_k([("z", 0.3), ("a", 0.3)], 1) == ["a"]
+
+
+def test_k_larger_than_stream():
+    assert top_k([("x", 0.1), ("y", 0.9)], 10) == ["y", "x"]
+
+
+def test_k_zero_and_empty_stream():
+    assert top_k([("x", 0.1)], 0) == []
+    assert top_k([], 5) == []
+
+
+def test_negative_scores():
+    assert top_k([("a", -0.2), ("b", -0.1), ("c", -0.9)], 2) == ["b", "a"]
+
+
+def test_works_on_a_generator():
+    gen = ((f"c{i:05d}", (i * 37) % 1000 / 1000) for i in range(50_000))
+    result = top_k(gen, 5)
+    assert len(result) == 5
+
+
+def test_random_against_brute_force():
+    rng = random.Random(7)
+    for _ in range(200):
+        n = rng.randint(0, 40)
+        pairs = [(f"c{i}", rng.choice([0.1, 0.2, 0.5, 0.9, rng.random()])) for i in range(n)]
+        rng.shuffle(pairs)
+        k = rng.randint(0, 12)
+        assert top_k(iter(pairs), k) == brute(pairs, k)</code></pre></div>
+          <div class="hint solution" data-level="Full solution">
+<pre><code>import heapq
+from typing import Iterable
+
+
+class _Entry:
+    """Heap entry ordered so the WORST kept chunk sits at the root:
+    lower score is worse; on equal scores, the larger chunk_id is worse."""
+
+    __slots__ = ("score", "chunk_id")
+
+    def __init__(self, chunk_id: str, score: float):
+        self.chunk_id = chunk_id
+        self.score = score
+
+    def __lt__(self, other: "_Entry") -&gt; bool:
+        if self.score != other.score:
+            return self.score &lt; other.score
+        return self.chunk_id &gt; other.chunk_id
+
+
+def top_k(stream: Iterable[tuple[str, float]], k: int) -&gt; list[str]:
+    """Return the ids of the k highest-scoring chunks, best first.
+    Ties on score are broken by chunk_id ascending.
+
+    Complexity: O(n log k) time, O(k) space. The stream is read once,
+    so it can be a generator too large to hold in memory.
+    """
+    if k &lt;= 0:
+        return []
+    heap: list[_Entry] = []
+    for chunk_id, score in stream:
+        entry = _Entry(chunk_id, score)
+        if len(heap) &lt; k:
+            heapq.heappush(heap, entry)
+        elif heap[0] &lt; entry:  # new entry beats the worst kept one
+            heapq.heapreplace(heap, entry)
+    heap.sort(key=lambda e: (-e.score, e.chunk_id))
+    return [e.chunk_id for e in heap]</code></pre>
+            <p><b>Complexity:</b> O(n log k) time, O(k) space. Sorting everything would be O(n log n) time and O(n) space.</p></div>
+        </div>
+      </div>
+
+      <div class="exercise">
+        <div class="ex-head"><span class="ex-tag">Problem 2</span><h4>LRU cache for embeddings</h4><span class="chip">~30 min</span></div>
+        <div class="prose">
+          <p>Embedding the same text twice costs money and time. Put a cache in front of the embedding call. Memory is limited, so it holds at most <code>capacity</code> entries. When it's full, adding a new key evicts the key that was used longest ago.</p>
+          <p><code>get(key)</code> returns the cached value or <code>None</code>, and counts as a use. <code>put(key, value)</code> inserts or updates, and also counts as a use. Both must run in O(1).</p>
+          <p><b>Signature</b></p>
+<pre><code>class LRUCache:
+    def __init__(self, capacity: int): ...
+    def get(self, key) -&gt; list[float] | None: ...
+    def put(self, key, value: list[float]) -&gt; None: ...
+    def __len__(self) -&gt; int: ...</code></pre>
+          <p><b>Examples</b></p>
+<pre><code>cache = LRUCache(2)
+cache.put("a", [0.1])
+cache.put("b", [0.2])
+cache.get("a")          # [0.1]   a is now the most recent
+cache.put("c", [0.3])   # full: evicts b, the least recent
+cache.get("b")          # None
+cache.get("c")          # [0.3]</code></pre>
+          <p><b>Constraints</b></p>
+          <ul>
+            <li>0 &le; <code>capacity</code> &le; 10^5; capacity 0 stores nothing. Negative capacity raises <code>ValueError</code>.</li>
+            <li>Up to 10^6 operations. <code>get</code> and <code>put</code> must be O(1).</li>
+            <li>Values can be falsy (<code>0</code>, <code>[]</code>) and must still be returned.</li>
+          </ul>
+          <p class="small muted"><b>What interviewers look for:</b> A hash map plus a doubly linked list with sentinel nodes, and clean unlink/push-front helpers. You may be told "no OrderedDict": know both versions. Mention what a real cache adds next: a key that hashes the text and the model name, and thread safety.</p>
+          <p class="expected"><b>Check:</b> (1) The example above: <code>get("b")</code> is <code>None</code> after <code>c</code> is added. (2) <code>put</code> on an existing key updates the value and refreshes it: with capacity 2, put a, put b, put a again, put c &rarr; b is evicted, not a. (3) Capacity 0: <code>put("a", 1)</code> then <code>get("a")</code> &rarr; <code>None</code>, <code>len(cache) == 0</code>.</p>
+        </div>
+        <div class="hints" data-hints="W2-gym2">
+          <div class="hint" data-level="Concept">A dict gives O(1) lookup but no order. A doubly linked list gives O(1) move-to-front and remove-from-back, but no lookup. Use both: the dict maps key &rarr; list node, and the list keeps nodes in use order. Two sentinel nodes (head and tail) remove all the empty-list special cases. The node must store its key, so you can delete it from the dict when you evict it. Shortcut if allowed: <code>collections.OrderedDict</code> with <code>move_to_end</code> and <code>popitem(last=False)</code>.</div>
+          <div class="hint" data-level="Tests">Save as <code>test_solution.py</code> next to your <code>solution.py</code> and run <code>pytest -q</code>. Try to write your own tests before you open this.
+<pre><code>import pytest
+
+from solution import LRUCache
+
+
+def test_example():
+    cache = LRUCache(2)
+    cache.put("a", [0.1])
+    cache.put("b", [0.2])
+    assert cache.get("a") == [0.1]   # a is now most recent
+    cache.put("c", [0.3])            # evicts b
+    assert cache.get("b") is None
+    assert cache.get("a") == [0.1]
+    assert cache.get("c") == [0.3]
+
+
+def test_miss_returns_none():
+    assert LRUCache(3).get("nope") is None
+
+
+def test_put_existing_updates_and_refreshes():
+    cache = LRUCache(2)
+    cache.put("a", 1)
+    cache.put("b", 2)
+    cache.put("a", 10)   # update, a becomes most recent
+    cache.put("c", 3)    # evicts b, not a
+    assert cache.get("a") == 10
+    assert cache.get("b") is None
+    assert len(cache) == 2
+
+
+def test_get_refreshes_recency():
+    cache = LRUCache(3)
+    for k in "abc":
+        cache.put(k, k)
+    cache.get("a")
+    cache.put("d", "d")  # evicts b
+    assert cache.get("b") is None
+    assert [cache.get(k) for k in "acd"] == ["a", "c", "d"]
+
+
+def test_capacity_one():
+    cache = LRUCache(1)
+    cache.put("a", 1)
+    cache.put("b", 2)
+    assert cache.get("a") is None
+    assert cache.get("b") == 2
+
+
+def test_capacity_zero_stores_nothing():
+    cache = LRUCache(0)
+    cache.put("a", 1)
+    assert cache.get("a") is None
+    assert len(cache) == 0
+
+
+def test_size_never_exceeds_capacity():
+    cache = LRUCache(100)
+    for i in range(10_000):
+        cache.put(i, i)
+    assert len(cache) == 100
+    assert cache.get(9_899) is None
+    assert cache.get(9_900) == 9_900
+
+
+def test_falsy_values_are_cached():
+    cache = LRUCache(2)
+    cache.put("zero", 0)
+    cache.put("empty", [])
+    assert cache.get("zero") == 0
+    assert cache.get("empty") == []
+
+
+def test_negative_capacity_rejected():
+    with pytest.raises(ValueError):
+        LRUCache(-1)</code></pre></div>
+          <div class="hint solution" data-level="Full solution">
+<pre><code>class _Node:
+    __slots__ = ("key", "value", "prev", "next")
+
+    def __init__(self, key=None, value=None):
+        self.key = key
+        self.value = value
+        self.prev = None
+        self.next = None
+
+
+class LRUCache:
+    """Least-recently-used cache for embeddings.
+
+    A dict maps key -&gt; node; a doubly linked list keeps nodes in use order
+    (most recent right after head, least recent right before tail).
+    get() and put() both count as a use.
+
+    Complexity: get and put are O(1) time. Space O(capacity).
+    """
+
+    def __init__(self, capacity: int):
+        if capacity &lt; 0:
+            raise ValueError("capacity must be &gt;= 0")
+        self.capacity = capacity
+        self.map: dict = {}
+        self.head = _Node()  # sentinel: most recent side
+        self.tail = _Node()  # sentinel: least recent side
+        self.head.next = self.tail
+        self.tail.prev = self.head
+
+    def __len__(self) -&gt; int:
+        return len(self.map)
+
+    def _unlink(self, node: _Node) -&gt; None:
+        node.prev.next = node.next
+        node.next.prev = node.prev
+
+    def _push_front(self, node: _Node) -&gt; None:
+        node.prev = self.head
+        node.next = self.head.next
+        self.head.next.prev = node
+        self.head.next = node
+
+    def get(self, key):
+        node = self.map.get(key)
+        if node is None:
+            return None
+        self._unlink(node)
+        self._push_front(node)
+        return node.value
+
+    def put(self, key, value) -&gt; None:
+        if self.capacity == 0:
+            return
+        node = self.map.get(key)
+        if node is not None:
+            node.value = value
+            self._unlink(node)
+            self._push_front(node)
+            return
+        if len(self.map) == self.capacity:
+            lru = self.tail.prev
+            self._unlink(lru)
+            del self.map[lru.key]
+        node = _Node(key, value)
+        self.map[key] = node
+        self._push_front(node)</code></pre>
+            <p><b>Complexity:</b> <code>get</code> and <code>put</code> are O(1) time. Space O(capacity).</p></div>
         </div>
       </div>
     </section>

@@ -29,6 +29,7 @@
       <a href="#w1" data-toc="w1">Weekend 1 · Build P3</a>
       <a href="#w2" data-toc="w2">Weekend 2 · Evaluate + ship</a>
       <a href="#interview">Interview room</a>
+      <a href="#gym">Coding gym</a>
       <a href="#journal">Journal</a>
     </div>
   </aside>
@@ -1356,15 +1357,15 @@ if __name__ == "__main__":
         </div>
       </div>
       <div class="exercise interview">
-        <div class="ex-head"><span class="ex-tag">Q3</span><h4>Describe how you would architect an AI agent system, including the agent loop, tool interfaces, memory design, orchestration technologies, and safety considerations.</h4></div>
-        <p class="small" style="margin:4px 0 6px"><b>Salesforce · AI/ML and software engineering · generative AI system design</b></p>
-        <p class="small" style="margin:0 0 8px"><span class="chip">Reported</span> <span class="small muted">Prep-site list "based on real candidate reports from Glassdoor and Reddit", lightly edited: <a href="https://igotanoffer.com/en/advice/generative-ai-system-design-interview" target="_blank" rel="noopener">IGotAnOffer ↗</a>; the same wording appears in the <a href="https://github.com/alexeygrigorev/ai-engineering-field-guide/blob/main/interview/questions/questions.md" target="_blank" rel="noopener">AI Engineering Field Guide ↗</a>. Secondary sources.</span></p>
-        <p class="small muted" style="margin:0 0 10px"><b>What it probes:</b> Whether each of the five parts has a concrete design and a reason, and whether "memory" and "safety" mean something you could test.</p>
+        <div class="ex-head"><span class="ex-tag">Q3</span><h4>Create a system where agents collaborate to produce a research report with citations.</h4></div>
+        <p class="small" style="margin:4px 0 6px"><b>Several companies (aggregated list) · agentic system design · whiteboard</b></p>
+        <p class="small" style="margin:0 0 8px"><span class="chip">Aggregated</span> <span class="small muted">A sample whiteboard problem in an interviewer-side guide to agentic system design interviews, with no company named: <a href="https://blog.promptlayer.com/the-agentic-system-design-interview-how-to-evaluate-ai-engineers/" target="_blank" rel="noopener">PromptLayer ↗</a>; also in the <a href="https://github.com/alexeygrigorev/ai-engineering-field-guide/blob/main/interview/questions/questions.md" target="_blank" rel="noopener">AI Engineering Field Guide ↗</a> ("Create a system where agents collaborate on research reports with citations"). Secondary sources.</span></p>
+        <p class="small muted" style="margin:0 0 10px"><b>What it probes:</b> Whether you can split the work between a coordinator and sub-agents, write the hand-offs as data, run them in parallel safely, and say what happens when one of them fails.</p>
         <div class="hints" data-hints="W4-ir3">
           <div class="hint solution" data-level="Model answer outline">
-            <ol><li>Loop: the model calls tools until the stop reason says it's done, never "until the text looks finished", with a step cap and a spend cap. Where the path is known, use a workflow instead of a loop, and say which parts of your design are which.</li><li>Tools: deterministic functions with typed schemas (plan_trip, places); every hand-off a Pydantic model, so each boundary is testable without a model; checks in code on what comes back (stop guides may only name guidebook places).</li><li>Orchestration: a LangGraph graph with a typed state, reducers for keys that parallel nodes write (operator.add), conditional edges for routing, and Send for one worker per item, each seeing only its payload (about 165 characters instead of the 5,200-character state). A code critic with a revision limit (2), then a human.</li><li>Memory: short-term is a checkpointer per thread, one thread per task (SQLite locally, Postgres in production); long-term is a store keyed by user (("profiles", user_id)), holding only what the user confirmed, with a retention policy.</li><li>Safety: an interrupt before any side effect, the side effect in its own node after approval, the smallest tool set per sub-agent, and actions under the user's identity (delegated token or token exchange) with an audit record.</li><li>Evidence: end-state evals per agent and for the whole task, tokens logged per agent, and a trace of every node's input and output before the first demo.</li></ol>
+            <ol><li>Clarify, then justify the team: how deep, how many sources, which sources are allowed, a budget per report. Research splits well because sub-questions are independent and each needs less context than the whole; that's where Anthropic's lead agent with parallel subagents beat a single agent by 90.2%, at about 15× the tokens of a chat. Run a one-agent baseline on the same questions before claiming the team is better.</li><li>Roles: a coordinator plans sub-questions and decides when there's enough; one researcher per sub-question searches and returns findings; a writer drafts; a citation check runs last. The coordinator is the only one that decides scope, so two researchers can't make conflicting implicit decisions (Cognition's mismatched Flappy Bird parts).</li><li>Hand-offs as data: each researcher gets a typed task (the sub-question, what's out of scope, allowed sources, the output schema), because the prompt is the only thing a sub-agent receives. It returns findings as records (claim, quote, source URL, retrieved_at), not prose, so the writer and the check can use them.</li><li>Parallelism: fan out one task per sub-question (Send in LangGraph, or parallel subagents in the Agent SDK) with an append reducer for findings, a concurrency cap for rate limits, and per-agent tools kept to the minimum (researchers search and read; only the writer writes). Match results by sub-question id, not by arrival order.</li><li>Failure handling: one failed branch fails the whole step, so decide per agent: retry with backoff, return "no findings for this sub-question" and say so in the report, or stop. Bound everything: researcher turns, coordinator rounds, writer → check revisions (at most 2, then a human), and a total spend cap. Checkpoint so a crash resumes instead of re-running every search.</li><li>Citations checked in code: every cited claim must map to a finding record whose quote appears in the fetched source; unmatched claims go back to the writer. Evaluate the end state (claims supported, coverage of the sub-questions), log tokens per agent, and keep a trace of every hand-off.</li></ol>
             <p class="small" style="margin-top:8px"><b>Answers that fail:</b></p>
-            <ul><li>A list of products (LangChain, a vector DB, GPT) with no reason and no failure mode for any of them.</li><li>"Memory is the whole chat history in the prompt."</li></ul>
+            <ul><li>Researcher, writer and editor agents passing prose summaries to each other, with no schema and no word on who decides scope.</li><li>"The writer adds citations at the end", with nothing checking that each citation supports its claim.</li></ul>
           </div>
         </div>
       </div>
@@ -1422,6 +1423,254 @@ if __name__ == "__main__":
       </div>
     </section>
 
+
+    <!-- ================= CODING GYM ================= -->
+    <section class="day" id="gym">
+      <div class="day-kicker">Coding gym · ~1h, timed (any day this week)</div>
+      <div class="day-head">
+        <h2>Coding gym: two timed problems</h2>
+        <label class="day-done check"><input type="checkbox" data-check="exercises|W4-gym"> Done</label>
+      </div>
+      <div class="prose">
+        <p>Forward deployed and AI engineer loops include a timed coding screen, often on a platform like CodeSignal or in a shared editor. The problems are standard algorithms, but this gym themes them on this week's work. Practice them the way you'll be tested.</p>
+        <ul>
+          <li><b>Set a 30-minute timer per problem.</b> When it rings, stop and note where you got to.</li>
+          <li><b>Write the tests yourself first:</b> the examples, then the edge cases (empty input, ties, limits). Then write the code.</li>
+          <li><b>Say the complexity out loud</b> before you code, and again when you finish. Interviewers listen for it.</li>
+          <li>Plain Python, standard library only. Open the hints only after the timer, or when you're truly stuck.</li>
+        </ul>
+      </div>
+
+      <div class="exercise">
+        <div class="ex-head"><span class="ex-tag">Problem 1</span><h4>Cheapest route with at most k charging stops</h4><span class="chip">~30 min</span></div>
+        <div class="prose">
+          <p>Your route-planning agent has a tool that returns one-way road legs between charging stations as <code>(from, to, cost)</code>. The car can stop to charge at most <code>k</code> times on the way, so the route can use at most <code>k</code> intermediate stations (at most <code>k + 1</code> legs). Return the cheapest total cost from <code>src</code> to <code>dst</code>, or <code>-1</code> if no route fits.</p>
+          <p><b>Signature</b></p>
+<pre><code>def cheapest_route(edges: list[tuple[str, str, int]],
+                   src: str, dst: str, k: int) -&gt; int: ...</code></pre>
+          <p><b>Examples</b></p>
+<pre><code>edges = [("DAL", "WAC", 30), ("WAC", "AUS", 25), ("DAL", "AUS", 80),
+         ("AUS", "SAT", 20), ("WAC", "SAT", 70)]
+cheapest_route(edges, "DAL", "AUS", 1)   # 55   DAL-WAC-AUS
+cheapest_route(edges, "DAL", "AUS", 0)   # 80   direct leg only
+cheapest_route(edges, "DAL", "SAT", 1)   # 100  DAL-WAC-SAT or DAL-AUS-SAT
+cheapest_route(edges, "DAL", "SAT", 2)   # 75   DAL-WAC-AUS-SAT
+cheapest_route(edges, "SAT", "DAL", 5)   # -1   legs are one-way</code></pre>
+          <p><b>Constraints</b></p>
+          <ul>
+            <li>Up to 100 stations and 10^4 legs; 0 &le; <code>k</code> &lt; number of stations; costs are non-negative integers.</li>
+            <li>There may be parallel legs and cycles. <code>src == dst</code> costs 0.</li>
+          </ul>
+          <p class="small muted"><b>What interviewers look for:</b> Seeing that plain Dijkstra is wrong here (the cheapest path may use too many stops), then Bellman-Ford for k + 1 rounds, relaxing from a copy of the previous round. A Dijkstra variant on (cost, station, stops) is also accepted if you explain the pruning.</p>
+          <p class="expected"><b>Check:</b> (1) All five calls in the example. (2) With legs A-B, B-C, C-D, D-E (1 each) and A-X, X-E (10 each): k=3 gives 4, k=1 gives 20. (3) With legs <code>("A","B",1), ("B","C",1), ("A","C",5)</code> and k=0 the answer is 5, not 2. If you get 2, your round chains two legs.</p>
+        </div>
+        <div class="hints" data-hints="W4-gym1">
+          <div class="hint" data-level="Concept">Let <code>cost[v]</code> be the cheapest way to reach <code>v</code> with at most <i>r</i> legs. Round <i>r + 1</i>: for every leg <code>(u, v, c)</code>, try <code>cost[u] + c</code>. Run <code>k + 1</code> rounds. The trap: if you update <code>cost</code> in place, one round can chain several legs and break the stop limit. Read from the previous round's costs and write into a copy.</div>
+          <div class="hint" data-level="Tests">Save as <code>test_solution.py</code> next to your <code>solution.py</code> and run <code>pytest -q</code>. Try to write your own tests before you open this.
+<pre><code>from solution import cheapest_route
+
+EDGES = [
+    ("DAL", "WAC", 30), ("WAC", "AUS", 25), ("DAL", "AUS", 80),
+    ("AUS", "SAT", 20), ("WAC", "SAT", 70),
+]
+
+
+def test_example():
+    assert cheapest_route(EDGES, "DAL", "AUS", 1) == 55   # DAL-WAC-AUS
+    assert cheapest_route(EDGES, "DAL", "AUS", 0) == 80   # direct only
+    assert cheapest_route(EDGES, "DAL", "SAT", 1) == 100  # DAL-WAC-SAT or DAL-AUS-SAT
+    assert cheapest_route(EDGES, "DAL", "SAT", 2) == 75   # DAL-WAC-AUS-SAT
+
+
+def test_no_route():
+    assert cheapest_route(EDGES, "SAT", "DAL", 5) == -1   # edges are one-way
+    assert cheapest_route(EDGES, "DAL", "SAT", 0) == -1
+
+
+def test_same_start_and_end():
+    assert cheapest_route(EDGES, "DAL", "DAL", 0) == 0
+
+
+def test_unknown_station():
+    assert cheapest_route(EDGES, "DAL", "HOU", 3) == -1
+
+
+def test_no_edges():
+    assert cheapest_route([], "A", "B", 2) == -1
+
+
+def test_stop_limit_beats_plain_dijkstra():
+    # cheapest overall path has 3 stops; with k=1 the answer must be the pricier 1-stop path
+    edges = [("A", "B", 1), ("B", "C", 1), ("C", "D", 1), ("D", "E", 1),
+             ("A", "X", 10), ("X", "E", 10)]
+    assert cheapest_route(edges, "A", "E", 3) == 4
+    assert cheapest_route(edges, "A", "E", 1) == 20
+
+
+def test_relaxation_does_not_chain_within_a_round():
+    # edge order lets a naive in-place relaxation use 2 legs in one round
+    edges = [("A", "B", 1), ("B", "C", 1), ("A", "C", 5)]
+    assert cheapest_route(edges, "A", "C", 0) == 5
+
+
+def test_cycle_and_parallel_edges():
+    edges = [("A", "B", 5), ("A", "B", 2), ("B", "A", 1), ("B", "C", 3)]
+    assert cheapest_route(edges, "A", "C", 1) == 5</code></pre></div>
+          <div class="hint solution" data-level="Full solution">
+<pre><code>import math
+
+
+def cheapest_route(edges: list[tuple[str, str, int]], src: str, dst: str, k: int) -&gt; int:
+    """Cheapest cost from src to dst using at most k charging stops
+    (intermediate stations), so at most k + 1 legs. Edges are directed
+    (from, to, cost) with cost &gt;= 0. Return -1 if no such route exists.
+
+    Bellman-Ford limited to k + 1 rounds. Each round relaxes from a copy of
+    the previous round's costs, so one round adds at most one leg.
+
+    Complexity: O((k + 1) * E) time, O(V) space.
+    """
+    if src == dst:
+        return 0
+    if k &lt; 0:
+        return -1
+    cost = {src: 0}
+    for _ in range(k + 1):
+        nxt = dict(cost)
+        for u, v, c in edges:
+            if u in cost and cost[u] + c &lt; nxt.get(v, math.inf):
+                nxt[v] = cost[u] + c
+        cost = nxt
+    return cost.get(dst, -1)</code></pre>
+            <p><b>Complexity:</b> O((k + 1) &middot; E) time, O(V) space.</p></div>
+        </div>
+      </div>
+
+      <div class="exercise">
+        <div class="ex-head"><span class="ex-tag">Problem 2</span><h4>Schedule agent tasks in parallel waves</h4><span class="chip">~30 min</span></div>
+        <div class="prose">
+          <p>An orchestrator gets a plan of sub-agent tasks. Each task lists the tasks whose results it needs. You want to run as much as possible in parallel: first every task with no dependencies, then every task whose dependencies are all done, and so on. Each group is a wave.</p>
+          <p>Return the waves in order, each wave sorted by task name. Raise <code>ValueError</code> if the plan has a cycle (it can never finish) or names a dependency that isn't a task.</p>
+          <p><b>Signature</b></p>
+<pre><code>def schedule_waves(tasks: dict[str, list[str]]) -&gt; list[list[str]]: ...</code></pre>
+          <p><b>Examples</b></p>
+<pre><code>schedule_waves({
+    "fetch_lead": [], "fetch_rate": [], "fetch_notes": [],
+    "compute_dti": ["fetch_lead", "fetch_rate"],
+    "summarize": ["fetch_notes"],
+    "assess": ["compute_dti", "summarize"],
+})
+# [["fetch_lead", "fetch_notes", "fetch_rate"], ["compute_dti", "summarize"], ["assess"]]
+
+schedule_waves({"a": ["c"], "b": ["a"], "c": ["b"]})   # raises ValueError (cycle)</code></pre>
+          <p><b>Constraints</b></p>
+          <ul>
+            <li>Up to 10^4 tasks and 10^5 dependency edges. A dependency may be listed twice.</li>
+            <li>A task that depends on itself is a cycle.</li>
+          </ul>
+          <p class="small muted"><b>What interviewers look for:</b> Kahn's algorithm processed level by level, with in-degree counts and a reverse map from each task to its dependents. Cycle detection by counting scheduled tasks. Bonus: say what the waves mean for latency (total time is the sum of the slowest task per wave).</p>
+          <p class="expected"><b>Check:</b> (1) The example plan gives three waves as shown. (2) <code>{"a": [], "b": ["a"], "c": ["a", "b"]}</code> &rarr; <code>[["a"], ["b"], ["c"]]</code>: c waits for its slowest dependency. (3) <code>{"a": ["a"]}</code> and <code>{"a": ["ghost"]}</code> both raise <code>ValueError</code>.</p>
+        </div>
+        <div class="hints" data-hints="W4-gym2">
+          <div class="hint" data-level="Concept">Count each task's unmet dependencies (its in-degree) and build the reverse map: dependency &rarr; tasks that wait for it. Wave 0 is every task with in-degree 0. To build the next wave, go through the current wave and decrement each dependent; those that reach 0 form the next wave. If the waves hold fewer tasks than the plan, the rest are stuck in a cycle. Use <code>set(deps)</code> so a repeated dependency counts once.</div>
+          <div class="hint" data-level="Tests">Save as <code>test_solution.py</code> next to your <code>solution.py</code> and run <code>pytest -q</code>. Try to write your own tests before you open this.
+<pre><code>import pytest
+
+from solution import schedule_waves
+
+
+def test_example():
+    tasks = {
+        "fetch_lead": [],
+        "fetch_rate": [],
+        "fetch_notes": [],
+        "compute_dti": ["fetch_lead", "fetch_rate"],
+        "summarize": ["fetch_notes"],
+        "assess": ["compute_dti", "summarize"],
+    }
+    assert schedule_waves(tasks) == [
+        ["fetch_lead", "fetch_notes", "fetch_rate"],
+        ["compute_dti", "summarize"],
+        ["assess"],
+    ]
+
+
+def test_independent_tasks_one_wave():
+    assert schedule_waves({"c": [], "a": [], "b": []}) == [["a", "b", "c"]]
+
+
+def test_chain():
+    assert schedule_waves({"c": ["b"], "b": ["a"], "a": []}) == [["a"], ["b"], ["c"]]
+
+
+def test_task_waits_for_its_slowest_dependency():
+    tasks = {"a": [], "b": ["a"], "c": ["a", "b"]}
+    assert schedule_waves(tasks) == [["a"], ["b"], ["c"]]
+
+
+def test_empty():
+    assert schedule_waves({}) == []
+
+
+def test_duplicate_dependencies():
+    assert schedule_waves({"a": [], "b": ["a", "a"]}) == [["a"], ["b"]]
+
+
+def test_cycle_raises():
+    with pytest.raises(ValueError):
+        schedule_waves({"a": ["c"], "b": ["a"], "c": ["b"], "d": []})
+
+
+def test_self_dependency_raises():
+    with pytest.raises(ValueError):
+        schedule_waves({"a": ["a"]})
+
+
+def test_unknown_dependency_raises():
+    with pytest.raises(ValueError):
+        schedule_waves({"a": ["ghost"]})</code></pre></div>
+          <div class="hint solution" data-level="Full solution">
+<pre><code>def schedule_waves(tasks: dict[str, list[str]]) -&gt; list[list[str]]:
+    """Group tasks into waves that can run in parallel. tasks maps each task
+    to the tasks it depends on. Wave 0 holds tasks with no dependencies;
+    each later wave holds tasks whose dependencies are all in earlier waves.
+    Each wave is sorted. Raise ValueError on a cycle or an unknown
+    dependency.
+
+    Kahn's algorithm, processed one level at a time.
+
+    Complexity: O(V + E + V log V) time (the log factor is sorting each
+    wave), O(V + E) space.
+    """
+    indegree = {t: 0 for t in tasks}
+    dependents: dict[str, list[str]] = {t: [] for t in tasks}
+    for task, deps in tasks.items():
+        for dep in set(deps):
+            if dep not in tasks:
+                raise ValueError(f"unknown dependency {dep!r} of {task!r}")
+            indegree[task] += 1
+            dependents[dep].append(task)
+
+    wave = sorted(t for t, d in indegree.items() if d == 0)
+    waves = []
+    done = 0
+    while wave:
+        waves.append(wave)
+        done += len(wave)
+        nxt = []
+        for t in wave:
+            for child in dependents[t]:
+                indegree[child] -= 1
+                if indegree[child] == 0:
+                    nxt.append(child)
+        wave = sorted(nxt)
+    if done != len(tasks):
+        raise ValueError("dependency cycle")
+    return waves</code></pre>
+            <p><b>Complexity:</b> O(V + E) time plus O(V log V) for sorting the waves; O(V + E) space.</p></div>
+        </div>
+      </div>
+    </section>
 
     <!-- ================= JOURNAL ================= -->
     <section class="day" id="journal">

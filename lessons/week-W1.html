@@ -29,6 +29,7 @@
       <a href="#w1" data-toc="w1">Weekend 1 · Build P1</a>
       <a href="#w2" data-toc="w2">Weekend 2 · Evaluate + ship</a>
       <a href="#interview">Interview room</a>
+      <a href="#gym">Coding gym</a>
       <a href="#journal">Journal</a>
     </div>
   </aside>
@@ -1054,6 +1055,258 @@ const client = new Anthropic({ apiKey: "test", fetch: fakeFetch as any });</code
             <p class="small" style="margin-top:8px"><b>Answers that fail:</b></p>
             <ul><li>Commenting on style and naming while missing the SQL injection and the missing step limit.</li><li>Listing problems without saying which one to fix first, or how to test that it's fixed.</li></ul>
           </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= CODING GYM ================= -->
+    <section class="day" id="gym">
+      <div class="day-kicker">Coding gym · ~1h, timed (any day this week)</div>
+      <div class="day-head">
+        <h2>Coding gym: two timed problems</h2>
+        <label class="day-done check"><input type="checkbox" data-check="exercises|W1-gym"> Done</label>
+      </div>
+      <div class="prose">
+        <p>Forward deployed and AI engineer loops include a timed coding screen, often on a platform like CodeSignal or in a shared editor. The problems are standard algorithms, but this gym themes them on this week's work. Practice them the way you'll be tested.</p>
+        <ul>
+          <li><b>Set a 30-minute timer per problem.</b> When it rings, stop and note where you got to.</li>
+          <li><b>Write the tests yourself first:</b> the examples, then the edge cases (empty input, ties, limits). Then write the code.</li>
+          <li><b>Say the complexity out loud</b> before you code, and again when you finish. Interviewers listen for it.</li>
+          <li>Plain Python, standard library only. Open the hints only after the timer, or when you're truly stuck.</li>
+        </ul>
+      </div>
+
+      <div class="exercise">
+        <div class="ex-head"><span class="ex-tag">Problem 1</span><h4>Sliding-window rate limiter for model calls</h4><span class="chip">~30 min</span></div>
+        <div class="prose">
+          <p>Your agent calls a model API that allows at most <code>n</code> requests in any window of <code>w</code> seconds. Go over the limit and you get 429 errors and retries that cost money. Build a limiter that your loop asks before every call.</p>
+          <p><code>allow(t)</code> is called with the current time <code>t</code> in seconds. It returns <code>True</code> and records the call if fewer than <code>n</code> allowed calls happened in the window <code>(t - w, t]</code>. Otherwise it returns <code>False</code> and records nothing: a rejected call uses no budget. A call made exactly <code>w</code> seconds ago has left the window.</p>
+          <p><b>Signature</b></p>
+<pre><code>class RateLimiter:
+    def __init__(self, n: int, w: float): ...
+    def allow(self, t: float) -&gt; bool: ...</code></pre>
+          <p><b>Examples</b></p>
+<pre><code>rl = RateLimiter(n=2, w=10)
+rl.allow(1)    # True
+rl.allow(2)    # True
+rl.allow(3)    # False  (2 calls in (-7, 3])
+rl.allow(11)   # True   (the call at 1 left the window)
+rl.allow(12)   # True   (the call at 2 left the window)
+rl.allow(13)   # False</code></pre>
+          <p><b>Constraints</b></p>
+          <ul>
+            <li><code>t</code> never decreases between calls; several calls may share the same <code>t</code>.</li>
+            <li>0 &le; <code>n</code> &le; 10^5, <code>w</code> &gt; 0, up to 10^6 calls to <code>allow</code>.</li>
+            <li><code>allow</code> must be amortized O(1). Memory must not grow with the number of calls.</li>
+          </ul>
+          <p class="small muted"><b>What interviewers look for:</b> A deque of allowed timestamps, expiring from the left. A clear answer to "is the window edge open or closed?" and the amortized O(1) argument: each timestamp is pushed once and popped once.</p>
+          <p class="expected"><b>Check:</b> (1) The example above gives <code>[True, True, False, True, True, False]</code>. (2) <code>RateLimiter(1, 5)</code>: <code>allow(0)</code> &rarr; True, <code>allow(4)</code> &rarr; False, <code>allow(5)</code> &rarr; True (the rejected call at 4 must not count). (3) <code>RateLimiter(3, 1)</code>: five calls at <code>t=7</code> give <code>[True, True, True, False, False]</code>.</p>
+        </div>
+        <div class="hints" data-hints="W1-gym1">
+          <div class="hint" data-level="Concept">Keep only the times of <i>allowed</i> calls, oldest first, in a <code>collections.deque</code>. On each call, pop from the left while the oldest time is <code>&lt;= t - w</code>. Then the deque length is the number of calls in the window. Since times only grow, expired items are always at the left. The deque never holds more than <code>n</code> items.</div>
+          <div class="hint" data-level="Tests">Save as <code>test_solution.py</code> next to your <code>solution.py</code> and run <code>pytest -q</code>. Try to write your own tests before you open this.
+<pre><code>import pytest
+
+from solution import RateLimiter
+
+
+def test_example():
+    rl = RateLimiter(2, 10)
+    assert [rl.allow(t) for t in [1, 2, 3, 11, 12, 13]] == [True, True, False, True, True, False]
+
+
+def test_window_edge_is_exclusive():
+    rl = RateLimiter(1, 10)
+    assert rl.allow(0) is True
+    assert rl.allow(9.999) is False
+    assert rl.allow(10) is True  # the call at 0 is exactly w old: expired
+
+
+def test_rejected_calls_use_no_budget():
+    rl = RateLimiter(1, 5)
+    assert rl.allow(0) is True
+    assert rl.allow(4) is False
+    assert rl.allow(5) is True  # if the rejected call at 4 counted, this would fail
+
+
+def test_same_timestamp_burst():
+    rl = RateLimiter(3, 1)
+    assert [rl.allow(7) for _ in range(5)] == [True, True, True, False, False]
+
+
+def test_zero_limit_rejects_everything():
+    rl = RateLimiter(0, 10)
+    assert not any(rl.allow(t) for t in range(20))
+
+
+def test_long_gap_resets():
+    rl = RateLimiter(2, 10)
+    assert rl.allow(0) and rl.allow(1)
+    assert rl.allow(1000) and rl.allow(1000)
+    assert rl.allow(1000) is False
+
+
+def test_matches_brute_force():
+    import random
+    rng = random.Random(1)
+    n, w = 3, 5
+    rl = RateLimiter(n, w)
+    allowed = []
+    t = 0.0
+    for _ in range(2000):
+        t += rng.choice([0, 0.5, 1, 2, 7])
+        expected = sum(1 for a in allowed if a &gt; t - w) &lt; n
+        assert rl.allow(t) == expected
+        if expected:
+            allowed.append(t)
+
+
+def test_memory_stays_bounded():
+    rl = RateLimiter(5, 100)
+    for t in range(100_000):
+        rl.allow(t)
+    assert len(rl.calls) &lt;= 5
+
+
+def test_invalid_arguments():
+    with pytest.raises(ValueError):
+        RateLimiter(1, 0)</code></pre></div>
+          <div class="hint solution" data-level="Full solution">
+<pre><code>from collections import deque
+
+
+class RateLimiter:
+    """Sliding-window rate limiter: at most n allowed calls in any window of w seconds.
+
+    A call at time t counts against every later call at time t2 with t2 - t &lt; w.
+    Only allowed calls are recorded; rejected calls use no budget.
+
+    Complexity: allow() is amortized O(1) time (each timestamp is appended
+    once and popped at most once). Space O(n): the deque never holds more
+    than n timestamps.
+    """
+
+    def __init__(self, n: int, w: float):
+        if n &lt; 0 or w &lt;= 0:
+            raise ValueError("n must be &gt;= 0 and w must be &gt; 0")
+        self.n = n
+        self.w = w
+        self.calls = deque()  # times of allowed calls, oldest first
+
+    def allow(self, t: float) -&gt; bool:
+        # Drop calls that are out of the window (t - w, t].
+        while self.calls and self.calls[0] &lt;= t - self.w:
+            self.calls.popleft()
+        if len(self.calls) &lt; self.n:
+            self.calls.append(t)
+            return True
+        return False</code></pre>
+            <p><b>Complexity:</b> <code>allow</code> is amortized O(1): each timestamp is appended once and popped at most once. Space O(n).</p></div>
+        </div>
+      </div>
+
+      <div class="exercise">
+        <div class="ex-head"><span class="ex-tag">Problem 2</span><h4>Is the streamed JSON balanced?</h4><span class="chip">~30 min</span></div>
+        <div class="prose">
+          <p>You stream structured output from a model and want to know, before parsing, whether the text has balanced brackets. A cheap check like this lets you detect a truncated reply (for example one cut off by <code>max_output_tokens</code>) and retry.</p>
+          <p>Return <code>True</code> if every <code>{</code> and <code>[</code> is closed by the matching <code>}</code> and <code>]</code> in the right order. Brackets inside double-quoted strings do not count. Inside a string, a backslash escapes the next character, so <code>\"</code> does not end the string. A string that never closes makes the text unbalanced. Only <code>{}</code> and <code>[]</code> matter; other characters are ignored.</p>
+          <p><b>Signature</b></p>
+<pre><code>def is_balanced(text: str) -&gt; bool: ...</code></pre>
+          <p><b>Examples</b></p>
+<pre><code>is_balanced('{"a": [1, 2, {"b": []}]}')   # True
+is_balanced('{"a": "}]{["}')              # True: brackets are inside a string
+is_balanced('{"a": "\\"}"}')              # True: the string is \"} (escaped quote)
+is_balanced('[{]}')                       # False: crossed
+is_balanced('{"a": [1, 2]')               # False: truncated
+is_balanced('{"a": "unterminated}')       # False: string never closes</code></pre>
+          <p><b>Constraints</b></p>
+          <ul>
+            <li>0 &le; <code>len(text)</code> &le; 10^6. Nesting can be 10^4 deep, so avoid recursion.</li>
+            <li>One pass, O(n) time.</li>
+            <li>You don't need to validate JSON itself (commas, keys, numbers). Only brackets and strings.</li>
+          </ul>
+          <p class="small muted"><b>What interviewers look for:</b> A stack for brackets plus two flags (in_string, escaped), checked in the right order. Candidates who handle the escape case without being asked, and who name the unterminated-string case, stand out.</p>
+          <p class="expected"><b>Check:</b> (1) <code>is_balanced('{"a": "\\"}"}')</code> (the string holds an escaped quote and a brace) &rarr; <code>True</code>. (2) <code>is_balanced('["\\\\"]')</code> &rarr; <code>True</code>: an escaped backslash, then the quote really closes the string. (3) <code>is_balanced("{}}")</code> &rarr; <code>False</code> and <code>is_balanced("")</code> &rarr; <code>True</code>.</p>
+        </div>
+        <div class="hints" data-hints="W1-gym2">
+          <div class="hint" data-level="Concept">Walk the text once with a tiny state machine. Outside a string: a quote enters the string, an opener is pushed, a closer must match the top of the stack. Inside a string: if the previous character was a backslash, skip this one; a backslash sets <code>escaped</code>; a quote leaves the string; everything else is ignored. At the end the text is balanced only if the stack is empty <i>and</i> you are not inside a string.</div>
+          <div class="hint" data-level="Tests">Save as <code>test_solution.py</code> next to your <code>solution.py</code> and run <code>pytest -q</code>. Try to write your own tests before you open this.
+<pre><code>from solution import is_balanced
+
+
+def test_simple_json():
+    assert is_balanced('{"a": [1, 2, {"b": []}]}') is True
+
+
+def test_brackets_inside_strings_are_ignored():
+    assert is_balanced('{"a": "}]{["}') is True
+
+
+def test_escaped_quote_does_not_end_string():
+    # the string value is \"} : an escaped quote, then a brace
+    assert is_balanced('{"a": "\\"}"}') is True
+
+
+def test_escaped_backslash_then_quote_ends_string():
+    # the string value is \\ ; the next quote really closes it
+    assert is_balanced('["\\\\"]') is True
+    assert is_balanced('["\\\\"}') is False
+
+
+def test_crossed_brackets():
+    assert is_balanced("[{]}") is False
+
+
+def test_unclosed_and_extra_closers():
+    assert is_balanced('{"a": [1, 2]') is False
+    assert is_balanced("{}}") is False
+    assert is_balanced("]") is False
+
+
+def test_unterminated_string():
+    assert is_balanced('{"a": "unterminated}') is False
+
+
+def test_empty_and_plain_text():
+    assert is_balanced("") is True
+    assert is_balanced("no brackets at all") is True
+
+
+def test_deep_nesting():
+    depth = 10_000
+    assert is_balanced("[" * depth + "]" * depth) is True
+    assert is_balanced("[" * depth + "]" * (depth - 1)) is False</code></pre></div>
+          <div class="hint solution" data-level="Full solution">
+<pre><code>def is_balanced(text: str) -&gt; bool:
+    """Return True if {} and [] in text are balanced, ignoring brackets inside
+    double-quoted strings. Inside a string, a backslash escapes the next
+    character (so \\" does not end the string). An unterminated string is
+    not balanced.
+
+    Complexity: O(n) time, one pass. O(d) extra space, where d is the
+    deepest nesting.
+    """
+    pairs = {"}": "{", "]": "["}
+    stack = []
+    in_string = False
+    escaped = False
+    for ch in text:
+        if in_string:
+            if escaped:
+                escaped = False
+            elif ch == "\\":
+                escaped = True
+            elif ch == '"':
+                in_string = False
+        elif ch == '"':
+            in_string = True
+        elif ch in "{[":
+            stack.append(ch)
+        elif ch in "}]":
+            if not stack or stack.pop() != pairs[ch]:
+                return False
+    return not stack and not in_string</code></pre>
+            <p><b>Complexity:</b> O(n) time, one pass. O(d) extra space for the stack, where d is the deepest nesting.</p></div>
         </div>
       </div>
     </section>
