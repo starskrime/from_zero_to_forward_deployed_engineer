@@ -38,7 +38,8 @@ The section is designed to hold **many topics over time**. Apache Spark / data p
 | Module | Weeks | Prerequisite | Bonus Project | Status |
 |---|---|---|---|---|
 | Data Pipelines for AI with Apache Spark | X1–X2 | W3 (RAG II) | Signal to Answer | Designed |
-| *(next module)* | X3… | — | — | — |
+| TypeScript for FDEs | X3 | W1 (Agentic AI Foundations) | to be designed | Decided; moves the TypeScript lessons out of the 0B and W1 enterprise slots |
+| *(next module)* | X4… | — | — | — |
 
 ---
 
