@@ -1,0 +1,23 @@
+      <div data-track="ent">
+        <h3 class="part-h part-ent-h">Enterprise · TypeScript I: why, setup, basic types</h3>
+        <div class="prose">
+          <p>Customer front-ends, many SDKs, and a lot of agent tooling are written in TypeScript. You don't need to become a front-end engineer, but you need to read it, debug it and write small modules in it. TypeScript is JavaScript plus <b>types</b>, much like Python's type hints, except the checker is built in.</p>
+          <ol>
+            <li>Install the <b>LTS</b> version of Node.js from <a href="https://nodejs.org/en/download" target="_blank" rel="noopener">nodejs.org</a>. Check with <code>node --version</code>.</li>
+            <li>Recent Node versions run <code>.ts</code> files directly by stripping the types, so there's no build step for small scripts: <code>node lead.ts</code>.</li>
+            <li>In <code>code/week-0B/ts/lead.ts</code>, write <code>parseCreditScore(raw: string): number</code> that throws an <code>Error</code> for empty input, non-whole numbers, and values outside 300–850, just like your Python version.</li>
+          </ol>
+<pre><code>function parseCreditScore(raw: string): number {
+  if (raw.trim() === "") throw new Error("credit_score is missing");
+  const score = Number(raw);
+  if (!Number.isInteger(score)) throw new Error(`not a whole number: ${raw}`);
+  if (score &lt; 300 || score > 850) throw new Error(`credit_score ${score} is outside 300-850`);
+  return score;
+}</code></pre>
+        </div>
+        <div class="readings">
+          <div class="reading"><span class="kind must">Read</span><div><a href="https://www.typescriptlang.org/docs/handbook/typescript-in-5-minutes.html" target="_blank" rel="noopener">TypeScript for JavaScript Programmers ↗</a><p>The fastest official intro.</p></div></div>
+          <div class="reading"><span class="kind must">Read</span><div><a href="https://www.typescriptlang.org/docs/handbook/2/basic-types.html" target="_blank" rel="noopener">TypeScript Handbook: The Basics ↗</a></div></div>
+          <div class="reading"><span class="kind">Reference</span><div><a href="https://nodejs.org/en/learn/typescript/run-natively" target="_blank" rel="noopener">Node.js: running TypeScript natively ↗</a><p>Which Node versions support it, and its limits.</p></div></div>
+        </div>
+      </div>

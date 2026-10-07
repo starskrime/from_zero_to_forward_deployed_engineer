@@ -1,0 +1,8 @@
+[meta-description]
+pandas, pull requests, plus TypeScript essentials for FDEs.">
+
+[lead]
+On the enterprise track you start <b>TypeScript</b>, which shows up in almost half of FDE job postings.</p>
+
+[overview-row]
+<td>6.5h</td><td>TypeScript essentials I: types, unions, async, and a tiny tested module</td>

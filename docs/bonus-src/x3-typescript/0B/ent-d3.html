@@ -1,0 +1,29 @@
+      <div data-track="ent">
+        <h3 class="part-h part-ent-h">Enterprise · TypeScript III: async and fetch</h3>
+        <div class="prose">
+          <p>TypeScript's <code>async</code>/<code>await</code> works almost exactly like Python's. <code>fetch</code> is built into Node. Write <code>zip.ts</code> and run it with <code>node zip.ts</code>:</p>
+<pre><code>interface Place { "place name": string; "state abbreviation": string }
+interface ZipResponse { places: Place[] }
+
+async function lookupZip(zip: string): Promise&lt;{ city: string; state: string } | null&gt; {
+  const resp = await fetch(`https://api.zippopotam.us/us/${zip}`);
+  if (resp.status === 404) return null;
+  if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+  const data = (await resp.json()) as ZipResponse;     <span class="c">// "as" is a promise to the checker, not a runtime check</span>
+  const p = data.places[0];
+  return { city: p["place name"], state: p["state abbreviation"] };
+}
+
+const results = await Promise.all(["75024", "00000"].map(lookupZip));   <span class="c">// like asyncio.gather</span>
+console.log(results);</code></pre>
+          <table class="compare">
+            <thead><tr><th>Python</th><th>TypeScript</th></tr></thead>
+            <tbody>
+              <tr><td><code>async def f() -&gt; X</code></td><td><code>async function f(): Promise&lt;X&gt;</code></td></tr>
+              <tr><td><code>asyncio.gather(...)</code></td><td><code>Promise.all([...])</code></td></tr>
+              <tr><td><code>dict | None</code></td><td><code>{...} | null</code></td></tr>
+              <tr><td><code>raise ValueError(...)</code></td><td><code>throw new Error(...)</code></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>

@@ -52,6 +52,13 @@
     certCommunity:{ k: "article", t: "Unofficial: a candidate's certification study guide", u: "https://newsletter.bigtechcareers.com/p/step-by-step-guide-to-achieve-claude-certification" },
 
     /* enterprise FDE */
+    smallCls:     { k: "article", t: "Google Engineering Practices: Small CLs", u: "https://google.github.io/eng-practices/review/developer/small-cls.html" },
+    ghPaging:     { k: "doc", t: "GitHub REST: using pagination", u: "https://docs.github.com/en/rest/using-the-rest-api/using-pagination-in-the-rest-api" },
+    ghWebhookSig: { k: "doc", t: "GitHub: validating webhook deliveries", u: "https://docs.github.com/en/webhooks/using-webhooks/validating-webhook-deliveries" },
+    stripeIdem:   { k: "doc", t: "Stripe: idempotent requests", u: "https://docs.stripe.com/api/idempotent_requests" },
+    ghActionsPy:  { k: "doc", t: "GitHub Actions: Building and testing Python", u: "https://docs.github.com/en/actions/tutorials/build-and-test-code/python" },
+    ghProtect:    { k: "doc", t: "GitHub: About protected branches", u: "https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-protected-branches/about-protected-branches" },
+    ghOwners:     { k: "doc", t: "GitHub: About code owners", u: "https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners" },
     palantirDelta:{ k: "article", t: "Palantir: Dev versus Delta", u: "https://blog.palantir.com/dev-versus-delta-demystifying-engineering-roles-at-palantir-ad44c2a6e87" },
     palantirDay:  { k: "article", t: "Palantir: A day in the life of an FDSE", u: "https://blog.palantir.com/a-day-in-the-life-of-a-palantir-forward-deployed-software-engineer-45ef2de257b1" },
     a16zMoat:     { k: "article", t: "a16z: Trading margin for moat (services-led growth)", u: "https://a16z.com/services-led-growth/" },
@@ -190,9 +197,9 @@
   /* ---------- Track C: enterprise theme per week ---------- */
   const entWeeks = {
     "0A": { theme: "The FDE role and business model", links: ["palantirDelta", "palantirDay", "a16zMoat", "fdeRole", "svpgFde", "peHeats"] },
-    "0B": { theme: "TypeScript essentials I (appears in almost half of FDE postings)", links: ["tsHandbook"] },
+    "0B": { theme: "Enterprise APIs in Python: docs, pagination, webhooks, idempotency keys, incremental sync", links: ["ghPaging", "ghWebhookSig", "stripeIdem"] },
     "0C": { theme: "The enterprise AI landscape: why most pilots fail, and how to pick use cases", links: ["oaiEnterprise", "oaiUseCases", "nanda", "a16zDemos", "gcStrategy"] },
-    W1:  { theme: "TypeScript essentials II: calling Claude and OpenAI from TypeScript", links: ["tsClaude", "tsHandbook"] },
+    W1:  { theme: "Working on a team's codebase: small PRs, reviewing agent code, CI, lint and branch protection", links: ["smallCls", "ghActionsPy", "ghProtect", "ghOwners"] },
     W2:  { theme: "Enterprise data and connectors: Microsoft 365 / SharePoint, permission-aware retrieval, Snowflake", links: ["msGraph", "msConnectors", "snowCortex", "secTrim"] },
     W3:  { theme: "Evals as the acceptance contract with a customer", links: ["anthEvals", "hamelFaq", "apiTests"] },
     W4:  { theme: "Identity I: OAuth 2.0, OIDC and single sign-on (SAML)", links: ["oauth", "saml"] },

@@ -1,0 +1,28 @@
+      <div data-track="ent">
+        <h3 class="part-h part-ent-h">Enterprise · TypeScript II: interfaces and unions</h3>
+        <div class="prose">
+          <p>An <b>interface</b> describes the shape of an object (like a Pydantic model without the runtime checks). A <b>union of literal types</b> restricts a value to a fixed set, like Python's <code>Literal</code>. Add these to <code>lead.ts</code> and run it with <code>node lead.ts</code>:</p>
+<pre><code>type LoanType = "purchase" | "refinance";
+
+interface Lead {
+  leadId: string;
+  creditScore: number;
+  loanType: LoanType;
+  zip: string;
+}
+
+function parseLoanType(raw: string): LoanType {
+  const v = raw.trim().toLowerCase();
+  if (v === "purchase" || v === "refinance") return v;   <span class="c">// TypeScript narrows v to LoanType here</span>
+  throw new Error(`unknown loan type: ${raw}`);
+}
+
+const lead: Lead = { leadId: "L-1001", creditScore: parseCreditScore("742"),
+                     loanType: parseLoanType("Purchase"), zip: "75024" };
+console.log(lead);</code></pre>
+          <div class="callout warn"><b>Important difference</b>TypeScript types are checked while you write code and then <i>erased</i>. At run time nothing validates the data. If a value comes from an API, you still need runtime checks, which is why functions like <code>parseLoanType</code> exist.</div>
+        </div>
+        <div class="readings">
+          <div class="reading"><span class="kind must">Read</span><div><a href="https://www.typescriptlang.org/docs/handbook/2/everyday-types.html" target="_blank" rel="noopener">TypeScript Handbook: Everyday Types ↗</a><p>Especially "Interfaces", "Union Types" and "Literal Types".</p></div></div>
+        </div>
+      </div>

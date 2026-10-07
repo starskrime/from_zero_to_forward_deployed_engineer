@@ -1,0 +1,50 @@
+{
+ "0B-d1/h4": {
+  "id": "h4",
+  "q": "(Enterprise) Which input does this TypeScript function <b>accept</b>, and what does it return?<pre><code>function parseCreditScore(raw: string): number {\n  if (raw.trim() === \"\") throw new Error(\"credit_score is missing\");\n  const score = Number(raw);\n  if (!Number.isInteger(score)) throw new Error(`not a whole number: ${raw}`);\n  if (score &lt; 300 || score &gt; 850) throw new Error(`credit_score ${score} is outside 300-850`);\n  return score;\n}</code></pre>",
+  "options": [
+   "\"742abc\" returns 742, because Number() reads the leading digits the way parseInt does",
+   "\"0x2E6\" returns 742: Number() also parses hexadecimal, and 742 passes both checks",
+   "\" \" returns 0, because Number(\" \") is 0 and the trim check is skipped",
+   "\"7.5\" returns 7, because the value is truncated to a whole number first"
+  ],
+  "answer": 1,
+  "why": "Number() accepts hex (0x), binary (0b) and exponent forms, so \"0x2E6\" and \"7.42e2\" both become 742. Pydantic's int would reject both strings. \" \" never gets to Number() because the trim check throws first. Number(\"742abc\") is NaN; only parseInt reads leading digits. \"7.5\" fails the isInteger check. If you need exactly the same rules in both languages, check the string with a regex such as /^\\d+$/."
+ },
+ "0B-d2/h4": {
+  "id": "h4",
+  "q": "(Enterprise) What does this print when run with <code>node lead.ts</code>?<pre><code>interface Lead { leadId: string; creditScore: number; loanType: \"purchase\" | \"refinance\"; zip: string }\nconst lead: Lead = JSON.parse('{\"leadId\":\"L-1010\",\"creditScore\":\"690\",\"loanType\":\"home-equity\",\"zip\":\"60601\"}');\nconsole.log(lead.creditScore + 10, lead.loanType);</code></pre>",
+  "options": [
+   "A TypeError at JSON.parse, because \"home-equity\" isn't a valid loanType",
+   "69010 home-equity: creditScore is still the string \"690\", so + concatenates",
+   "Nothing: node reports the type mismatch before running the file",
+   "700 home-equity: the number annotation converts \"690\" on assignment"
+  ],
+  "answer": 1,
+  "why": "JSON.parse returns any, so the annotation is just a promise to the checker. The types are erased and nothing is checked at run time. creditScore is still the string \"690\", and \"690\" + 10 concatenates to \"69010\". node strips types without checking them. Use tsc --noEmit to type-check your code, and write parse functions for data that comes from outside."
+ },
+ "0B-d3/h4": {
+  "id": "h4",
+  "q": "(Enterprise) ZIP 00000 returns <code>404</code> with the body <code>{}</code>. What does this code do?<pre><code>async function lookupCity(zip: string): Promise&lt;string&gt; {\n  const resp = await fetch(`https://api.zippopotam.us/us/${zip}`);\n  const data = (await resp.json()) as ZipResponse;\n  return data.places[0][\"place name\"];\n}\nconst cities = await Promise.all([\"75024\", \"00000\", \"02108\"].map(lookupCity));</code></pre>",
+  "options": [
+   "cities is [\"Plano\", undefined, \"Boston\"]: fetch resolves a 404 to undefined",
+   "cities is [\"Plano\", null, \"Boston\"]: the as cast fills missing fields with null",
+   "Promise.all rejects with a TypeError from data.places[0]; no cities are returned",
+   "fetch rejects with an HTTP 404 error, so Promise.all rejects with that"
+  ],
+  "answer": 2,
+  "why": "fetch only rejects on network failures. A 404 is a normal response with resp.ok set to false. The as cast checks nothing, so data.places is undefined and indexing it throws. Promise.all rejects as soon as one promise does. Check resp.status or resp.ok first, and use Promise.allSettled when partial results are useful, the way return_exceptions is in Python."
+ },
+ "0B-weekly/w12": {
+  "id": "w12",
+  "q": "(Enterprise) What do <code>parseIncome(\"\")</code> and <code>parseIncome(\" \")</code> return?<pre><code>function parseIncome(raw: string): number {\n  const v = Number(raw);\n  if (Number.isNaN(v) || v &lt; 0) throw new Error(`bad income: ${raw}`);\n  return v;\n}</code></pre>",
+  "options": [
+   "Both return NaN, which the negative-number check lets through",
+   "Both return 0: Number() turns empty and blank strings into 0",
+   "Both throw: Number(\"\") is NaN, which the isNaN check catches",
+   "\"\" throws as NaN, but \" \" returns 0 after trimming"
+  ],
+  "answer": 1,
+  "why": "Number(\"\") and Number(\" \") are both 0 (Number(null) is also 0), so this validator turns missing data into a plausible-looking value. Pydantic's float rejects \"\". This is why parseCreditScore checks raw.trim() === \"\" before converting."
+ }
+}

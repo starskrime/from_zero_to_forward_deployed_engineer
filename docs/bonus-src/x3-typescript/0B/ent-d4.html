@@ -1,0 +1,12 @@
+      <div data-track="ent">
+        <h3 class="part-h part-ent-h">Enterprise · TypeScript IV: working with arrays</h3>
+        <div class="prose">
+          <p>Most TypeScript you'll read transforms arrays of objects. Write <code>perState.ts</code>: given an array of <code>Lead</code> objects, return an object counting leads per state, and a list of lead IDs with a credit score of 740 or more, using <code>filter</code>, <code>map</code> and <code>reduce</code>.</p>
+<pre><code>const highScores = leads.filter(l => l.creditScore >= 740).map(l => l.leadId);
+const perState = leads.reduce&lt;Record&lt;string, number&gt;&gt;((acc, l) => {
+  acc[l.state] = (acc[l.state] ?? 0) + 1;
+  return acc;
+}, {});</code></pre>
+          <p>Compare with your Python: <code>filter</code>/<code>map</code> ≈ list comprehensions, <code>reduce</code> into an object ≈ <code>Counter</code>, and <code>??</code> ≈ "use this default if the value is missing".</p>
+        </div>
+      </div>

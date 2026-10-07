@@ -1,0 +1,11 @@
+      <div data-track="ent">
+        <h3 class="part-h part-ent-h">Enterprise · TypeScript II-d: test the loop</h3>
+        <div class="prose">
+          <p>The Claude TypeScript SDK accepts a custom <code>fetch</code>, which is the TypeScript version of a mock transport. In <code>agent.test.ts</code>, script two replies (a <code>tool_use</code>, then text) and assert that the tool result sent back was <code>{"monthly_payment": 1798.65}</code>. Run it with <code>node --test</code>.</p>
+<pre><code>const fakeFetch = async (_url: unknown, init: any) => {
+  sent.push(JSON.parse(init.body));
+  return new Response(JSON.stringify(replies.shift()), { status: 200, headers: { "content-type": "application/json" } });
+};
+const client = new Anthropic({ apiKey: "test", fetch: fakeFetch as any });</code></pre>
+        </div>
+      </div>

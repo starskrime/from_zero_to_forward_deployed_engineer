@@ -1,0 +1,22 @@
+      <div data-track="ent">
+        <h3 class="part-h part-ent-h">Enterprise · TypeScript V: a tiny tested module</h3>
+        <div class="prose">
+          <p>Node has a built-in test runner. Move <code>parseCreditScore</code> and <code>parseLoanType</code> into <code>parse.ts</code> (with <code>export</code> in front of each), and write <code>parse.test.ts</code>:</p>
+<pre><code>import { test } from "node:test";
+import assert from "node:assert/strict";
+import { parseCreditScore } from "./parse.ts";
+
+test("accepts a valid score", () => {
+  assert.equal(parseCreditScore("742"), 742);
+});
+
+test("rejects out-of-range scores", () => {
+  assert.throws(() => parseCreditScore("905"));
+});</code></pre>
+<pre><code><span class="p">$ </span>node --test</code></pre>
+          <p>Add three more tests (empty, <code>"7.5"</code>, and an unknown loan type). You now have the same testing habit in both languages.</p>
+        </div>
+        <div class="reflect" style="max-width:760px">
+          <label><span class="rq">Python vs TypeScript: what felt familiar, what felt different, and where would you trip up reading a customer's TypeScript code?</span><textarea data-reflect="ent-ts"></textarea></label>
+        </div>
+      </div>

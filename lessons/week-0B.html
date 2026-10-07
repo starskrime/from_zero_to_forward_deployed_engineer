@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Week 0B · APIs, Data &amp; SQL</title>
-  <meta name="description" content="Week 0B: HTTP and httpx, Pydantic validation, pytest, async, SQLite and SQL, pandas, pull requests, plus TypeScript essentials for FDEs.">
+  <meta name="description" content="Week 0B: HTTP and httpx, Pydantic validation, pytest, async, SQLite and SQL, pandas, pull requests, plus enterprise API patterns in Python: pagination, webhooks, idempotency keys and incremental sync.">
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%2316191f'/%3E%3Ctext x='16' y='21' font-family='Arial' font-weight='800' font-size='11' fill='white' text-anchor='middle'%3EFDE%3C/text%3E%3C/svg%3E">
   <link rel="stylesheet" href="../assets/css/platform.css">
 </head>
@@ -39,7 +39,7 @@
     <section class="lesson-hero" id="overview">
       <div class="eyebrow">Week 0B · Foundations · <span id="week-dates"></span></div>
       <h1>APIs, Data &amp; SQL</h1>
-      <p class="lead">Every agent you build from Week 1 onward calls web APIs, validates what comes back, stores results, and needs tests. This week you learn those skills in plain Python: <b>httpx</b> for APIs, <b>Pydantic</b> for validation, <b>pytest</b> for tests, <b>async</b> for speed, <b>SQLite</b> for storage, and <b>pull requests</b> for shipping safely. On the enterprise track you start <b>TypeScript</b>, which shows up in almost half of FDE job postings.</p>
+      <p class="lead">Every agent you build from Week 1 onward calls web APIs, validates what comes back, stores results, and needs tests. This week you learn those skills in plain Python: <b>httpx</b> for APIs, <b>Pydantic</b> for validation, <b>pytest</b> for tests, <b>async</b> for speed, <b>SQLite</b> for storage, and <b>pull requests</b> for shipping safely. On the enterprise track you learn the patterns every enterprise integration needs: reading API docs, <b>pagination</b>, <b>webhooks</b>, <b>idempotent writes</b> and <b>incremental sync</b>. TypeScript now has its own bonus module, <b>TypeScript for FDEs</b>.</p>
       <div class="week-progress"><div class="bar"><span id="week-bar" style="width:0"></span></div><span class="small muted" id="week-bar-text"></span></div>
 
       <div class="prose" style="margin-top:24px">
@@ -49,7 +49,7 @@
           <tbody>
             <tr><td><span class="part-tag" style="color:var(--ph-blue)">Core</span></td><td>22h</td><td>httpx, Pydantic, pytest, async, SQLite, pull requests; ship <b>Lead Intake CLI v2</b></td></tr>
             <tr data-track="cert"><td><span class="part-tag" style="color:var(--ph-slate)">Deep practice</span></td><td>6.5h</td><td>SQL from zero with interactive lessons, SQL-injection awareness, pandas</td></tr>
-            <tr data-track="ent"><td><span class="part-tag" style="color:var(--ph-green)">Enterprise</span></td><td>6.5h</td><td>TypeScript essentials I: types, unions, async, and a tiny tested module</td></tr>
+            <tr data-track="ent"><td><span class="part-tag" style="color:var(--ph-green)">Enterprise</span></td><td>6.5h</td><td>Enterprise APIs in Python: reading API docs, pagination, webhooks, idempotency keys, incremental sync</td></tr>
           </tbody>
         </table>
 
@@ -80,7 +80,7 @@
       <ul class="parts session-plan">
         <li class="part part-core"><span class="part-tag">Core · 2h</span>How HTTP works; httpx; status codes, timeouts, retries + Exercise 1</li>
         <li class="part part-deep" data-track="cert"><span class="part-tag">Deep practice · 1h</span>SQL from zero: interactive lessons 1–4</li>
-        <li class="part part-ent" data-track="ent"><span class="part-tag">Enterprise · 1h</span>TypeScript I: why it matters, setup, basic types</li>
+        <li class="part part-ent" data-track="ent"><span class="part-tag">Enterprise · 1h</span>Enterprise APIs I: reading an API's docs; an API fact sheet</li>
       </ul>
 
       <h3 class="part-h part-core-h">Core · HTTP and httpx</h3>
@@ -211,32 +211,62 @@ if __name__ == "__main__":
       </div>
 
       <div data-track="ent">
-        <h3 class="part-h part-ent-h">Enterprise · TypeScript I: why, setup, basic types</h3>
+        <h3 class="part-h part-ent-h">Enterprise · APIs I: read an enterprise API's docs before you code</h3>
         <div class="prose">
-          <p>Customer front-ends, many SDKs, and a lot of agent tooling are written in TypeScript. You don't need to become a front-end engineer, but you need to read it, debug it and write small modules in it. TypeScript is JavaScript plus <b>types</b>, much like Python's type hints, except the checker is built in.</p>
-          <ol>
-            <li>Install the <b>LTS</b> version of Node.js from <a href="https://nodejs.org/en/download" target="_blank" rel="noopener">nodejs.org</a>. Check with <code>node --version</code>.</li>
-            <li>Recent Node versions run <code>.ts</code> files directly by stripping the types, so there's no build step for small scripts: <code>node lead.ts</code>.</li>
-            <li>In <code>code/week-0B/ts/lead.ts</code>, write <code>parseCreditScore(raw: string): number</code> that throws an <code>Error</code> for empty input, non-whole numbers, and values outside 300–850, just like your Python version.</li>
-          </ol>
-<pre><code>function parseCreditScore(raw: string): number {
-  if (raw.trim() === "") throw new Error("credit_score is missing");
-  const score = Number(raw);
-  if (!Number.isInteger(score)) throw new Error(`not a whole number: ${raw}`);
-  if (score &lt; 300 || score > 850) throw new Error(`credit_score ${score} is outside 300-850`);
-  return score;
-}</code></pre>
+          <p>This week's enterprise track builds on Day 1. You already call APIs and retry safely; now you learn the patterns every enterprise integration needs: pagination, webhooks, safe writes and incremental sync. It starts with reading. At a customer, your first job is often to read the docs of a system you have never used (GitHub, Jira, ServiceNow, Zendesk, an internal API) and find the facts that break an integration when you guess them.</p>
+          <p>Answer these questions from the <b>official</b> docs, with a link for each answer. Here are the answers for GitHub's REST API:</p>
+          <table class="compare">
+            <thead><tr><th>Question</th><th>Why it matters</th><th>GitHub REST API (checked October 2026)</th></tr></thead>
+            <tbody>
+              <tr><td>How do I authenticate?</td><td>A wrong token can look like "not found"</td><td><code>Authorization: Bearer &lt;token&gt;</code>, and every request needs a <code>User-Agent</code> header. For a private resource you can't see, GitHub answers <b>404, not 403</b>, so it never confirms the resource exists.</td></tr>
+              <tr><td>Which version am I calling?</td><td>APIs change; pin the version you tested</td><td>Date-based versions, chosen with the <code>X-GitHub-Api-Version</code> header. Send <code>Accept: application/vnd.github+json</code>.</td></tr>
+              <tr><td>What are the rate limits, and where do I see my budget?</td><td>Sets how fast a sync can go (Day 5)</td><td>60 requests an hour without a token, 5,000 with a personal token. Headers: <code>x-ratelimit-limit</code>, <code>-remaining</code>, <code>-used</code>, <code>-reset</code> (a UTC epoch time in seconds) and <code>-resource</code>. Over the limit: 403 or 429.</td></tr>
+              <tr><td>How does pagination work?</td><td>A missed page is missing data (Day 2)</td><td>A <code>link</code> header with <code>rel="next"</code>, <code>"prev"</code>, <code>"first"</code> and <code>"last"</code>. <code>per_page</code> is at most 100 on most endpoints; a bigger value is quietly lowered, not rejected.</td></tr>
+              <tr><td>What does an error look like?</td><td>Users need a message they can act on</td><td>A JSON body with a <code>message</code>. A 422 "Validation Failed" adds an <code>errors</code> list; each entry has a <code>code</code> such as <code>missing_field</code> or <code>already_exists</code>.</td></tr>
+              <tr><td>Is there a machine-readable spec?</td><td>Generate clients, fakes and test data from it</td><td>OpenAPI 3.0 and 3.1 descriptions, published in the <code>github/rest-api-description</code> repository.</td></tr>
+            </tbody>
+          </table>
+          <p>Two more rows go on every fact sheet: how do I hear about changes (webhooks, Day 3), and can I retry a write safely (idempotency keys, Day 4)?</p>
+          <div class="callout tip"><b>Write "not stated" instead of guessing</b>Docs leave things out: a default page size, a maximum, whether "since" means "after" or "on or after". Write "not stated in the docs", then test it in a sandbox. A guess copied into a design document becomes a production bug.</div>
+          <p><b>Task (about 40 minutes):</b> write a one-page API fact sheet for a system a customer might ask you to connect: GitHub REST (if you want to check against the table above), the Jira Cloud REST API, or the ServiceNow Table API. Save it as <code>code/week-0B/ent/api-fact-sheet.md</code>. Use the six questions above plus the two extra rows. Every fact needs a link to the official page it came from; anything you can't find is "not stated". Finish with the three facts most likely to break an integration, and why.</p>
+        </div>
+        <div class="hints" data-hints="0B-ent-d1">
+          <div class="hint solution" data-level="Solution">
+<pre class="no-copy"><code># API fact sheet: GitHub REST API (checked 2026-10-07)
+
+Base URL     https://api.github.com
+Version      X-GitHub-Api-Version header (date-based); Accept: application/vnd.github+json
+Auth         Authorization: Bearer &lt;token&gt;; User-Agent required, or the request is rejected
+             Private resources you can't see return 404, not 403
+Rate limits  60/hour without a token; 5,000/hour with a personal token
+             x-ratelimit-limit / -remaining / -used / -reset (UTC epoch seconds) / -resource
+             Over the limit: 403 or 429. Secondary limits too (for example, at most 100 concurrent requests)
+Pagination   link header: rel="next" / "prev" / "first" / "last"
+             per_page max 100 on most endpoints, quietly lowered if larger; default per endpoint (30 for issues)
+Errors       JSON with "message"; 422 adds "errors": [{"code": "missing_field" | "invalid" | ...}]
+Spec         OpenAPI 3.0 and 3.1 in github/rest-api-description
+Changes      Webhooks; signature in X-Hub-Signature-256 (Day 3)
+Safe writes  Not stated for the REST API: plan an existence check before re-creating
+
+Most likely to break us
+1. 404 for a token without access: our code would report "repo not found" and nobody checks the token.
+2. per_page quietly capped at 100: a loop that stops on a "short page" stops after page 1.
+3. The 5,000/hour budget is shared by everything using the same token.
+
+Sources: docs.github.com/en/rest/using-the-rest-api/getting-started-with-the-rest-api,
+.../rate-limits-for-the-rest-api, .../using-pagination-in-the-rest-api,
+.../troubleshooting-the-rest-api, .../about-the-openapi-description-for-the-rest-api</code></pre></div>
         </div>
         <div class="readings">
-          <div class="reading"><span class="kind must">Read</span><div><a href="https://www.typescriptlang.org/docs/handbook/typescript-in-5-minutes.html" target="_blank" rel="noopener">TypeScript for JavaScript Programmers ↗</a><p>The fastest official intro.</p></div></div>
-          <div class="reading"><span class="kind must">Read</span><div><a href="https://www.typescriptlang.org/docs/handbook/2/basic-types.html" target="_blank" rel="noopener">TypeScript Handbook: The Basics ↗</a></div></div>
-          <div class="reading"><span class="kind">Reference</span><div><a href="https://nodejs.org/en/learn/typescript/run-natively" target="_blank" rel="noopener">Node.js: running TypeScript natively ↗</a><p>Which Node versions support it, and its limits.</p></div></div>
+          <div class="reading"><span class="kind must">Read</span><div><a href="https://docs.github.com/en/rest/using-the-rest-api/getting-started-with-the-rest-api" target="_blank" rel="noopener">GitHub: Getting started with the REST API ↗</a><p>Headers, authentication, versions and errors, in one page.</p></div></div>
+          <div class="reading"><span class="kind must">Read</span><div><a href="https://docs.github.com/en/rest/using-the-rest-api/rate-limits-for-the-rest-api" target="_blank" rel="noopener">GitHub: Rate limits for the REST API ↗</a><p>Primary and secondary limits, and what to do when you hit them.</p></div></div>
+          <div class="reading"><span class="kind">Reference</span><div><a href="https://developer.atlassian.com/cloud/jira/platform/rest/v3/intro/" target="_blank" rel="noopener">Jira Cloud REST API v3: introduction ↗</a><p>If you write your fact sheet for Jira: see "Authentication and authorization", "Expansion, pagination, and ordering" and "Status codes".</p></div></div>
         </div>
       </div>
 
       <div class="prose"><h3>Mini-quiz</h3></div>
       <div class="quiz mini" data-quiz="0B-d1"></div>
-      <script type="application/json" data-quiz-for="0B-d1">[{"id": "h1", "q": "Under load, the ZIP API answers <code>429 Too Many Requests<\/code> with <code>Retry-After: 30<\/code>. What does this version of <code>lookup_zip<\/code> (default <code>retries=3<\/code>) do?<pre><code>for attempt in range(1, retries + 1):\n    try:\n        resp = client.get(BASE_URL + zip_code, timeout=5.0)\n        if resp.status_code == 404:\n            return None\n        resp.raise_for_status()\n        ...\n    except (httpx.TransportError, httpx.HTTPStatusError) as e:\n        is_server_error = isinstance(e, httpx.HTTPStatusError) and e.response.status_code &gt;= 500\n        if attempt == retries or not (isinstance(e, httpx.TransportError) or is_server_error):\n            raise\n        time.sleep(0.5 * 2 ** (attempt - 1))\nreturn None<\/code><\/pre>", "options": ["Returns None, because the loop treats every 4xx like the 404 branch", "Raises HTTPStatusError at once: 429 is neither a TransportError nor a 5xx", "Waits the 30 seconds from Retry-After, then retries up to three times", "Sleeps 0.5 s and 1 s between three attempts, then raises HTTPStatusError"], "answer": 1, "why": "The Day 1 status table says to wait and retry on 429, but this version only retries transport errors and 5xx, so a 429 is raised immediately on the first try. Nothing in the loop reads Retry-After, so it can't wait 30 seconds. The 0.5 s and 1 s backoff only happens for 5xx and network errors. Only a 404 returns None; other 4xx codes are raised. The fix is to add 429 to the retryable set and wait for Retry-After when it is present."}, {"id": "h2", "q": "The ZIP API returns <code>503<\/code> on every call. With <code>retries=3<\/code>, how many requests does the loop above send, how long does it sleep in total, and how does it end?", "options": ["3 requests, 3.5 s of sleep (0.5 + 1 + 2), then HTTPStatusError", "4 requests (1 + 3 retries), 3.5 s of sleep (0.5 + 1 + 2), then HTTPStatusError", "3 requests, 1.5 s of sleep (0.5 + 1), then the final return None", "3 requests, 1.5 s of sleep (0.5 + 1), then HTTPStatusError from the last attempt"], "answer": 3, "why": "retries is the total number of attempts, and there's no sleep after the last one. On attempt 3, attempt == retries, so it re-raises. Reading retries as \"extra tries\" gives 4 requests. Counting a sleep after the last attempt gives 3.5 s. The trailing return None is never reached when every attempt fails, because the last one raises."}, {"id": "h3", "q": "Your code calls <code>client.get(url, timeout=5.0)<\/code>, then <code>resp.raise_for_status()<\/code>, then <code>resp.json()[\"places\"][0]<\/code>, all inside <code>try: … except httpx.TransportError:<\/code>. Which of these failures does that except clause catch?<br>(a) the server doesn't answer within 5 s<br>(b) a 404 for an unknown ZIP<br>(c) a 301 because the API moved to a new URL<br>(d) a 200 whose body is an HTML maintenance page", "options": ["Only (a): (b) and (c) raise HTTPStatusError; (d) raises a JSON decode error", "(a), (b) and (c): every error status, redirects included, is a transport error", "(a) and (d): a body that can't be parsed counts as a transport failure", "(a) and (b): errors from raise_for_status count as transport errors"], "answer": 0, "why": "ReadTimeout is a subclass of TransportError. HTTPStatusError is a separate branch under HTTPError. httpx doesn't follow redirects unless you set follow_redirects=True, and raise_for_status raises on a 3xx too. resp.json() on HTML raises json.JSONDecodeError, a ValueError, so even except httpx.HTTPError misses it. Enrichment code that must never crash has to catch parsing errors separately."}, {"id": "h4", "q": "(Enterprise) Which input does this TypeScript function <b>accept<\/b>, and what does it return?<pre><code>function parseCreditScore(raw: string): number {\n  if (raw.trim() === \"\") throw new Error(\"credit_score is missing\");\n  const score = Number(raw);\n  if (!Number.isInteger(score)) throw new Error(`not a whole number: ${raw}`);\n  if (score &lt; 300 || score &gt; 850) throw new Error(`credit_score ${score} is outside 300-850`);\n  return score;\n}<\/code><\/pre>", "options": ["\"742abc\" returns 742, because Number() reads the leading digits the way parseInt does", "\"0x2E6\" returns 742: Number() also parses hexadecimal, and 742 passes both checks", "\" \" returns 0, because Number(\" \") is 0 and the trim check is skipped", "\"7.5\" returns 7, because the value is truncated to a whole number first"], "answer": 1, "why": "Number() accepts hex (0x), binary (0b) and exponent forms, so \"0x2E6\" and \"7.42e2\" both become 742. Pydantic's int would reject both strings. \" \" never gets to Number() because the trim check throws first. Number(\"742abc\") is NaN; only parseInt reads leading digits. \"7.5\" fails the isInteger check. If you need exactly the same rules in both languages, check the string with a regex such as /^\\d+$/."}]</script>
+      <script type="application/json" data-quiz-for="0B-d1">[{"id": "h1", "q": "Under load, the ZIP API answers <code>429 Too Many Requests<\/code> with <code>Retry-After: 30<\/code>. What does this version of <code>lookup_zip<\/code> (default <code>retries=3<\/code>) do?<pre><code>for attempt in range(1, retries + 1):\n    try:\n        resp = client.get(BASE_URL + zip_code, timeout=5.0)\n        if resp.status_code == 404:\n            return None\n        resp.raise_for_status()\n        ...\n    except (httpx.TransportError, httpx.HTTPStatusError) as e:\n        is_server_error = isinstance(e, httpx.HTTPStatusError) and e.response.status_code &gt;= 500\n        if attempt == retries or not (isinstance(e, httpx.TransportError) or is_server_error):\n            raise\n        time.sleep(0.5 * 2 ** (attempt - 1))\nreturn None<\/code><\/pre>", "options": ["Returns None, because the loop treats every 4xx like the 404 branch", "Raises HTTPStatusError at once: 429 is neither a TransportError nor a 5xx", "Waits the 30 seconds from Retry-After, then retries up to three times", "Sleeps 0.5 s and 1 s between three attempts, then raises HTTPStatusError"], "answer": 1, "why": "The Day 1 status table says to wait and retry on 429, but this version only retries transport errors and 5xx, so a 429 is raised immediately on the first try. Nothing in the loop reads Retry-After, so it can't wait 30 seconds. The 0.5 s and 1 s backoff only happens for 5xx and network errors. Only a 404 returns None; other 4xx codes are raised. The fix is to add 429 to the retryable set and wait for Retry-After when it is present."}, {"id": "h2", "q": "The ZIP API returns <code>503<\/code> on every call. With <code>retries=3<\/code>, how many requests does the loop above send, how long does it sleep in total, and how does it end?", "options": ["3 requests, 3.5 s of sleep (0.5 + 1 + 2), then HTTPStatusError", "4 requests (1 + 3 retries), 3.5 s of sleep (0.5 + 1 + 2), then HTTPStatusError", "3 requests, 1.5 s of sleep (0.5 + 1), then the final return None", "3 requests, 1.5 s of sleep (0.5 + 1), then HTTPStatusError from the last attempt"], "answer": 3, "why": "retries is the total number of attempts, and there's no sleep after the last one. On attempt 3, attempt == retries, so it re-raises. Reading retries as \"extra tries\" gives 4 requests. Counting a sleep after the last attempt gives 3.5 s. The trailing return None is never reached when every attempt fails, because the last one raises."}, {"id": "h3", "q": "Your code calls <code>client.get(url, timeout=5.0)<\/code>, then <code>resp.raise_for_status()<\/code>, then <code>resp.json()[\"places\"][0]<\/code>, all inside <code>try: … except httpx.TransportError:<\/code>. Which of these failures does that except clause catch?<br>(a) the server doesn't answer within 5 s<br>(b) a 404 for an unknown ZIP<br>(c) a 301 because the API moved to a new URL<br>(d) a 200 whose body is an HTML maintenance page", "options": ["Only (a): (b) and (c) raise HTTPStatusError; (d) raises a JSON decode error", "(a), (b) and (c): every error status, redirects included, is a transport error", "(a) and (d): a body that can't be parsed counts as a transport failure", "(a) and (b): errors from raise_for_status count as transport errors"], "answer": 0, "why": "ReadTimeout is a subclass of TransportError. HTTPStatusError is a separate branch under HTTPError. httpx doesn't follow redirects unless you set follow_redirects=True, and raise_for_status raises on a 3xx too. resp.json() on HTML raises json.JSONDecodeError, a ValueError, so even except httpx.HTTPError misses it. Enrichment code that must never crash has to catch parsing errors separately."}, {"id": "h4", "q": "(Enterprise) Your fact sheet for GitHub's issue list says \"per_page: at most 100\". A teammate's loop asks for 500 per page and stops at the first short page. The repository has 250 issues. What does it return?<pre><code>items, page = [], 1\nwhile True:\n    batch = client.get(url, params={\"per_page\": 500, \"page\": page}).json()\n    items += batch\n    if len(batch) &lt; 500:\n        break\n    page += 1<\/code><\/pre>", "options": ["All 250 in one request: per_page accepts up to 1,000 on list endpoints", "Only the first 100: GitHub quietly lowers per_page to 100, so page 1 looks like the last page", "A 422 Validation Failed error, because 500 is above the documented maximum", "All 250 in three requests: httpx follows the Link header to the next page"], "answer": 1, "why": "GitHub's pagination docs say per_page is at most 100 for most endpoints, and a larger value is lowered without an error, so there is no 422 and no 1,000-item page. Page 1 holds 100 items, 100 is less than 500, and the loop stops with 150 issues never fetched. httpx never follows Link headers on its own; your code has to. Stop when the response has no rel=\"next\" link, not when a page looks short, and put limits like this on your fact sheet."}]</script>
     </section>
 
     <!-- ================= DAY 2 ================= -->
@@ -249,7 +279,7 @@ if __name__ == "__main__":
       <ul class="parts session-plan">
         <li class="part part-core"><span class="part-tag">Core · 2h</span>Type hints, Pydantic models, constraints, validators + Exercise 2</li>
         <li class="part part-deep" data-track="cert"><span class="part-tag">Deep practice · 1h</span>SQL from zero: lessons 5–8 (joins)</li>
-        <li class="part part-ent" data-track="ent"><span class="part-tag">Enterprise · 1h</span>TypeScript II: interfaces, unions and literal types</li>
+        <li class="part part-ent" data-track="ent"><span class="part-tag">Enterprise · 1h</span>Enterprise APIs II: pagination done right</li>
       </ul>
 
       <h3 class="part-h part-core-h">Core · Pydantic</h3>
@@ -407,37 +437,77 @@ print(valid, "valid,", invalid, "invalid", dict(sorted(per_field.items())))</cod
       </div>
 
       <div data-track="ent">
-        <h3 class="part-h part-ent-h">Enterprise · TypeScript II: interfaces and unions</h3>
+        <h3 class="part-h part-ent-h">Enterprise · APIs II: pagination done right</h3>
         <div class="prose">
-          <p>An <b>interface</b> describes the shape of an object (like a Pydantic model without the runtime checks). A <b>union of literal types</b> restricts a value to a fixed set, like Python's <code>Literal</code>. Add these to <code>lead.ts</code> and run it with <code>node lead.ts</code>:</p>
-<pre><code>type LoanType = "purchase" | "refinance";
+          <p>No enterprise API returns 50,000 tickets in one response. It returns a page and tells you how to get the next one. There are three common styles:</p>
+          <table class="compare">
+            <thead><tr><th>Style</th><th>What you send</th><th>Watch out for</th></tr></thead>
+            <tbody>
+              <tr><td>Offset / limit (or page number)</td><td><code>?offset=200&amp;limit=100</code> or <code>?page=3</code></td><td>Repeats and skips when data changes while you page (below)</td></tr>
+              <tr><td>Cursor</td><td>The opaque token from the last response: <code>?cursor=eyJpZCI6…</code></td><td>Tokens expire; don't build or store them for long</td></tr>
+              <tr><td>Link header</td><td>Nothing to build: the response gives you the next URL</td><td>Follow it as is; don't rebuild it from parts</td></tr>
+            </tbody>
+          </table>
+          <p>GitHub's REST API uses a <b>Link header</b>: <code>link: &lt;https://api.github.com/repositories/1300192/issues?page=4&gt;; rel="next", …</code>. When there is no <code>rel="next"</code>, you are on the last page. httpx parses the header for you: <code>resp.links.get("next", {}).get("url")</code>.</p>
+          <h4>Why offset pagination repeats and skips</h4>
+          <p>An offset is a position in a list that can change between requests. You fetch tickets newest first, 100 per page. After page 1, three new tickets arrive. Every old ticket moves down three places, so page 2 starts with the last three tickets of page 1: <b>repeats</b>. If a ticket is deleted instead, everything moves up one place, and one ticket never appears on any page: a <b>skip</b>, and nothing tells you. Repeats are harmless if you upsert by ID. Skips are silent data loss. A cursor avoids this when it marks a position in the data (for example "after ticket 4812") rather than a count. A Link header is only as good as the URL inside it: GitHub's issue links carry page numbers, so they can repeat and skip too.</p>
+          <div class="callout warn"><b>Two traps</b>Stop when there is no next link, not when a page looks short: GitHub quietly lowers a <code>per_page</code> above 100, so a "short page" check can stop after page 1. And in httpx 0.28, <code>client.get(next_url, params={...})</code> <i>replaces</i> the next URL's query string, so <code>page=2</code> disappears and you fetch page 1 forever. Send your filters on the first request only; the next link already carries them.</div>
+          <p><b>Task (about 40 minutes):</b> in <code>code/week-0B/ent/paginate.py</code>, write a generator <code>paginate(client, url, params=None, max_pages=1000)</code> that yields every item, follows <code>rel="next"</code> until there is none, raises on a failed page instead of stopping quietly, and raises <code>RuntimeError</code> after <code>max_pages</code> (a next link that loops must not run forever). Test it with a <code>MockTransport</code> fake that serves 250 issues, 100 per page, with Link headers.</p>
+          <p class="expected"><b>Check:</b> 250 unique IDs in order from exactly 3 requests; a 502 on page 2 raises <code>httpx.HTTPStatusError</code>; a server whose next link always points to page 1 stops with <code>RuntimeError</code>.</p>
+        </div>
+        <div class="hints" data-hints="0B-ent-d2">
+          <div class="hint solution" data-level="Solution">
+<pre><code>from collections.abc import Iterator
 
-interface Lead {
-  leadId: string;
-  creditScore: number;
-  loanType: LoanType;
-  zip: string;
-}
+import httpx
 
-function parseLoanType(raw: string): LoanType {
-  const v = raw.trim().toLowerCase();
-  if (v === "purchase" || v === "refinance") return v;   <span class="c">// TypeScript narrows v to LoanType here</span>
-  throw new Error(`unknown loan type: ${raw}`);
-}
 
-const lead: Lead = { leadId: "L-1001", creditScore: parseCreditScore("742"),
-                     loanType: parseLoanType("Purchase"), zip: "75024" };
-console.log(lead);</code></pre>
-          <div class="callout warn"><b>Important difference</b>TypeScript types are checked while you write code and then <i>erased</i>. At run time nothing validates the data. If a value comes from an API, you still need runtime checks, which is why functions like <code>parseLoanType</code> exist.</div>
+def paginate(client: httpx.Client, url: str, params: dict | None = None,
+             max_pages: int = 1000) -&gt; Iterator[dict]:
+    next_url: str | None = url
+    pages = 0
+    while next_url:
+        pages += 1
+        if pages &gt; max_pages:
+            raise RuntimeError(f"stopped after {max_pages} pages: is the next link looping?")
+        resp = client.get(next_url, params=params if pages == 1 else None)
+        resp.raise_for_status()          <span class="c"># a failed page must stop the run, not end it quietly</span>
+        yield from resp.json()
+        next_url = resp.links.get("next", {}).get("url")</code></pre>
+<pre><code><span class="c"># tests/test_paginate.py: a fake of GitHub's list endpoint</span>
+BASE, PATH = "https://api.github.com", "/repos/acme/helpdesk/issues"
+ITEMS = [{"id": i} for i in range(1, 251)]
+
+
+def fake_issues(request: httpx.Request) -&gt; httpx.Response:
+    per_page = min(int(request.url.params.get("per_page", 30)), 100)   <span class="c"># quietly capped</span>
+    page = int(request.url.params.get("page", 1))
+    batch = ITEMS[(page - 1) * per_page: page * per_page]
+    headers = {}
+    if page * per_page &lt; len(ITEMS):
+        headers["link"] = f'&lt;{BASE}{PATH}?page={page + 1}&amp;per_page={per_page}&gt;; rel="next"'
+    return httpx.Response(200, json=batch, headers=headers)
+
+
+def test_follows_next_links_to_the_end():
+    seen = []
+    def handler(request):
+        seen.append(request.url)
+        return fake_issues(request)
+    client = httpx.Client(transport=httpx.MockTransport(handler))
+    items = list(paginate(client, BASE + PATH, params={"per_page": 100}))
+    assert [i["id"] for i in items] == list(range(1, 251))
+    assert len(seen) == 3</code></pre></div>
         </div>
         <div class="readings">
-          <div class="reading"><span class="kind must">Read</span><div><a href="https://www.typescriptlang.org/docs/handbook/2/everyday-types.html" target="_blank" rel="noopener">TypeScript Handbook: Everyday Types ↗</a><p>Especially "Interfaces", "Union Types" and "Literal Types".</p></div></div>
+          <div class="reading"><span class="kind must">Read</span><div><a href="https://docs.github.com/en/rest/using-the-rest-api/using-pagination-in-the-rest-api" target="_blank" rel="noopener">GitHub: Using pagination in the REST API ↗</a><p>The Link header, <code>per_page</code>, and the <code>page</code>, <code>before</code>/<code>after</code> and <code>since</code> parameters.</p></div></div>
+          <div class="reading"><span class="kind">Reference</span><div><a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Link" target="_blank" rel="noopener">MDN: the Link header ↗</a><p>See "Pagination through links".</p></div></div>
         </div>
       </div>
 
       <div class="prose"><h3>Mini-quiz</h3></div>
       <div class="quiz mini" data-quiz="0B-d2"></div>
-      <script type="application/json" data-quiz-for="0B-d2">[{"id": "h1", "q": "<code>credit_score: int = Field(ge=300, le=850)<\/code>, Pydantic v2 default (lax) mode. Which of <code>\"742\"<\/code>, <code>742.0<\/code>, <code>\"742.0\"<\/code> and <code>\"7.5\"<\/code> are accepted?", "options": ["All four: \"7.5\" is truncated to 7, which then fails the range check", "\"742\" and 742.0 become 742; \"742.0\" and \"7.5\" are rejected as strings that aren't integers", "Only \"742\": an int field never accepts a float", "\"742\", 742.0 and \"742.0\" all become 742; only \"7.5\" is rejected"], "answer": 3, "why": "Lax mode converts a float, or a numeric string, with no fractional part to int. It rejects anything with a real fraction (\"7.5\" gives int_parsing, 7.5 gives int_from_float). It never truncates. If \"742.0\" in a CSV should count as bad data, use Field(strict=True) on the model, or check the raw string before validating."}, {"id": "h2", "q": "A teammate moves the lowercasing into a normal (after) validator. What do the two calls do?<pre><code>class Lead(BaseModel):\n    model_config = ConfigDict(str_strip_whitespace=True)\n    loan_type: Literal[\"purchase\", \"refinance\"]\n\n    @field_validator(\"loan_type\")\n    @classmethod\n    def lower(cls, v):\n        return v.lower()\n\nLead(loan_type=\"Purchase\")\nLead(loan_type=\" purchase \")<\/code><\/pre>", "options": ["\"Purchase\" succeeds; \" purchase \" fails because of the spaces", "Both succeed: the validator lowercases and the config strips the spaces", "Both fail: the Literal check runs before the validator, and stripping skips Literals", "\"Purchase\" fails; \" purchase \" succeeds after the config strips it"], "answer": 2, "why": "The Literal check runs before an after validator, so \"Purchase\" fails with \"Input should be 'purchase' or 'refinance'\" and the validator never runs. str_strip_whitespace only applies to str fields, so \" purchase \" fails too. That's why the lesson uses mode=\"before\" and calls .strip().lower() itself."}, {"id": "h3", "q": "Row L-1012 has an empty <code>credit_score<\/code> cell, so <code>csv.DictReader<\/code> passes <code>\"\"<\/code>. Which message does your report show for that field?", "options": ["None at first: \"\" becomes None and fails later, at the database insert", "Input should be a valid integer, unable to parse string as an integer", "Input should be greater than or equal to 300, because \"\" counts as 0", "Field required, because the cell is empty"], "answer": 1, "why": "The key is present, so it isn't \"Field required\" (that message means the column itself is missing). Pydantic tries to parse \"\" as an int, fails, and never gets to the range check. Nothing turns \"\" into None unless you write a before validator that does it. Sales reps won't understand \"unable to parse string\", so map error types (int_parsing, missing) to plain messages such as \"credit score is empty\"."}, {"id": "h4", "q": "(Enterprise) What does this print when run with <code>node lead.ts<\/code>?<pre><code>interface Lead { leadId: string; creditScore: number; loanType: \"purchase\" | \"refinance\"; zip: string }\nconst lead: Lead = JSON.parse('{\"leadId\":\"L-1010\",\"creditScore\":\"690\",\"loanType\":\"home-equity\",\"zip\":\"60601\"}');\nconsole.log(lead.creditScore + 10, lead.loanType);<\/code><\/pre>", "options": ["A TypeError at JSON.parse, because \"home-equity\" isn't a valid loanType", "69010 home-equity: creditScore is still the string \"690\", so + concatenates", "Nothing: node reports the type mismatch before running the file", "700 home-equity: the number annotation converts \"690\" on assignment"], "answer": 1, "why": "JSON.parse returns any, so the annotation is just a promise to the checker. The types are erased and nothing is checked at run time. creditScore is still the string \"690\", and \"690\" + 10 concatenates to \"69010\". node strips types without checking them. Use tsc --noEmit to type-check your code, and write parse functions for data that comes from outside."}]</script>
+      <script type="application/json" data-quiz-for="0B-d2">[{"id": "h1", "q": "<code>credit_score: int = Field(ge=300, le=850)<\/code>, Pydantic v2 default (lax) mode. Which of <code>\"742\"<\/code>, <code>742.0<\/code>, <code>\"742.0\"<\/code> and <code>\"7.5\"<\/code> are accepted?", "options": ["All four: \"7.5\" is truncated to 7, which then fails the range check", "\"742\" and 742.0 become 742; \"742.0\" and \"7.5\" are rejected as strings that aren't integers", "Only \"742\": an int field never accepts a float", "\"742\", 742.0 and \"742.0\" all become 742; only \"7.5\" is rejected"], "answer": 3, "why": "Lax mode converts a float, or a numeric string, with no fractional part to int. It rejects anything with a real fraction (\"7.5\" gives int_parsing, 7.5 gives int_from_float). It never truncates. If \"742.0\" in a CSV should count as bad data, use Field(strict=True) on the model, or check the raw string before validating."}, {"id": "h2", "q": "A teammate moves the lowercasing into a normal (after) validator. What do the two calls do?<pre><code>class Lead(BaseModel):\n    model_config = ConfigDict(str_strip_whitespace=True)\n    loan_type: Literal[\"purchase\", \"refinance\"]\n\n    @field_validator(\"loan_type\")\n    @classmethod\n    def lower(cls, v):\n        return v.lower()\n\nLead(loan_type=\"Purchase\")\nLead(loan_type=\" purchase \")<\/code><\/pre>", "options": ["\"Purchase\" succeeds; \" purchase \" fails because of the spaces", "Both succeed: the validator lowercases and the config strips the spaces", "Both fail: the Literal check runs before the validator, and stripping skips Literals", "\"Purchase\" fails; \" purchase \" succeeds after the config strips it"], "answer": 2, "why": "The Literal check runs before an after validator, so \"Purchase\" fails with \"Input should be 'purchase' or 'refinance'\" and the validator never runs. str_strip_whitespace only applies to str fields, so \" purchase \" fails too. That's why the lesson uses mode=\"before\" and calls .strip().lower() itself."}, {"id": "h3", "q": "Row L-1012 has an empty <code>credit_score<\/code> cell, so <code>csv.DictReader<\/code> passes <code>\"\"<\/code>. Which message does your report show for that field?", "options": ["None at first: \"\" becomes None and fails later, at the database insert", "Input should be a valid integer, unable to parse string as an integer", "Input should be greater than or equal to 300, because \"\" counts as 0", "Field required, because the cell is empty"], "answer": 1, "why": "The key is present, so it isn't \"Field required\" (that message means the column itself is missing). Pydantic tries to parse \"\" as an int, fails, and never gets to the range check. Nothing turns \"\" into None unless you write a before validator that does it. Sales reps won't understand \"unable to parse string\", so map error types (int_parsing, missing) to plain messages such as \"credit score is empty\"."}, {"id": "h4", "q": "(Enterprise) You copy 1,000 tickets from an API that pages with <code>offset<\/code> and <code>limit<\/code>, newest first, 100 per page. Right after you fetch page 1, three new tickets are created. What does page 2 (<code>offset=100<\/code>) contain?", "options": ["Tickets 101 to 200 of the original list: the offset was fixed by your first request", "The last 3 tickets of page 1 again, then 97 you haven't seen; nothing is skipped this time", "97 new-to-you tickets: 3 are skipped, because page 2 starts 3 places too late", "An error: the API rejects an offset once the result set has changed"], "answer": 1, "why": "An offset is a position in a list that can change between requests. The three new tickets go to the front, every old ticket moves down three places, and page 2 starts with page 1's last three tickets. Nothing is skipped: every ticket is still on some page, just later. Skips happen when tickets are deleted, because the rest move up. Servers don't freeze a result set for you, and they don't reject the offset. Upsert by ID so repeats are harmless, and prefer a cursor that marks a position in the data."}]</script>
     </section>
 
     <!-- ================= DAY 3 ================= -->
@@ -450,7 +520,7 @@ console.log(lead);</code></pre>
       <ul class="parts session-plan">
         <li class="part part-core"><span class="part-tag">Core · 2h</span>pytest (1h) + async / await (1h), Exercises 3 and 4</li>
         <li class="part part-deep" data-track="cert"><span class="part-tag">Deep practice · 1h</span>SQL from zero: lessons 9–12 (expressions, aggregates)</li>
-        <li class="part part-ent" data-track="ent"><span class="part-tag">Enterprise · 1h</span>TypeScript III: async / await and fetch</li>
+        <li class="part part-ent" data-track="ent"><span class="part-tag">Enterprise · 1h</span>Enterprise APIs III: receiving webhooks safely</li>
       </ul>
 
       <h3 class="part-h part-core-h">Core · pytest</h3>
@@ -618,38 +688,85 @@ async def lookup_many(zips: list[str], limit: int = 5, transport=None) -> dict[s
       </div>
 
       <div data-track="ent">
-        <h3 class="part-h part-ent-h">Enterprise · TypeScript III: async and fetch</h3>
+        <h3 class="part-h part-ent-h">Enterprise · APIs III: receiving webhooks safely</h3>
         <div class="prose">
-          <p>TypeScript's <code>async</code>/<code>await</code> works almost exactly like Python's. <code>fetch</code> is built into Node. Write <code>zip.ts</code> and run it with <code>node zip.ts</code>:</p>
-<pre><code>interface Place { "place name": string; "state abbreviation": string }
-interface ZipResponse { places: Place[] }
+          <p>Polling asks "anything new?" again and again. A <b>webhook</b> turns it around: the customer's system sends an HTTP POST to your URL when something happens ("ticket updated"). Your endpoint is now on the internet, so anyone can POST to it. Four rules:</p>
+          <ol>
+            <li><b>Verify the signature over the raw body.</b> GitHub computes an HMAC-SHA256 of the request body with a secret you both know and sends it as <code>X-Hub-Signature-256: sha256=&lt;hex&gt;</code>. Recompute it over the <i>exact bytes you received</i> and compare with <code>hmac.compare_digest</code>, never <code>==</code>, which can leak timing information. Don't parse the JSON and re-serialize it before hashing: spacing, key order and escaping change the bytes, and every genuine delivery fails.</li>
+            <li><b>Reject stale messages when the provider signs a time.</b> Stripe's <code>Stripe-Signature</code> header carries <code>t=&lt;timestamp&gt;</code> and signs <code>"&lt;t&gt;.&lt;body&gt;"</code>; its libraries reject messages more than 5 minutes old by default. That stops an attacker who captured one valid request from replaying it later. GitHub signs no timestamp, so there you rely on rule 4.</li>
+            <li><b>Acknowledge fast, process later.</b> GitHub expects a 2xx within 10 seconds, or it counts the delivery as failed. Verify, store, put the event on a queue, answer 202. A worker does the slow part.</li>
+            <li><b>Deduplicate by delivery or event ID.</b> Deliveries can arrive twice. GitHub's <code>X-GitHub-Delivery</code> is unique per event and stays the same on a redelivery, so keep the IDs you have seen (in production, a table with a unique constraint) and answer 200 to a repeat without doing the work again.</li>
+          </ol>
+<pre><code>import hashlib
+import hmac
 
-async function lookupZip(zip: string): Promise&lt;{ city: string; state: string } | null&gt; {
-  const resp = await fetch(`https://api.zippopotam.us/us/${zip}`);
-  if (resp.status === 404) return null;
-  if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
-  const data = (await resp.json()) as ZipResponse;     <span class="c">// "as" is a promise to the checker, not a runtime check</span>
-  const p = data.places[0];
-  return { city: p["place name"], state: p["state abbreviation"] };
-}
 
-const results = await Promise.all(["75024", "00000"].map(lookupZip));   <span class="c">// like asyncio.gather</span>
-console.log(results);</code></pre>
-          <table class="compare">
-            <thead><tr><th>Python</th><th>TypeScript</th></tr></thead>
-            <tbody>
-              <tr><td><code>async def f() -&gt; X</code></td><td><code>async function f(): Promise&lt;X&gt;</code></td></tr>
-              <tr><td><code>asyncio.gather(...)</code></td><td><code>Promise.all([...])</code></td></tr>
-              <tr><td><code>dict | None</code></td><td><code>{...} | null</code></td></tr>
-              <tr><td><code>raise ValueError(...)</code></td><td><code>throw new Error(...)</code></td></tr>
-            </tbody>
-          </table>
+def verify_signature(secret: bytes, body: bytes, header: str | None) -&gt; bool:
+    if not header or not header.startswith("sha256="):
+        return False
+    expected = "sha256=" + hmac.new(secret, body, hashlib.sha256).hexdigest()
+    return hmac.compare_digest(expected.encode(), header.encode())   <span class="c"># bytes: no TypeError on odd input</span></code></pre>
+          <div class="callout warn"><b>Webhooks are not enough on their own</b>GitHub does not automatically redeliver a failed delivery. If your endpoint was down for an hour, those events are gone unless someone redelivers them. That's why Friday's sync job exists: webhooks for speed, a periodic sync for completeness.</div>
+          <p><b>Task (about 40 minutes):</b> in <code>code/week-0B/ent/webhooks.py</code>, write <code>verify_signature(secret, body, header)</code> and <code>handle_delivery(headers, body, secret, seen, queue)</code>, which returns 401 for a bad signature, 400 without a delivery ID, 200 for a delivery ID it has already seen, and 202 after queuing a new one. Write tests for: GitHub's documented example (secret <code>It's a Secret to Everybody</code>, body <code>Hello, World!</code>), a changed body, a wrong secret, a missing header, a redelivery, and the classic bug: a version that hashes <code>json.dumps(json.loads(body))</code> and rejects a genuine compact body such as <code>{"action":"opened","number":7}</code>.</p>
+          <p class="expected"><b>Check:</b> <code>sign(b"It's a Secret to Everybody", b"Hello, World!")</code> returns <code>sha256=757107ea0eb2509fc211221cce984b8a37570b6d7586c22c46f4379c8b043e17</code>, the value in GitHub's docs. A forged request must not add its delivery ID to <code>seen</code>.</p>
+        </div>
+        <div class="hints" data-hints="0B-ent-d3">
+          <div class="hint solution" data-level="Solution">
+<pre><code>import json          <span class="c"># plus hashlib, hmac and verify_signature from above</span>
+
+
+def sign(secret: bytes, body: bytes) -&gt; str:
+    return "sha256=" + hmac.new(secret, body, hashlib.sha256).hexdigest()
+
+
+def handle_delivery(headers, body: bytes, secret: bytes, seen: set[str], queue: list) -&gt; int:
+    h = {k.lower(): v for k, v in headers.items()}        <span class="c"># header names are case-insensitive</span>
+    if not verify_signature(secret, body, h.get("x-hub-signature-256")):
+        return 401                                         <span class="c"># before touching seen or queue</span>
+    delivery_id = h.get("x-github-delivery")
+    if not delivery_id:
+        return 400
+    if delivery_id in seen:                                <span class="c"># redelivery or replay</span>
+        return 200
+    seen.add(delivery_id)
+    queue.append((delivery_id, h.get("x-github-event"), body))   <span class="c"># the worker parses JSON</span>
+    return 202
+
+
+SECRET = b"It's a Secret to Everybody"
+
+
+def test_githubs_documented_example():
+    assert sign(SECRET, b"Hello, World!") == (
+        "sha256=757107ea0eb2509fc211221cce984b8a37570b6d7586c22c46f4379c8b043e17")
+
+
+def test_reserializing_json_rejects_a_genuine_delivery():
+    body = b'{"action":"opened","number":7}'
+    header = sign(SECRET, body)
+    assert verify_signature(SECRET, body, header)
+    rebuilt = json.dumps(json.loads(body)).encode()        <span class="c"># b'{"action": "opened", "number": 7}'</span>
+    assert not verify_signature(SECRET, rebuilt, header)
+
+
+def test_redelivery_is_acknowledged_but_not_queued_twice():
+    body = b'{"action":"opened"}'
+    headers = {"X-Hub-Signature-256": sign(SECRET, body), "X-GitHub-Delivery": "d-1"}
+    seen, queue = set(), []
+    assert handle_delivery(headers, body, SECRET, seen, queue) == 202
+    assert handle_delivery(headers, body, SECRET, seen, queue) == 200
+    assert len(queue) == 1</code></pre></div>
+        </div>
+        <div class="readings">
+          <div class="reading"><span class="kind must">Read</span><div><a href="https://docs.github.com/en/webhooks/using-webhooks/validating-webhook-deliveries" target="_blank" rel="noopener">GitHub: Validating webhook deliveries ↗</a><p>The signature header, the constant-time comparison, and test values.</p></div></div>
+          <div class="reading"><span class="kind must">Read</span><div><a href="https://docs.github.com/en/webhooks/using-webhooks/best-practices-for-using-webhooks" target="_blank" rel="noopener">GitHub: Best practices for using webhooks ↗</a><p>The 10-second limit, queues, and <code>X-GitHub-Delivery</code> against replays.</p></div></div>
+          <div class="reading"><span class="kind">Skim</span><div><a href="https://docs.stripe.com/webhooks" target="_blank" rel="noopener">Stripe: Receive events in your webhook endpoint ↗</a><p>See "Verify webhook signatures manually" and "Preventing replay attacks" for the timestamp scheme.</p></div></div>
         </div>
       </div>
 
       <div class="prose"><h3>Mini-quiz</h3></div>
       <div class="quiz mini" data-quiz="0B-d3"></div>
-      <script type="application/json" data-quiz-for="0B-d3">[{"id": "h1", "q": "What does pytest report for this test?<pre><code>def test_rejects_high_score():\n    with pytest.raises(ValidationError) as exc:\n        Lead(**{**GOOD, \"credit_score\": \"905\"})\n        assert exc.value.errors()[0][\"loc\"][0] == \"email\"<\/code><\/pre>", "options": ["Failed: the error is on credit_score, not email", "Passed: the assert after the raising call never runs", "Error: exc.value can't be read inside the with block", "Failed: pytest.raises allows only one statement in the block"], "answer": 1, "why": "Once Lead(...) raises, control leaves the with block. pytest.raises catches the exception and the test passes. The assertion is dead code. Put checks on exc.value after the block, dedented. A test that can't fail is worse than no test."}, {"id": "h2", "q": "20 ZIPs run through <code>asyncio.gather<\/code> with <code>Semaphore(5)<\/code>. The fake API answers instantly with 500 the first time for each ZIP and 200 the second time. About how long does the run take?<pre><code>async def lookup_one(client, sem, zip_code):\n    async with sem:\n        for attempt in range(2):\n            resp = await client.get(BASE_URL + zip_code, timeout=5.0)\n            if resp.status_code &lt; 500:\n                return zip_code, resp.status_code\n            time.sleep(1)   # back off before the second try<\/code><\/pre>", "options": ["About 4 seconds: five waits overlap at a time, in four rounds", "About 1 second: all 20 one-second waits run at the same time", "About 5 seconds: one second of waiting per semaphore slot", "About 20 seconds: time.sleep blocks the loop, so waits never overlap"], "answer": 3, "why": "time.sleep blocks the thread the event loop runs on, so no other coroutine can run while one sleeps. With await asyncio.sleep(1) it would take about 4 s, because each task keeps its semaphore slot while it waits, so only 5 waits overlap. About 1 s would need the waits to happen outside the semaphore. In async code, every wait must be awaited."}, {"id": "h3", "q": "To stop one failure from crashing the batch, you add <code>return_exceptions=True<\/code> to the lesson's <code>lookup_many<\/code>. One of 30 lookups raises <code>httpx.ConnectError<\/code>. What happens now?<pre><code>results = await asyncio.gather(*(lookup_one(client, sem, z) for z in set(zips)),\n                               return_exceptions=True)\nreturn dict(results)<\/code><\/pre>", "options": ["Raises TypeError: dict() meets an exception instead of a tuple", "Returns 30 entries, with None as the result for the failed ZIP", "Returns 29 entries: gather silently drops the failed ZIP's result", "Raises ConnectError, the same way it did without the flag"], "answer": 0, "why": "With return_exceptions=True, gather puts the exception object in that task's position in the results list. dict() expects 2-item sequences and fails with \"cannot convert dictionary update sequence element #n to a sequence\". Pair each result with its input (zip(zips, results)), then turn exceptions into warnings yourself."}, {"id": "h4", "q": "(Enterprise) ZIP 00000 returns <code>404<\/code> with the body <code>{}<\/code>. What does this code do?<pre><code>async function lookupCity(zip: string): Promise&lt;string&gt; {\n  const resp = await fetch(`https://api.zippopotam.us/us/${zip}`);\n  const data = (await resp.json()) as ZipResponse;\n  return data.places[0][\"place name\"];\n}\nconst cities = await Promise.all([\"75024\", \"00000\", \"02108\"].map(lookupCity));<\/code><\/pre>", "options": ["cities is [\"Plano\", undefined, \"Boston\"]: fetch resolves a 404 to undefined", "cities is [\"Plano\", null, \"Boston\"]: the as cast fills missing fields with null", "Promise.all rejects with a TypeError from data.places[0]; no cities are returned", "fetch rejects with an HTTP 404 error, so Promise.all rejects with that"], "answer": 2, "why": "fetch only rejects on network failures. A 404 is a normal response with resp.ok set to false. The as cast checks nothing, so data.places is undefined and indexing it throws. Promise.all rejects as soon as one promise does. Check resp.status or resp.ok first, and use Promise.allSettled when partial results are useful, the way return_exceptions is in Python."}]</script>
+      <script type="application/json" data-quiz-for="0B-d3">[{"id": "h1", "q": "What does pytest report for this test?<pre><code>def test_rejects_high_score():\n    with pytest.raises(ValidationError) as exc:\n        Lead(**{**GOOD, \"credit_score\": \"905\"})\n        assert exc.value.errors()[0][\"loc\"][0] == \"email\"<\/code><\/pre>", "options": ["Failed: the error is on credit_score, not email", "Passed: the assert after the raising call never runs", "Error: exc.value can't be read inside the with block", "Failed: pytest.raises allows only one statement in the block"], "answer": 1, "why": "Once Lead(...) raises, control leaves the with block. pytest.raises catches the exception and the test passes. The assertion is dead code. Put checks on exc.value after the block, dedented. A test that can't fail is worse than no test."}, {"id": "h2", "q": "20 ZIPs run through <code>asyncio.gather<\/code> with <code>Semaphore(5)<\/code>. The fake API answers instantly with 500 the first time for each ZIP and 200 the second time. About how long does the run take?<pre><code>async def lookup_one(client, sem, zip_code):\n    async with sem:\n        for attempt in range(2):\n            resp = await client.get(BASE_URL + zip_code, timeout=5.0)\n            if resp.status_code &lt; 500:\n                return zip_code, resp.status_code\n            time.sleep(1)   # back off before the second try<\/code><\/pre>", "options": ["About 4 seconds: five waits overlap at a time, in four rounds", "About 1 second: all 20 one-second waits run at the same time", "About 5 seconds: one second of waiting per semaphore slot", "About 20 seconds: time.sleep blocks the loop, so waits never overlap"], "answer": 3, "why": "time.sleep blocks the thread the event loop runs on, so no other coroutine can run while one sleeps. With await asyncio.sleep(1) it would take about 4 s, because each task keeps its semaphore slot while it waits, so only 5 waits overlap. About 1 s would need the waits to happen outside the semaphore. In async code, every wait must be awaited."}, {"id": "h3", "q": "To stop one failure from crashing the batch, you add <code>return_exceptions=True<\/code> to the lesson's <code>lookup_many<\/code>. One of 30 lookups raises <code>httpx.ConnectError<\/code>. What happens now?<pre><code>results = await asyncio.gather(*(lookup_one(client, sem, z) for z in set(zips)),\n                               return_exceptions=True)\nreturn dict(results)<\/code><\/pre>", "options": ["Raises TypeError: dict() meets an exception instead of a tuple", "Returns 30 entries, with None as the result for the failed ZIP", "Returns 29 entries: gather silently drops the failed ZIP's result", "Raises ConnectError, the same way it did without the flag"], "answer": 0, "why": "With return_exceptions=True, gather puts the exception object in that task's position in the results list. dict() expects 2-item sequences and fails with \"cannot convert dictionary update sequence element #n to a sequence\". Pair each result with its input (zip(zips, results)), then turn exceptions into warnings yourself."}, {"id": "h4", "q": "(Enterprise) A genuine GitHub delivery arrives with the raw body <code>{\"action\":\"opened\",\"number\":7}<\/code> and a correct <code>X-Hub-Signature-256<\/code>. What does this handler return?<pre><code>def handle(headers, body: bytes) -&gt; int:\n    payload = json.loads(body)\n    expected = \"sha256=\" + hmac.new(SECRET, json.dumps(payload).encode(), hashlib.sha256).hexdigest()\n    if not hmac.compare_digest(expected, headers[\"X-Hub-Signature-256\"]):\n        return 401\n    queue.put(payload)\n    return 202<\/code><\/pre>", "options": ["202: json.dumps writes back the same bytes GitHub signed, so the check passes", "A TypeError: hmac.compare_digest accepts only bytes, not str", "401: json.dumps adds spaces after : and , so the hash covers different bytes", "401: the sha256= prefix has to be removed from the header before comparing"], "answer": 2, "why": "json.dumps writes {\"action\": \"opened\", \"number\": 7}, with spaces, so the HMAC covers different bytes and every genuine delivery is rejected. Key order and escaping (é becomes \\u00e9) change the bytes too. compare_digest accepts two str values as long as they are ASCII, so there's no TypeError. Both sides include the sha256= prefix, so keeping it is fine. Hash the raw body exactly as received, and parse the JSON only after the check passes."}]</script>
     </section>
 
     <!-- ================= DAY 4 ================= -->
@@ -662,7 +779,7 @@ console.log(results);</code></pre>
       <ul class="parts session-plan">
         <li class="part part-core"><span class="part-tag">Core · 2h</span>SQLite from Python, SQL injection, branches and pull requests + Exercise 5</li>
         <li class="part part-deep" data-track="cert"><span class="part-tag">Deep practice · 1h</span>SQL injection: see it, then prevent it</li>
-        <li class="part part-ent" data-track="ent"><span class="part-tag">Enterprise · 1h</span>TypeScript IV: arrays, map / filter / reduce</li>
+        <li class="part part-ent" data-track="ent"><span class="part-tag">Enterprise · 1h</span>Enterprise APIs IV: idempotency keys for safe writes</li>
       </ul>
 
       <h3 class="part-h part-core-h">Core · SQLite from Python</h3>
@@ -777,15 +894,91 @@ def leads_per_state(conn: sqlite3.Connection) -> list[tuple[str, int, float]]:
       </div>
 
       <div data-track="ent">
-        <h3 class="part-h part-ent-h">Enterprise · TypeScript IV: working with arrays</h3>
+        <h3 class="part-h part-ent-h">Enterprise · APIs IV: idempotency keys for safe writes</h3>
         <div class="prose">
-          <p>Most TypeScript you'll read transforms arrays of objects. Write <code>perState.ts</code>: given an array of <code>Lead</code> objects, return an object counting leads per state, and a list of lead IDs with a credit score of 740 or more, using <code>filter</code>, <code>map</code> and <code>reduce</code>.</p>
-<pre><code>const highScores = leads.filter(l => l.creditScore >= 740).map(l => l.leadId);
-const perState = leads.reduce&lt;Record&lt;string, number&gt;&gt;((acc, l) => {
-  acc[l.state] = (acc[l.state] ?? 0) + 1;
-  return acc;
-}, {});</code></pre>
-          <p>Compare with your Python: <code>filter</code>/<code>map</code> ≈ list comprehensions, <code>reduce</code> into an object ≈ <code>Counter</code>, and <code>??</code> ≈ "use this default if the value is missing".</p>
+          <p>Day 1's retry loop is safe for GET. For a POST it isn't: if the CRM created the lead and the response was lost, the retry creates a second lead. (This week's quiz asks about exactly this.) Many enterprise APIs solve it with an <b>idempotency key</b>: a unique string you send in an <code>Idempotency-Key</code> header. The server saves the result of the first request with that key. When the same key arrives again, it returns the saved result instead of doing the work twice.</p>
+          <p>What Stripe's docs say, as an example of what to look for in any API:</p>
+          <ul>
+            <li>All POST requests accept a key. Sending one with GET or DELETE has no effect, because those are idempotent already.</li>
+            <li>The saved result is the first response's status code and body, <b>whether it succeeded or failed, 500 errors included</b>. Retrying a 500 with the same key gives you the same 500.</li>
+            <li>Keys are up to 255 characters. Stripe suggests V4 UUIDs and warns against personal data (such as email addresses) in keys.</li>
+            <li>Keys can be removed once they are at least 24 hours old; after that, the same key creates a new request.</li>
+            <li>Reusing a key with different parameters is an error (<code>idempotency_error</code>), not a silent replay.</li>
+          </ul>
+          <p>The rule for your client: <b>one key per logical operation</b>. Make the key once, before the retry loop, and send the same key on every attempt. A new key per attempt makes every retry a new operation, which is the bug you were trying to fix. If a job can be restarted, save the key with the job before the first attempt, so the restarted process reuses it. If an API has no idempotency keys, check whether the record already exists (for example, by your own lead ID in an external-ID field) before creating it again.</p>
+<pre><code>key = str(uuid.uuid4())                  <span class="c"># once per logical operation, BEFORE the loop</span>
+for attempt in range(1, retries + 1):
+    try:
+        resp = client.post("/crm/leads", json=lead, headers={"Idempotency-Key": key})
+        ...</code></pre>
+          <p><b>Task (about 45 minutes):</b> in <code>code/week-0B/ent/</code>, write a fake CRM for <code>MockTransport</code> that requires an <code>Idempotency-Key</code> (400 without one), saves the status and body for each key, replays them for the same key and body, answers 422 for the same key with a different body, and can "lose" a response: create the lead, then raise <code>httpx.ReadTimeout</code>. Then write <code>create_lead(client, lead, key=None, retries=3, sleep=time.sleep)</code> that retries network errors (and 409, "same key still in progress") with the same key, and never retries 400 or 422.</p>
+          <p class="expected"><b>Check:</b> with one lost response, <code>create_lead</code> returns the first lead's ID and the CRM holds <b>one</b> lead; a loop that makes a new UUID per attempt leaves <b>two</b>; reusing a key with a changed body raises <code>HTTPStatusError</code> with status 422 after one call.</p>
+        </div>
+        <div class="hints" data-hints="0B-ent-d4">
+          <div class="hint solution" data-level="Solution">
+<pre><code>import hashlib
+import json
+import time
+import uuid
+
+import httpx
+
+
+class FakeCRM:
+    def __init__(self):
+        self.leads: list[dict] = []
+        self.saved: dict[str, tuple[str, int, dict]] = {}   <span class="c"># key -&gt; (body hash, status, json)</span>
+        self.lose_responses = 0
+
+    def handler(self, request: httpx.Request) -&gt; httpx.Response:
+        key = request.headers.get("Idempotency-Key")
+        if not key:
+            return httpx.Response(400, json={"message": "Idempotency-Key header is required"})
+        fingerprint = hashlib.sha256(request.content).hexdigest()
+        if key in self.saved:
+            saved_fp, status, body = self.saved[key]
+            if saved_fp != fingerprint:
+                return httpx.Response(422, json={"message": "Key reused with a different body"})
+            response = httpx.Response(status, json=body)       <span class="c"># replay, don't create</span>
+        else:
+            lead = {"id": f"CRM-{len(self.leads) + 1}", **json.loads(request.content)}
+            self.leads.append(lead)
+            self.saved[key] = (fingerprint, 201, lead)
+            response = httpx.Response(201, json=lead)
+        if self.lose_responses:                                 <span class="c"># done, but the answer is lost</span>
+            self.lose_responses -= 1
+            raise httpx.ReadTimeout("response lost", request=request)
+        return response
+
+
+def create_lead(client: httpx.Client, lead: dict, key: str | None = None,
+                retries: int = 3, sleep=time.sleep) -&gt; dict:
+    key = key or str(uuid.uuid4())
+    for attempt in range(1, retries + 1):
+        try:
+            resp = client.post("/crm/leads", json=lead, headers={"Idempotency-Key": key}, timeout=10.0)
+            if resp.status_code == 409 and attempt &lt; retries:
+                sleep(0.5 * 2 ** (attempt - 1))
+                continue
+            resp.raise_for_status()            <span class="c"># 400 and 422 are our bugs: never retry them</span>
+            return resp.json()
+        except httpx.TransportError:
+            if attempt == retries:
+                raise
+            sleep(0.5 * 2 ** (attempt - 1))
+    raise RuntimeError("unreachable")
+
+
+def test_lost_response_is_retried_without_a_duplicate():
+    crm = FakeCRM()
+    crm.lose_responses = 1
+    client = httpx.Client(base_url="https://crm.example.com", transport=httpx.MockTransport(crm.handler))
+    assert create_lead(client, {"lead_id": "L-1001"}, sleep=lambda s: None)["id"] == "CRM-1"
+    assert len(crm.leads) == 1</code></pre></div>
+        </div>
+        <div class="readings">
+          <div class="reading"><span class="kind must">Read</span><div><a href="https://docs.stripe.com/api/idempotent_requests" target="_blank" rel="noopener">Stripe API: Idempotent requests ↗</a><p>Short and precise: what is saved, for how long, and what counts as misuse.</p></div></div>
+          <div class="reading"><span class="kind">Skim</span><div><a href="https://datatracker.ietf.org/doc/draft-ietf-httpapi-idempotency-key-header/" target="_blank" rel="noopener">IETF draft: The Idempotency-Key HTTP Header Field ↗</a><p>An expired draft, not a standard, but many APIs follow it: 400 for a missing key, 409 while the first request is still running, 422 for a key reused with a different body.</p></div></div>
         </div>
       </div>
 
@@ -804,7 +997,7 @@ const perState = leads.reduce&lt;Record&lt;string, number&gt;&gt;((acc, l) => {
       <ul class="parts session-plan">
         <li class="part part-core"><span class="part-tag">Core · 2h</span>Break it &amp; fix it (1h) + weekly quiz (1h)</li>
         <li class="part part-deep" data-track="cert"><span class="part-tag">Deep practice · 1h</span>pandas essentials</li>
-        <li class="part part-ent" data-track="ent"><span class="part-tag">Enterprise · 1h</span>TypeScript V: a tiny tested module</li>
+        <li class="part part-ent" data-track="ent"><span class="part-tag">Enterprise · 1h</span>Enterprise APIs V: incremental sync and rate-limit budgets</li>
       </ul>
 
       <h3 class="part-h part-core-h">Core · Explain it out loud</h3>
@@ -841,7 +1034,7 @@ const perState = leads.reduce&lt;Record&lt;string, number&gt;&gt;((acc, l) => {
 
       <div class="prose"><h3 style="margin-top:28px">Weekly quiz</h3><p>15 questions at interview level: code to read, numbers to compute, failures to diagnose, including 3 from earlier weeks. Aim for 12 or more; every explanation says why each wrong option is wrong.</p></div>
       <div class="quiz" data-quiz="0B-weekly"></div>
-      <script type="application/json" data-quiz-for="0B-weekly">[{"id": "w1", "q": "You reuse your retry loop for <code>client.post(\"/crm/leads\", json=lead)<\/code>. The CRM creates the lead, but the response is lost and httpx raises <code>ReadTimeout<\/code>. What happens, and what's the fix?", "options": ["A duplicate lead; retry POSTs only with an idempotency key or an existence check", "Nothing: a timeout means the server never received the request", "Raise the timeout to 30 seconds, so the retry is never needed", "Nothing: the CRM rejects the second POST because the body is identical"], "answer": 0, "why": "A timeout tells you the answer didn't arrive, not that the request failed. GET is safe to repeat; a POST that creates a record is not. Most APIs don't deduplicate identical bodies. A longer timeout makes this rarer but doesn't prevent it."}, {"id": "w2", "q": "Your SQL test expects TX's average score to be <code>747.2<\/code>, the number from the pandas drill. <code>ROUND(AVG(credit_score), 1)<\/code> returns <code>747.3<\/code>. The TX scores are 742, 734, 745 and 768. Which is right?", "options": ["747.2: SQL's ROUND always rounds up, so 747.3 is an artifact", "747.3: the pandas drill kept the duplicate L-1007 row in its average", "747.2: SQLite's AVG loses precision on integer columns", "Both: the mean is 747.25, and SQLite and pandas round the half differently"], "answer": 3, "why": "(742 + 734 + 745 + 768) / 4 = 747.25, which is exactly representable, so the two rounding rules give different answers. pandas' .round(1) and Python's round() give 747.2; SQLite's ROUND gives 747.3. The pandas drill drops duplicates too, so the inputs are the same. Round only for display."}, {"id": "w3", "q": "You switch the loader to <code>pd.read_csv(\"leads_v2.csv\").to_dict(\"records\")<\/code> and pass each record to <code>Lead(**rec)<\/code>, with <code>zip: str = Field(pattern=r\"^\\d{5}$\")<\/code>. What does the run report?", "options": ["9 valid and 11 invalid, the same as with csv.DictReader", "9 valid, with L-1019's ZIP quietly stored as \"2108\"", "0 valid: zip arrives as an int, and a str field rejects ints", "8 valid: only L-1019 fails, because 2108 has four digits"], "answer": 2, "why": "pandas infers a number column, so every row's zip arrives as an int, and Pydantic v2 won't turn an int into a str (\"Input should be a valid string\"). Converting it with str() would give \"2108\" and \"0\", which fail the pattern. Read with dtype={\"zip\": str}. Letting pandas guess types changes data silently."}, {"id": "w4", "q": "On the raw file (20 rows), you count high scorers with <code>(df[\"credit_score\"] &gt;= 740).sum()<\/code> and get 8. A teammate uses <code>len(df) - (df[\"credit_score\"] &lt; 740).sum()<\/code> and gets 9. Why the difference?", "options": ["L-1012's NaN score fails both comparisons, so the subtraction counts it", "A score of exactly 740 is counted differently by the two comparisons", "pandas read credit_score as text, so the comparisons are alphabetical", "The teammate's version counts the duplicate L-1007 twice"], "answer": 0, "why": "NaN ≥ 740 is False, and so is \"NaN is below 740\", so NaN rows fall out of every filter. Anything computed as \"everything else\" picks them up. Handle missing values on purpose (dropna, fillna or isna) before counting. The duplicate is in both counts, the column is numeric (float, because of the NaN), and a score of exactly 740 counts the same way in both versions."}, {"id": "w5", "q": "The 5th of 9 row dicts has no <code>\"city\"<\/code> key. How many rows are in the table after this code?<pre><code>try:\n    conn.executemany(INSERT_WITH_NAMED_PARAMS, rows)\nexcept sqlite3.ProgrammingError as e:\n    logger.error(\"insert failed: %s\", e)\nconn.commit()<\/code><\/pre>", "options": ["8: the bad row is skipped, and the rest are inserted", "9: a missing key is bound as NULL, like city=None", "0: executemany rolls back its own rows when one fails", "4: rows before the bad one stay in the transaction and are committed"], "answer": 3, "why": "executemany stops at the first row that fails (\"You did not supply a value for binding parameter :city\"), but it doesn't undo the rows before it. Committing after catching the error saves a partial batch. Wrap the batch in with conn: so an exception rolls it back, or give every row every key (city=None)."}, {"id": "w6", "q": "Your PR was squash-merged on GitHub. You run <code>git switch main &amp;&amp; git pull<\/code>, then <code>git branch -d add-sqlite-store<\/code>, and get <i>error: the branch 'add-sqlite-store' is not fully merged<\/i>. Why?", "options": ["The squash commit is new, so git can't see the branch's commits in main", "GitHub locks merged branches until a reviewer closes the PR", "The pull failed, so main doesn't have the merge commit yet", "The branch still has commits that were never pushed to GitHub"], "answer": 0, "why": "git branch -d only deletes a branch whose commits are in the current branch's history. A squash merge copies the changes into a new commit, so git can't see that the branch was merged. gh pr merge --squash --delete-branch cleans up both copies of the branch for you."}, {"id": "w7", "q": "A commit on your PR branch added <code>.env<\/code> with a real API key. A later commit on the same branch deleted it, and the PR was squash-merged, so <code>main<\/code> never contains the file. What should you do?", "options": ["Revoke the key: the PR's commits still show it on GitHub", "Nothing: main never had the key, and the branch is gone", "Force-push main to rewrite its history without the file", "Make the repository private for a day, then public again"], "answer": 0, "why": "GitHub keeps a PR's commits after the merge and after the branch is deleted, and they can be browsed from the PR page. Rewriting main doesn't touch those commits. Once a key has been pushed, treat it as leaked: revoke it first, then clean up. Checking git status before every commit prevents this."}, {"id": "w8", "q": "What happens when this runs?<pre><code>async def lookup_one(client, sem, zip_code):\n    async with sem:\n        resp = client.get(BASE_URL + zip_code, timeout=5.0)\n        if resp.status_code == 404:\n            return zip_code, None<\/code><\/pre>", "options": ["It works, but the requests run one at a time", "AttributeError: resp is a coroutine that was never awaited", "TypeError: object Response can't be used in 'await' expression", "resp is None until the request finishes, so the check is skipped"], "answer": 1, "why": "Calling an async method without await creates a coroutine object and sends nothing. The first attribute access fails, and a RuntimeWarning says the coroutine was never awaited. The TypeError in the last option comes from the opposite mistake: awaiting something that isn't awaitable."}, {"id": "w9", "q": "You wrote 13 tests in <code>tests/test_models.py<\/code>, <code>tests/test_client.py<\/code> and <code>tests/test_store.py<\/code>. <code>pytest -q<\/code> prints <i>12 passed<\/i>. Which is the likely cause?", "options": ["test_store.py must be renamed store_test.py before pytest collects it", "pytest stops collecting after 12 tests unless you pass -n", "One function's name doesn't start with test, so it's never collected", "One test has no assert, so pytest reports it as skipped, not passed"], "answer": 2, "why": "pytest collects files named test_*.py or *_test.py, and within them only functions starting with test. A function with another name is silently ignored, so it looks like coverage but isn't. Watch the count go up when you add a test. A test without an assert still runs and passes."}, {"id": "w10", "q": "To test the timeout path, your MockTransport handler calls <code>time.sleep(6)<\/code> and then returns 200. The client uses <code>timeout=5.0<\/code>. What does the test see?", "options": ["A 200 after 6 seconds: the mock transport never enforces timeouts", "httpx.ConnectTimeout, because no connection was ever opened", "httpx.ReadTimeout after 5 seconds, as with a real server", "The test is killed by pytest's default 5-second limit"], "answer": 0, "why": "Timeouts are enforced by the real network layer, which a mock transport replaces. The handler just runs, however long it takes. To test failure paths, raise the exception you want in the handler, for example httpx.ReadTimeout(\"slow\", request=request), and inject the sleep function so the backoff doesn't slow the test down. pytest has no default time limit."}, {"id": "w11", "q": "L-1015 was not enriched, so its city was saved as <code>None<\/code> through a parameter. Why does <code>SELECT lead_id FROM leads WHERE city = NULL<\/code> return nothing?", "options": ["The row with the NULL city was never committed", "SQLite turns NULL in a TEXT column into an empty string", "The parameter stored the string 'None' instead of NULL", "NULL = NULL is unknown, not true; it needs WHERE city IS NULL"], "answer": 3, "why": "Python's None becomes SQL NULL, and NULL = NULL is unknown, so no row matches. IS NULL returns L-1015. Related: COUNT(city) counts 8 while COUNT(*) counts 9, and WHERE city != 'Plano' skips NULL rows too."}, {"id": "w12", "q": "(Enterprise) What do <code>parseIncome(\"\")<\/code> and <code>parseIncome(\" \")<\/code> return?<pre><code>function parseIncome(raw: string): number {\n  const v = Number(raw);\n  if (Number.isNaN(v) || v &lt; 0) throw new Error(`bad income: ${raw}`);\n  return v;\n}<\/code><\/pre>", "options": ["Both return NaN, which the negative-number check lets through", "Both return 0: Number() turns empty and blank strings into 0", "Both throw: Number(\"\") is NaN, which the isNaN check catches", "\"\" throws as NaN, but \" \" returns 0 after trimming"], "answer": 1, "why": "Number(\"\") and Number(\" \") are both 0 (Number(null) is also 0), so this validator turns missing data into a plausible-looking value. Pydantic's float rejects \"\". This is why parseCreditScore checks raw.trim() === \"\" before converting."}, {"id": "w13", "q": "(Week 0A) <code>main()<\/code> returns 1 when the input file is missing. CI runs <code>python -m lead_intake nope.csv<\/code> and reports success. <code>__main__.py<\/code> is:<pre><code>from lead_intake.cli import main\n\nif __name__ == \"__main__\":\n    main()<\/code><\/pre>", "options": ["The ERROR log line must go to stderr before CI treats the run as failed", "CI ignores exit codes when a module is run with python -m instead of a script", "main() must raise SystemExit(1) itself; return values can't become exit codes", "main()'s return value is discarded, so the exit code is 0; use sys.exit(main())"], "answer": 3, "why": "A process's exit code comes from sys.exit (or an uncaught exception), not from a function's return value. sys.exit(main()) passes 1 on to the shell. Returning the code from main() is still the better design, because tests can check main([...]) == 1. Logs don't change the exit code."}, {"id": "w14", "q": "(Week 0A) <code>.env<\/code> says <code>LOG_LEVEL=DEBUG<\/code>, and the code calls <code>load_dotenv()<\/code> before reading it, yet no DEBUG lines appear. Your shell profile has <code>export LOG_LEVEL=INFO<\/code>. Why?", "options": ["load_dotenv doesn't override variables already set in the shell", "DEBUG must be written in lowercase in the .env file", "load_dotenv only reads .env.example, not .env", "basicConfig ignores levels given as strings like \"DEBUG\""], "answer": 0, "why": "python-dotenv's default is override=False: real environment variables beat the file. That's intended, because deployments set real variables. Unset the shell variable or run with LOG_LEVEL=DEBUG. basicConfig accepts level names like \"DEBUG\", and .env is the file that gets read."}, {"id": "w15", "q": "(Week 0A) <code>setup_logging()<\/code> calls <code>logging.basicConfig(level=\"DEBUG\", format=...)<\/code> at startup, but DEBUG and INFO lines never appear and the format is ignored. An imported helper module has this line at the top level:<pre><code>logging.warning(\"config file not found, using defaults\")<\/code><\/pre>", "options": ["The format string is invalid, so logging falls back to its defaults", "logging.warning sets that module's logger to WARNING, and all loggers inherit it", "The early logging.warning configured the root logger, so basicConfig does nothing", "basicConfig must be called in every module that logs"], "answer": 2, "why": "Calling logging.warning (or info, debug) at module level with no handlers set up quietly calls basicConfig() with the defaults: level WARNING and a plain format. Your own basicConfig then does nothing. Use logger = logging.getLogger(__name__) in modules, log only inside functions, and configure logging once in main (or pass force=True)."}]</script>
+      <script type="application/json" data-quiz-for="0B-weekly">[{"id": "w1", "q": "You reuse your retry loop for <code>client.post(\"/crm/leads\", json=lead)<\/code>. The CRM creates the lead, but the response is lost and httpx raises <code>ReadTimeout<\/code>. What happens, and what's the fix?", "options": ["A duplicate lead; retry POSTs only with an idempotency key or an existence check", "Nothing: a timeout means the server never received the request", "Raise the timeout to 30 seconds, so the retry is never needed", "Nothing: the CRM rejects the second POST because the body is identical"], "answer": 0, "why": "A timeout tells you the answer didn't arrive, not that the request failed. GET is safe to repeat; a POST that creates a record is not. Most APIs don't deduplicate identical bodies. A longer timeout makes this rarer but doesn't prevent it."}, {"id": "w2", "q": "Your SQL test expects TX's average score to be <code>747.2<\/code>, the number from the pandas drill. <code>ROUND(AVG(credit_score), 1)<\/code> returns <code>747.3<\/code>. The TX scores are 742, 734, 745 and 768. Which is right?", "options": ["747.2: SQL's ROUND always rounds up, so 747.3 is an artifact", "747.3: the pandas drill kept the duplicate L-1007 row in its average", "747.2: SQLite's AVG loses precision on integer columns", "Both: the mean is 747.25, and SQLite and pandas round the half differently"], "answer": 3, "why": "(742 + 734 + 745 + 768) / 4 = 747.25, which is exactly representable, so the two rounding rules give different answers. pandas' .round(1) and Python's round() give 747.2; SQLite's ROUND gives 747.3. The pandas drill drops duplicates too, so the inputs are the same. Round only for display."}, {"id": "w3", "q": "You switch the loader to <code>pd.read_csv(\"leads_v2.csv\").to_dict(\"records\")<\/code> and pass each record to <code>Lead(**rec)<\/code>, with <code>zip: str = Field(pattern=r\"^\\d{5}$\")<\/code>. What does the run report?", "options": ["9 valid and 11 invalid, the same as with csv.DictReader", "9 valid, with L-1019's ZIP quietly stored as \"2108\"", "0 valid: zip arrives as an int, and a str field rejects ints", "8 valid: only L-1019 fails, because 2108 has four digits"], "answer": 2, "why": "pandas infers a number column, so every row's zip arrives as an int, and Pydantic v2 won't turn an int into a str (\"Input should be a valid string\"). Converting it with str() would give \"2108\" and \"0\", which fail the pattern. Read with dtype={\"zip\": str}. Letting pandas guess types changes data silently."}, {"id": "w4", "q": "On the raw file (20 rows), you count high scorers with <code>(df[\"credit_score\"] &gt;= 740).sum()<\/code> and get 8. A teammate uses <code>len(df) - (df[\"credit_score\"] &lt; 740).sum()<\/code> and gets 9. Why the difference?", "options": ["L-1012's NaN score fails both comparisons, so the subtraction counts it", "A score of exactly 740 is counted differently by the two comparisons", "pandas read credit_score as text, so the comparisons are alphabetical", "The teammate's version counts the duplicate L-1007 twice"], "answer": 0, "why": "NaN ≥ 740 is False, and so is \"NaN is below 740\", so NaN rows fall out of every filter. Anything computed as \"everything else\" picks them up. Handle missing values on purpose (dropna, fillna or isna) before counting. The duplicate is in both counts, the column is numeric (float, because of the NaN), and a score of exactly 740 counts the same way in both versions."}, {"id": "w5", "q": "The 5th of 9 row dicts has no <code>\"city\"<\/code> key. How many rows are in the table after this code?<pre><code>try:\n    conn.executemany(INSERT_WITH_NAMED_PARAMS, rows)\nexcept sqlite3.ProgrammingError as e:\n    logger.error(\"insert failed: %s\", e)\nconn.commit()<\/code><\/pre>", "options": ["8: the bad row is skipped, and the rest are inserted", "9: a missing key is bound as NULL, like city=None", "0: executemany rolls back its own rows when one fails", "4: rows before the bad one stay in the transaction and are committed"], "answer": 3, "why": "executemany stops at the first row that fails (\"You did not supply a value for binding parameter :city\"), but it doesn't undo the rows before it. Committing after catching the error saves a partial batch. Wrap the batch in with conn: so an exception rolls it back, or give every row every key (city=None)."}, {"id": "w6", "q": "Your PR was squash-merged on GitHub. You run <code>git switch main &amp;&amp; git pull<\/code>, then <code>git branch -d add-sqlite-store<\/code>, and get <i>error: the branch 'add-sqlite-store' is not fully merged<\/i>. Why?", "options": ["The squash commit is new, so git can't see the branch's commits in main", "GitHub locks merged branches until a reviewer closes the PR", "The pull failed, so main doesn't have the merge commit yet", "The branch still has commits that were never pushed to GitHub"], "answer": 0, "why": "git branch -d only deletes a branch whose commits are in the current branch's history. A squash merge copies the changes into a new commit, so git can't see that the branch was merged. gh pr merge --squash --delete-branch cleans up both copies of the branch for you."}, {"id": "w7", "q": "A commit on your PR branch added <code>.env<\/code> with a real API key. A later commit on the same branch deleted it, and the PR was squash-merged, so <code>main<\/code> never contains the file. What should you do?", "options": ["Revoke the key: the PR's commits still show it on GitHub", "Nothing: main never had the key, and the branch is gone", "Force-push main to rewrite its history without the file", "Make the repository private for a day, then public again"], "answer": 0, "why": "GitHub keeps a PR's commits after the merge and after the branch is deleted, and they can be browsed from the PR page. Rewriting main doesn't touch those commits. Once a key has been pushed, treat it as leaked: revoke it first, then clean up. Checking git status before every commit prevents this."}, {"id": "w8", "q": "What happens when this runs?<pre><code>async def lookup_one(client, sem, zip_code):\n    async with sem:\n        resp = client.get(BASE_URL + zip_code, timeout=5.0)\n        if resp.status_code == 404:\n            return zip_code, None<\/code><\/pre>", "options": ["It works, but the requests run one at a time", "AttributeError: resp is a coroutine that was never awaited", "TypeError: object Response can't be used in 'await' expression", "resp is None until the request finishes, so the check is skipped"], "answer": 1, "why": "Calling an async method without await creates a coroutine object and sends nothing. The first attribute access fails, and a RuntimeWarning says the coroutine was never awaited. The TypeError in the last option comes from the opposite mistake: awaiting something that isn't awaitable."}, {"id": "w9", "q": "You wrote 13 tests in <code>tests/test_models.py<\/code>, <code>tests/test_client.py<\/code> and <code>tests/test_store.py<\/code>. <code>pytest -q<\/code> prints <i>12 passed<\/i>. Which is the likely cause?", "options": ["test_store.py must be renamed store_test.py before pytest collects it", "pytest stops collecting after 12 tests unless you pass -n", "One function's name doesn't start with test, so it's never collected", "One test has no assert, so pytest reports it as skipped, not passed"], "answer": 2, "why": "pytest collects files named test_*.py or *_test.py, and within them only functions starting with test. A function with another name is silently ignored, so it looks like coverage but isn't. Watch the count go up when you add a test. A test without an assert still runs and passes."}, {"id": "w10", "q": "To test the timeout path, your MockTransport handler calls <code>time.sleep(6)<\/code> and then returns 200. The client uses <code>timeout=5.0<\/code>. What does the test see?", "options": ["A 200 after 6 seconds: the mock transport never enforces timeouts", "httpx.ConnectTimeout, because no connection was ever opened", "httpx.ReadTimeout after 5 seconds, as with a real server", "The test is killed by pytest's default 5-second limit"], "answer": 0, "why": "Timeouts are enforced by the real network layer, which a mock transport replaces. The handler just runs, however long it takes. To test failure paths, raise the exception you want in the handler, for example httpx.ReadTimeout(\"slow\", request=request), and inject the sleep function so the backoff doesn't slow the test down. pytest has no default time limit."}, {"id": "w11", "q": "L-1015 was not enriched, so its city was saved as <code>None<\/code> through a parameter. Why does <code>SELECT lead_id FROM leads WHERE city = NULL<\/code> return nothing?", "options": ["The row with the NULL city was never committed", "SQLite turns NULL in a TEXT column into an empty string", "The parameter stored the string 'None' instead of NULL", "NULL = NULL is unknown, not true; it needs WHERE city IS NULL"], "answer": 3, "why": "Python's None becomes SQL NULL, and NULL = NULL is unknown, so no row matches. IS NULL returns L-1015. Related: COUNT(city) counts 8 while COUNT(*) counts 9, and WHERE city != 'Plano' skips NULL rows too."}, {"id": "w12", "q": "(Enterprise) Your ticket sync keeps a watermark: the newest <code>updated_at<\/code> it has seen. The next run asks for tickets updated <i>after<\/i> the watermark. Timestamps have one-second resolution. Run 1 starts at 10:00:05.5 and copies T-1 (updated 10:00:05). T-2 is saved at 10:00:05.9, also stamped 10:00:05. If nobody edits T-2 again, when is it copied?", "options": ["In run 2: a ticket whose updated_at equals the watermark is included", "Never: every later run asks for after 10:00:05; re-read an overlap window and upsert by id", "In run 2, twice, so the store needs a unique id to absorb the duplicate", "In run 1: the API returns all tickets with the same timestamp together"], "answer": 1, "why": "\"After\" is strict: GitHub's since parameter, for example, returns issues \"last updated after the given time\". T-2 shares T-1's second but was saved after run 1 asked, so no later run returns it. Run 1 can't return a ticket that didn't exist yet, and nothing here fetches it twice. Ask from the watermark minus a few minutes and upsert by ID: the tickets you read again are simply overwritten."}, {"id": "w13", "q": "(Week 0A) <code>main()<\/code> returns 1 when the input file is missing. CI runs <code>python -m lead_intake nope.csv<\/code> and reports success. <code>__main__.py<\/code> is:<pre><code>from lead_intake.cli import main\n\nif __name__ == \"__main__\":\n    main()<\/code><\/pre>", "options": ["The ERROR log line must go to stderr before CI treats the run as failed", "CI ignores exit codes when a module is run with python -m instead of a script", "main() must raise SystemExit(1) itself; return values can't become exit codes", "main()'s return value is discarded, so the exit code is 0; use sys.exit(main())"], "answer": 3, "why": "A process's exit code comes from sys.exit (or an uncaught exception), not from a function's return value. sys.exit(main()) passes 1 on to the shell. Returning the code from main() is still the better design, because tests can check main([...]) == 1. Logs don't change the exit code."}, {"id": "w14", "q": "(Week 0A) <code>.env<\/code> says <code>LOG_LEVEL=DEBUG<\/code>, and the code calls <code>load_dotenv()<\/code> before reading it, yet no DEBUG lines appear. Your shell profile has <code>export LOG_LEVEL=INFO<\/code>. Why?", "options": ["load_dotenv doesn't override variables already set in the shell", "DEBUG must be written in lowercase in the .env file", "load_dotenv only reads .env.example, not .env", "basicConfig ignores levels given as strings like \"DEBUG\""], "answer": 0, "why": "python-dotenv's default is override=False: real environment variables beat the file. That's intended, because deployments set real variables. Unset the shell variable or run with LOG_LEVEL=DEBUG. basicConfig accepts level names like \"DEBUG\", and .env is the file that gets read."}, {"id": "w15", "q": "(Week 0A) <code>setup_logging()<\/code> calls <code>logging.basicConfig(level=\"DEBUG\", format=...)<\/code> at startup, but DEBUG and INFO lines never appear and the format is ignored. An imported helper module has this line at the top level:<pre><code>logging.warning(\"config file not found, using defaults\")<\/code><\/pre>", "options": ["The format string is invalid, so logging falls back to its defaults", "logging.warning sets that module's logger to WARNING, and all loggers inherit it", "The early logging.warning configured the root logger, so basicConfig does nothing", "basicConfig must be called in every module that logs"], "answer": 2, "why": "Calling logging.warning (or info, debug) at module level with no handlers set up quietly calls basicConfig() with the defaults: level WARNING and a plain format. Your own basicConfig then does nothing. Use logger = logging.getLogger(__name__) in modules, log only inside functions, and configure logging once in main (or pass force=True)."}]</script>
 
       <div data-track="cert">
         <h3 class="part-h part-deep-h">Deep practice · pandas essentials</h3>
@@ -866,25 +1059,59 @@ print(summary.round(1).head(3))</code></pre>
       </div>
 
       <div data-track="ent">
-        <h3 class="part-h part-ent-h">Enterprise · TypeScript V: a tiny tested module</h3>
+        <h3 class="part-h part-ent-h">Enterprise · APIs V: incremental sync and rate-limit budgets</h3>
         <div class="prose">
-          <p>Node has a built-in test runner. Move <code>parseCreditScore</code> and <code>parseLoanType</code> into <code>parse.ts</code> (with <code>export</code> in front of each), and write <code>parse.test.ts</code>:</p>
-<pre><code>import { test } from "node:test";
-import assert from "node:assert/strict";
-import { parseCreditScore } from "./parse.ts";
+          <p>In Weeks 2–3 you build P2, an IT-support assistant that answers from a customer's past tickets. Copying every ticket every night doesn't scale, and it uses up the customer's API budget. An <b>incremental sync</b> asks only for what changed since the last run. Four ideas make it correct:</p>
+          <ul>
+            <li><b>Watermark.</b> Store where the last run got to: the newest <code>updated_at</code> you saw, or the cursor the API gave you. Save it only after the batch is stored, so a run that fails halfway starts again from the old point. GitHub's issue list takes <code>since</code> ("only show results that were last updated after the given time"); Zendesk's incremental export returns a cursor and an <code>end_of_stream</code> flag.</li>
+            <li><b>Overlap window.</b> Timestamps are coarse and writes arrive late. If two tickets share the second 10:00:05 and only one was saved when you asked, "after 10:00:05" never returns the other. Ask from the watermark minus a few minutes and upsert by ID, so re-reading a ticket is harmless. Zendesk's docs warn that time-based exports can contain duplicates and say to deduplicate on <code>id</code> plus <code>updated_at</code>.</li>
+            <li><b>Deleted records.</b> A query for "changed since" can't return a ticket that no longer exists. Some APIs keep a marker: Zendesk's incremental export still includes deleted tickets, with <code>status</code> "deleted". Where there is no marker, compare the full list of IDs from time to time, or listen for delete webhooks. A knowledge base that keeps deleted tickets can answer from data the customer removed.</li>
+            <li><b>Rate-limit budget.</b> Count requests before you design. Zendesk allows 10 incremental-export requests a minute (30 with its High Volume add-on). GitHub reports your budget in <code>x-ratelimit-remaining</code> and <code>x-ratelimit-reset</code>, a UTC epoch time, not a number of seconds. The customer's other integrations share the same limit, so plan to use a slice of it, not all of it.</li>
+          </ul>
+<pre><code>def sync_once(fetch_updated_after, store: dict, state: dict,
+              overlap=timedelta(minutes=5)) -&gt; int:
+    watermark = state.get("watermark")
+    since = watermark - overlap if watermark else None     <span class="c"># re-read a little: upserts make it safe</span>
+    newest, changed = watermark, 0
+    for t in fetch_updated_after(since):
+        if t.get("status") == "deleted":
+            store.pop(t["id"], None)
+        else:
+            store[t["id"]] = t                              <span class="c"># upsert by id</span>
+        changed += 1
+        newest = max(newest, t["updated_at"]) if newest else t["updated_at"]
+    state["watermark"] = newest                             <span class="c"># only after the whole batch</span>
+    return changed</code></pre>
+          <p><b>Task (about 40 minutes):</b> write a one-page sync plan, <code>code/week-0B/ent/sync-plan.md</code>, for pulling a customer's support tickets (Zendesk or Jira) into a P2-style knowledge base. Cover: the first full load; the watermark and where it is stored; the overlap window; deletions; the request budget per run (show the arithmetic); how webhooks and the scheduled sync work together; what happens when a run fails halfway; and the two numbers you would put on a dashboard. Then copy <code>sync_once</code>, and write one test showing that without an overlap a late ticket from the same second is never copied, and with one it is.</p>
+        </div>
+        <div class="hints" data-hints="0B-ent-d5">
+          <div class="hint solution" data-level="Solution">
+<pre class="no-copy"><code># Sync plan: Zendesk tickets into the support knowledge base
 
-test("accepts a valid score", () => {
-  assert.equal(parseCreditScore("742"), 742);
-});
-
-test("rejects out-of-range scores", () => {
-  assert.throws(() => parseCreditScore("905"));
-});</code></pre>
-<pre><code><span class="p">$ </span>node --test</code></pre>
-          <p>Add three more tests (empty, <code>"7.5"</code>, and an unknown loan type). You now have the same testing habit in both languages.</p>
+Goal         Every non-deleted ticket in the knowledge base within 15 minutes of a change.
+First load   Cursor-based incremental export from the start. 1,000 tickets per page, so
+             200,000 tickets = 200 requests. At 5 requests/minute (half of the 10/minute
+             limit; other tools share it) that's 40 minutes. Run it at night.
+Watermark    The export's after_cursor, saved in our sync_state table only after the
+             page's tickets are committed. A failed run restarts from the last saved cursor.
+Overlap      Not needed with the cursor. If we ever fall back to time-based export,
+             start 5 minutes before the last end_time and upsert by id + updated_at.
+Deletions    Tickets with status "deleted" are removed from the index and the vector store.
+             Weekly: compare our ids with the source to catch anything missed.
+Schedule     Webhook on ticket change, for speed: verify the signature, dedupe by event id,
+             queue the ticket id. The scheduled sync every 10 minutes, for completeness.
+             About 1 request per run on a quiet day, about 6 per hour; far inside the budget.
+On 429       Wait Retry-After, then continue from the saved cursor (Day 1 logic).
+Dashboard    1. Lag: now minus the newest updated_at we hold. Alert above 30 minutes.
+             2. Count drift: our ticket count vs the source's. Alert above 0.5%.
+Open         Do we index internal notes? Who approves which ticket fields are indexed (PII)?</code></pre></div>
+        </div>
+        <div class="readings">
+          <div class="reading"><span class="kind must">Read</span><div><a href="https://developer.zendesk.com/documentation/ticketing/managing-tickets/using-the-incremental-export-api/" target="_blank" rel="noopener">Zendesk: Using the Incremental Exports API ↗</a><p>Cursor vs time-based exports, deleted tickets, and duplicates.</p></div></div>
+          <div class="reading"><span class="kind">Reference</span><div><a href="https://developer.zendesk.com/api-reference/introduction/rate-limits/" target="_blank" rel="noopener">Zendesk: Rate limits ↗</a> · <a href="https://docs.github.com/en/rest/issues/issues#list-repository-issues" target="_blank" rel="noopener">GitHub: List repository issues (<code>since</code>) ↗</a></div></div>
         </div>
         <div class="reflect" style="max-width:760px">
-          <label><span class="rq">Python vs TypeScript: what felt familiar, what felt different, and where would you trip up reading a customer's TypeScript code?</span><textarea data-reflect="ent-ts"></textarea></label>
+          <label><span class="rq">Which failure in your sync plan worries you most: missed updates, deleted tickets that stay, duplicates, or the rate limit? How would you notice it in production before the customer does?</span><textarea data-reflect="ent-sync"></textarea></label>
         </div>
       </div>
     </section>
@@ -973,7 +1200,7 @@ test("rejects out-of-range scores", () => {
       </div>
       <ul class="parts session-plan">
         <li class="part part-core"><span class="part-tag">Core · 6h</span>Test suite, PR review and merge, README update, journal</li>
-        <li class="part part-ent" data-track="ent"><span class="part-tag">Enterprise · 1.5h</span>Read a real TypeScript SDK + explain v2 to a manager</li>
+        <li class="part part-ent" data-track="ent"><span class="part-tag">Enterprise · 1.5h</span>Read a real Python client library + explain how your integration fails</li>
       </ul>
 
       <div class="prose">
@@ -1008,16 +1235,23 @@ test("rejects out-of-range scores", () => {
       </div>
 
       <div data-track="ent">
-        <h3 class="part-h part-ent-h">Enterprise · Read a real SDK, explain your work</h3>
+        <h3 class="part-h part-ent-h">Enterprise · Read a real client library, explain how your integration fails</h3>
         <div class="prose">
-          <p><b>Reading (45 min):</b> open the official Claude TypeScript SDK repository and read its README. Find: how a client is created, how the API key is supplied, how errors and retries are handled. Compare with your Python <code>lookup_zip</code>: which ideas are the same?</p>
-          <p><b>Communication drill (45 min):</b> record a 2-minute explanation of v2 for the sales manager, then a separate 2-minute version for their IT security lead. The same system, told two ways: one about lost leads and city data, the other about tests, parameterized SQL and no secrets in code.</p>
+          <p><b>Reading (45 min):</b> customers often already use a Python client library for their system, and you'll debug code built on it. Read <b>PyGithub</b>, the widely used GitHub library: the README, the "Utilities" page of its docs, and the source file <code>github/GithubRetry.py</code>. (If your customer runs Jira, read the <code>jira</code> library and its <code>jira/resilientsession.py</code> instead.) Find the answer to each question, and compare it with what you built this week:</p>
+          <ol>
+            <li><b>Auth:</b> how is the token passed? (<code>auth=github.Auth.Token(...)</code>; the old <code>login_or_token</code> argument now gives a deprecation warning.)</li>
+            <li><b>Pagination:</b> what does <code>PaginatedList</code> do for you, and what is the default page size? (It fetches pages as you iterate; the default is 30, like the API.) Is it Link-header following, like your <code>paginate</code>?</li>
+            <li><b>Timeouts and pacing:</b> what are the defaults? (In the source: a 15-second timeout, at least 0.25 s between requests and 1 s between writes.)</li>
+            <li><b>Retries:</b> what does the default <code>GithubRetry</code> retry? (5xx, and 403 when it is a rate limit: it waits until <code>X-RateLimit-Reset</code> for the primary limit and 60 s for a secondary one.) Which methods? Its docstring says GET and <b>POST</b> are added to urllib3's defaults. Given Day 4, what could a retried <code>create_issue</code> do after a 502?</li>
+          </ol>
+          <p><b>Writing (45 min):</b> write a half-page note for the sales manager, "How our integration works, and how it fails", about your Lead Intake v2 or the ticket sync you planned on Friday. Three short sections: what it does (one paragraph, no jargon); what happens when things go wrong (the API is down, a page fails, a duplicate arrives, the rate limit is hit), each with what the manager would see; and what you need from them (who to call, what to watch). If a sentence needs a technical term, replace the sentence.</p>
         </div>
         <div class="readings">
-          <div class="reading"><span class="kind must">Read</span><div><a href="https://github.com/anthropics/anthropic-sdk-typescript" target="_blank" rel="noopener">Claude TypeScript SDK (README) ↗</a></div></div>
+          <div class="reading"><span class="kind must">Read</span><div><a href="https://pygithub.readthedocs.io/en/stable/utilities.html" target="_blank" rel="noopener">PyGithub docs: Utilities (PaginatedList, rate-limit errors) ↗</a><p>Then open <code>github/GithubRetry.py</code> in the <a href="https://github.com/PyGithub/PyGithub" target="_blank" rel="noopener">PyGithub repository ↗</a>.</p></div></div>
+          <div class="reading"><span class="kind">Reference</span><div><a href="https://jira.readthedocs.io/" target="_blank" rel="noopener">jira (Python library) documentation ↗</a><p>Its <code>ResilientSession</code> retries 429 and 503, three times by default.</p></div></div>
         </div>
         <div class="reflect" style="max-width:760px">
-          <label><span class="rq">What did the SDK do about retries and errors? What did you change between the manager version and the security version of your explanation?</span><textarea data-reflect="ent-w2"></textarea></label>
+          <label><span class="rq">What does the library retry by default, and would that be safe for your writes? What did you leave out of the manager's version, and why?</span><textarea data-reflect="ent-w2"></textarea></label>
         </div>
       </div>
     </section>

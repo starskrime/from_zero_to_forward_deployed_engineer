@@ -1,0 +1,49 @@
+      <div data-track="ent">
+        <h3 class="part-h part-ent-h">Enterprise · TypeScript II-c: a tool loop with Claude</h3>
+        <div class="prose">
+          <p>Port Exercise 1 to TypeScript with Claude in <code>agent.ts</code>: export <code>ask(client, question, maxSteps = 5)</code> that loops while <code>stop_reason === "tool_use"</code>, runs <code>calculatePayment</code>, and pushes <code>tool_result</code> blocks. Put the real call in a separate <code>main.ts</code> (<code>import { ask } from "./agent.ts"</code>) so tomorrow's test can import <code>agent.ts</code> without calling the API.</p>
+        </div>
+        <div class="hints" data-hints="W1-ent-ts">
+          <div class="hint solution" data-level="Full solution">
+<pre><code>import Anthropic from "@anthropic-ai/sdk";
+
+function calculatePayment(principal: number, annualRatePct: number, years: number): number {
+  const r = annualRatePct / 100 / 12;
+  const n = years * 12;
+  return Math.round((principal * r) / (1 - (1 + r) ** -n) * 100) / 100;
+}
+
+const tools: Anthropic.Tool[] = [{
+  name: "calculate_payment",
+  description: "Monthly principal-and-interest payment for a fixed-rate loan.",
+  input_schema: {
+    type: "object",
+    properties: { principal: { type: "number" }, annual_rate_pct: { type: "number" }, years: { type: "integer" } },
+    required: ["principal", "annual_rate_pct", "years"],
+  },
+}];
+
+type PaymentInput = { principal: number; annual_rate_pct: number; years: number };
+
+export async function ask(client: Anthropic, question: string, maxSteps = 5): Promise&lt;string> {
+  const messages: Anthropic.MessageParam[] = [{ role: "user", content: question }];
+  for (let step = 0; step &lt; maxSteps; step++) {
+    const response = await client.messages.create({ model: "claude-haiku-4-5", max_tokens: 1024, tools, messages });
+    messages.push({ role: "assistant", content: response.content });
+    if (response.stop_reason !== "tool_use") {
+      return response.content.filter((b): b is Anthropic.TextBlock => b.type === "text").map(b => b.text).join("");
+    }
+    const results: Anthropic.ToolResultBlockParam[] = [];
+    for (const block of response.content) {
+      if (block.type === "tool_use") {
+        const input = block.input as PaymentInput;
+        const payment = calculatePayment(input.principal, input.annual_rate_pct, input.years);
+        results.push({ type: "tool_result", tool_use_id: block.id, content: JSON.stringify({ monthly_payment: payment }) });
+      }
+    }
+    messages.push({ role: "user", content: results });
+  }
+  throw new Error(`no answer after ${maxSteps} steps`);
+}</code></pre></div>
+        </div>
+      </div>
