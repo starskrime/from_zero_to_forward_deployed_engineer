@@ -2,30 +2,22 @@
 # FDE Preparation: start the learning platform (macOS / Linux)
 # Run from Terminal:  bash start.sh
 # Stop it with Ctrl+C.
+#
+# The platform keeps itself up to date: it checks GitHub when it starts and
+# once a day while it runs (see tools/serve.py). Your work in code/ is never touched.
+# To turn automatic updates off:  bash start.sh --no-update
 
 cd "$(dirname "$0")" || exit 1
-PORT=8765
 
-if command -v python3 >/dev/null 2>&1; then PY=python3
-elif command -v python >/dev/null 2>&1; then PY=python
-else
-  echo "Python 3 is not installed. Install it from https://www.python.org/downloads/ and try again."
+PY=""
+for c in python3 python; do
+  if command -v "$c" >/dev/null 2>&1 && "$c" -c 'import sys; sys.exit(sys.version_info < (3, 8))' 2>/dev/null; then
+    PY="$c"; break
+  fi
+done
+if [ -z "$PY" ]; then
+  echo "Python 3.8 or newer is not installed. Install it from https://www.python.org/downloads/ and try again."
   exit 1
 fi
 
-# If the port is busy, try the next few
-while lsof -iTCP:$PORT -sTCP:LISTEN >/dev/null 2>&1; do PORT=$((PORT+1)); done
-
-URL="http://localhost:$PORT/index.html"
-echo ""
-echo "  FDE Preparation platform"
-echo "  Open: $URL"
-echo "  Stop: press Ctrl+C in this window"
-echo ""
-
-( sleep 1
-  if command -v open >/dev/null 2>&1; then open "$URL"
-  elif command -v xdg-open >/dev/null 2>&1; then xdg-open "$URL"
-  fi ) &
-
-exec "$PY" -m http.server "$PORT" --bind 127.0.0.1
+exec "$PY" tools/serve.py "$@"

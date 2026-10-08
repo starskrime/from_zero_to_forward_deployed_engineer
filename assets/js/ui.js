@@ -108,6 +108,7 @@ window.UI = (function () {
     { href: "practice.html", label: "Practice", id: "practice" },
     { label: "Projects", soon: true },
     { label: "Glossary", soon: true },
+    { href: "whats-new.html", label: "What's new", id: "whatsnew" },
     { href: "settings.html", label: "Settings", id: "settings" }
   ];
   let BASE = "";
@@ -118,7 +119,7 @@ window.UI = (function () {
     if (!el) return;
     const items = NAV.map(n => n.soon
       ? '<span class="nav-item soon" title="Coming soon">' + n.label + '</span>'
-      : '<a class="nav-item' + (n.id === active ? ' active" aria-current="page' : '') + '" href="' + BASE + n.href + '">' + n.label + '</a>'
+      : '<a class="nav-item' + (n.id === active ? ' active" aria-current="page' : '') + '" data-nav="' + n.id + '" href="' + BASE + n.href + '">' + n.label + '</a>'
     ).join("");
     el.innerHTML =
       '<div class="header-inner">' +
@@ -136,6 +137,11 @@ window.UI = (function () {
       setTheme(next); paint();
     });
     if (!Store.hasProfile() && active !== "settings") onboarding();
+    if (!window.Releases && !document.getElementById("releases-js")) {
+      const sc = document.createElement("script");
+      sc.id = "releases-js"; sc.src = BASE + "assets/js/releases.js";
+      document.body.appendChild(sc);
+    }
   }
 
   function footer() {

@@ -10,3 +10,6 @@ reflection-week-*.html
 Thumbs.db
 .vscode/
 .idea/
+
+# Local update log and state (written by tools/serve.py)
+.fde/

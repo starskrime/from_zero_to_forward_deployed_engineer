@@ -132,6 +132,15 @@ Every project meets the same portfolio standard: **README · design decisions ·
 
 Lesson packs are published ahead of each week. Portfolio repositories will be linked here as they ship.
 
+### Updates
+
+When you start the platform with `start.sh` or `start.bat`, it keeps itself up to date: it checks GitHub when it starts and once a day while it runs, and updates with a safe fast-forward (`git pull --ff-only`). Your own work in `code/` is never touched. After an update, a **What's new** window lists every change since your last visit, and flags anything that affects weeks you've already started. The full history is on the What's new page and in [`releases.json`](releases.json).
+
+- Turn automatic updates off: `bash start.sh --no-update` (or `start.bat --no-update`).
+- Update by hand: `git pull --ff-only`.
+- Downloaded as a ZIP? The platform tells you when a newer version exists. Clone with git to get automatic updates.
+- If you cloned before October 8, 2026, run `git pull` once to get the updater.
+
 ---
 
 ## Repository structure
@@ -143,7 +152,8 @@ Lesson packs are published ahead of each week. Portfolio repositories will be li
 ├── lessons/              One page per program week (+ sample data files)
 ├── certification.html    Claude Certified Architect – Foundations prep
 ├── practice.html         Question bank and timed mock exams
-├── settings.html         Name, start date, pace, tracks, backup / reset
+├── settings.html         Name, start date, pace, tracks, backup / reset, update status
+├── whats-new.html        Release notes, newest first
 ├── assets/
 │   ├── css/platform.css  Design tokens, light and dark themes
 │   └── js/
@@ -153,8 +163,15 @@ Lesson packs are published ahead of each week. Portfolio repositories will be li
 │       ├── store.js      Progress saved in the browser (localStorage)
 │       ├── ui.js         Header, onboarding, pace-aware calendar
 │       ├── lesson.js     Hints, quizzes, journal, progress
+│       ├── releases.js   "What's new" dialog, Updated badges, refresh banner
 │       └── home.js · plan.js · practice.js
 ├── docs/screenshots/
+├── docs/releases.md      How updates and release notes work
+├── releases.json         Release notes (shown in the app as "What's new")
+├── tools/
+│   ├── serve.py          Local server + automatic updates (standard library only)
+│   ├── check_releases.py Validates releases.json; GitHub Release text
+│   └── hooks/pre-commit  Optional maintainer hook: no visible change without a note
 └── start.sh · start.bat  One-command local start
 ```
 

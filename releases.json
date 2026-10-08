@@ -1,0 +1,87 @@
+{
+  "schema": 1,
+  "repo": "https://github.com/starskrime/from_zero_to_forward_deployed_engineer",
+  "releases": [
+    {
+      "version": "2026.10.08",
+      "date": "2026-10-08",
+      "title": "Week 5 published, and the platform now updates itself",
+      "new": [
+        "Week 5: Conversational & Multimodal Agents. Build P4, a voice and photo auto-parts ordering assistant with a local voice pipeline, photos matched to a catalog, a read-back the customer confirms, and risk-gated human approval.",
+        "Automatic updates: the start script now checks for updates when it starts and once a day while it runs. Your own work in code/ is never touched.",
+        "This \"What's new\" window and a full history on the What's new page."
+      ],
+      "changed": [
+        "Practice: two certification questions updated for the current Claude API (forced tool_choice and what strict schemas guarantee), and two explanations expanded.",
+        "Plan: Week 5 links and tools now point to the free, local voice and vision stack."
+      ],
+      "fixed": [],
+      "affects": [
+        { "page": "practice", "note": "Questions c-d2-05 and c-d4-04 changed. If you answered them before, try them again." }
+      ]
+    },
+    {
+      "version": "2026.10.07",
+      "date": "2026-10-07",
+      "title": "Week 4 published, plus improvements to Weeks 0B–3",
+      "new": [
+        "Week 4: Multi-Agent Systems. Build P3, a multi-agent EV road-trip planner with LangGraph, parallel sub-agents, human approval and evals.",
+        "A coding gym with two timed, interview-style problems at the end of Weeks 1–4.",
+        "Week 3: a new Day 3 section, \"Rewriting the question\" (Exercise 3b and a mini-quiz), a \"When vector RAG isn't the answer\" card, and an API + Streamlit add-on in Weekend 1.",
+        "Week 2: a \"How to choose an embedding model\" card after Day 3.",
+        "Plan: a PyTorch primer before fine-tuning in Week 9."
+      ],
+      "changed": [
+        "Week 0B: the Enterprise track is now \"Enterprise APIs in Python\" (API docs, pagination, webhooks, idempotency keys, incremental sync). TypeScript moves to an optional Bonus module.",
+        "Week 1: Enterprise days 1–4 are now \"Working on a team's codebase\" (small PRs, reviewing agent code, CI, lint and branch protection).",
+        "Quizzes: a few questions replaced in Weeks 0B and 1 to match the new Enterprise content.",
+        "Week 3: Interview room question 1 replaced and a new question 8 (graph vs vector retrieval).",
+        "Plan: Weeks 5, 7, 8, 16 and 20 now say how they build on Weeks 3–4."
+      ],
+      "fixed": [
+        "Long quiz answers now wrap on small screens instead of running off the side."
+      ],
+      "affects": [
+        { "week": "0B", "note": "Enterprise track replaced, and quiz questions D1–D3 h4 and weekly w12 changed. Retake those if you already finished them." },
+        { "week": "W1", "note": "Enterprise days 1–4 replaced, and quiz questions D2 h4 and weekly w6 changed. A coding gym was added." },
+        { "week": "W2", "note": "New card on choosing an embedding model, and a coding gym." },
+        { "week": "W3", "note": "New Day 3 section with its own mini-quiz, an API + Streamlit add-on, new Interview room questions and a coding gym. Day 3 is now 4.5 hours." },
+        { "page": "practice", "note": "Some practice-bank questions for Weeks 0B and 1 were replaced." }
+      ]
+    },
+    {
+      "version": "2026.09.28",
+      "date": "2026-09-28",
+      "title": "DoRA added to the fine-tuning plan",
+      "new": [],
+      "changed": [
+        "Plan: Week 9 now covers DoRA alongside LoRA and QLoRA."
+      ],
+      "fixed": [],
+      "affects": []
+    },
+    {
+      "version": "2026.09.27",
+      "date": "2026-09-27",
+      "title": "Week 3 published",
+      "new": [
+        "Week 3: RAG II. Hybrid search, reranking, contextual retrieval and evals with an LLM judge you validate. P2 is finished with an evaluation report."
+      ],
+      "changed": [],
+      "fixed": [],
+      "affects": []
+    },
+    {
+      "version": "2026.09.23",
+      "date": "2026-09-23",
+      "title": "Launch",
+      "new": [
+        "The platform: Home, Plan, Lessons, Certification and Practice, with progress saved in your browser.",
+        "Weeks 0A, 0B, 0C, 1 and 2 at interview level: hard quizzes, Production reality, a Break it & fix it drill and an Interview room every week."
+      ],
+      "changed": [],
+      "fixed": [],
+      "affects": []
+    }
+  ]
+}

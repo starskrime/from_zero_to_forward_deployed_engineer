@@ -42,6 +42,15 @@
         </div>
       </div>
     </div>
+    <div class="card" id="updates" style="margin-top:20px;max-width:760px">
+      <h3>Updates</h3>
+      <p class="small muted">The start script checks GitHub when it starts and once a day while it runs, then updates the platform with a safe fast-forward. Your own work in <code>code/</code> is never touched. <a href="whats-new.html">See what's new</a>.</p>
+      <div class="update-status" id="upd-status">Checking the update status…</div>
+      <p class="small muted" style="margin-bottom:6px"><b>To turn automatic updates off</b>, start the platform with the <code>--no-update</code> option: on macOS or Linux run the first line, on Windows run the second from a Command Prompt.</p>
+      <pre><code>bash start.sh --no-update
+start.bat --no-update</code></pre>
+      <p class="small muted" style="margin:6px 0 0">To update by hand at any time: <code>git pull --ff-only</code> in the platform folder. A browser page can't change how the server runs, so this setting lives in the start command.</p>
+    </div>
   </main>
   <footer id="site-footer"></footer>
   <script src="assets/js/curriculum.js"></script>
@@ -73,6 +82,22 @@
     document.getElementById("s-reset").addEventListener("click", () => { conf.hidden = false; });
     document.getElementById("s-reset-no").addEventListener("click", () => { conf.hidden = true; });
     document.getElementById("s-reset-yes").addEventListener("click", () => { S.reset(); location.href = "index.html"; });
+    const us = document.getElementById("upd-status");
+    const when = iso => iso ? new Date(iso).toLocaleString("en-US", { month: "short", day: "numeric", hour: "numeric", minute: "2-digit" }) : "";
+    fetch("__fde/status.json", { cache: "no-store" }).then(r => r.ok ? r.json() : null).catch(() => null).then(st => {
+      if (!st) {
+        us.className = "update-status warn";
+        us.textContent = "The update service isn't running: the platform was opened without the start script, or with an older one. Start it with start.sh or start.bat to get automatic updates.";
+        return;
+      }
+      const good = ["up_to_date", "updated"].indexOf(st.state) >= 0, off = st.state === "off";
+      us.className = "update-status " + (good ? "ok" : off ? "" : "warn");
+      us.innerHTML = "<b>" + U.esc(off ? "Automatic updates are off" : good ? "Automatic updates are on" : st.state === "checking" || st.state === "starting" ? "Checking for updates…" : "Automatic updates need attention") + "</b><br>" +
+        (off ? "Start the platform without <code>--no-update</code> to turn them back on." : U.esc(st.message || "")) +
+        (st.version ? "<br>Installed version: " + U.esc(st.version) : "") +
+        (st.last_check ? " · last checked " + U.esc(when(st.last_check)) : "") +
+        (st.next_check && !off ? " · next check " + U.esc(when(st.next_check)) : "");
+    });
   })();
   </script>
 </body>
