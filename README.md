@@ -127,7 +127,8 @@ Every project meets the same portfolio standard: **README · design decisions ·
 | W2 | RAG I · **P2 IT-Support Knowledge Assistant (core)** · certification track starts | Lesson published | — |
 | W3 | RAG II · hybrid search, reranking, evals · **P2 finished** with an evaluation report | Lesson published | — |
 | W4 | Multi-agent systems (LangGraph, parallel sub-agents, human approval) · **P3 Multi-Agent EV Road-Trip Planner** | Lesson published | — |
-| W5–W23 | See the Plan page | Published ahead of each week | — |
+| W5 | Conversational & multimodal agents (local voice pipeline, photos matched to a catalog, risk-gated human approval) · **P4 Voice Auto-Parts Ordering Assistant** | Lesson published | — |
+| W6–W23 | See the Plan page | Published ahead of each week | — |
 
 Lesson packs are published ahead of each week. Portfolio repositories will be linked here as they ship.
 

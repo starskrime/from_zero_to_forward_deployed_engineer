@@ -167,7 +167,8 @@
            note: "Rewrite a vague reviewer prompt with explicit criteria, add a few targeted examples, and measure both changes on labeled answers." },
     W4:  { focus: "Agentic loops and coordinator–subagent design", tasks: ["1.1", "1.2", "1.3"], links: ["sdkLoop", "sdkSub", "cSubagents", "anthResearch", "claudeAgentSdk"],
            note: "Define subagents with AgentDefinition, pass every fact they need in the Agent prompt, run them in parallel with depth, concurrency and spend caps." },
-    W5:  { focus: "Structured output with tools and schemas; validation-retry loops", tasks: ["4.3", "4.4"], links: ["apiStruct", "apiDefTools", "pydantic"] },
+    W5:  { focus: "Structured output with tools and schemas; validation-retry loops", tasks: ["4.3", "4.4"], links: ["apiStruct", "apiDefTools", "pydantic"],
+           note: "Design schemas with nullable fields, 'other' + detail and 'unclear' values; check stop_reason; retry with the specific error, and stop when retrying can't help. Learn the exam's forced tool_choice answer and today's API side by side." },
     W6:  { focus: "Tool design, structured MCP errors, tool distribution, tool_choice", tasks: ["2.1", "2.2", "2.3"], links: ["apiDefTools", "mcpToolsSpec", "anthTools", "cMcp"] },
     W7:  { focus: "MCP inside Claude Code; built-in tools", tasks: ["2.4", "2.5"], links: ["ccMcp", "cCode", "cMcpAdv"] },
     W8:  { focus: "Context, escalation and error propagation + Mock exam 1", tasks: ["5.1", "5.2", "5.3"], links: ["apiContext", "anthContext", "pLostMiddle"], mock: 1 },
@@ -231,6 +232,7 @@
   F.weeks.find(w => w.id === "W2").lesson = "lessons/week-W2.html";
   F.weeks.find(w => w.id === "W3").lesson = "lessons/week-W3.html";
   F.weeks.find(w => w.id === "W4").lesson = "lessons/week-W4.html";
+  F.weeks.find(w => w.id === "W5").lesson = "lessons/week-W5.html";
   F.weeks.forEach(w => {
     if (certWeeks[w.id]) w.cert = certWeeks[w.id];
     if (deepWeeks[w.id]) w.deep = deepWeeks[w.id];
