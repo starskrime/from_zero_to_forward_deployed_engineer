@@ -3,6 +3,25 @@
   "repo": "https://github.com/starskrime/from_zero_to_forward_deployed_engineer",
   "releases": [
     {
+      "version": "2026.10.08.3",
+      "date": "2026-10-08",
+      "title": "Week 0A project pack, and a clearer logging question",
+      "new": [
+        "Week 0A: a downloadable project pack for the Lead Intake CLI: a realistic ticket (BRIEF.md), the exact contract (SPEC.md), a messy 250-row nightly export, the expected results, and check_my_work.py, which runs your CLI and tells you which acceptance checks pass."
+      ],
+      "changed": [
+        "Week 0A: the project section now shows a valid_leads.json example, the exact error messages, which messy values to fix or reject, and time estimates per step. Handling an Excel BOM is now required, because the nightly file has one.",
+        "Week 0A: Day 4 now explains that a hidden debug line still runs its arguments, and the weekly quiz question about it was rewritten to be clear."
+      ],
+      "fixed": [],
+      "affects": [
+        {
+          "week": "0A",
+          "note": "Weekend project: download the new project pack and run check_my_work.py. Weekly quiz question 12 was rewritten; retake it if you answered it before."
+        }
+      ]
+    },
+    {
       "version": "2026.10.08.2",
       "date": "2026-10-08",
       "title": "13 more videos",
