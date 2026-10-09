@@ -95,8 +95,25 @@
    "current_links": [
     "https://virtualizationreview.com/articles/2025/08/19/mit-report-finds-most-ai-business-investments-fail-reveals-genai-divide.aspx"
    ],
-   "videos": [],
-   "no_video_reason": "No credible video of the MIT NANDA \"GenAI Divide\" report: YouTube results are reaction/commentary channels or AI-voiced podcast summaries (e.g. \"Strategy Wave Podcast\"), several disputing the 95% headline. Keep the article as the main item.",
+   "videos": [
+    {
+     "url": "https://www.youtube.com/watch?v=5QzqyrnL010&t=865s",
+     "oembed_title": "No, 95% of AI Pilots Aren't Failing",
+     "channel": "The AI Daily Brief: Artificial Intelligence News",
+     "duration": "26:15",
+     "published": "2025-08-22",
+     "views": 90863,
+     "segment": "14:25–24:30",
+     "segment_source": "transcript",
+     "effective_minutes": 10.1,
+     "watch_for": "The practical reasons pilots stall (no named metric or baseline, data not ready, undocumented workflows, no ownership, low buy-in), which map onto the lesson's list; note the host disputes the report's 95% headline.",
+     "why_this_one": "Widely watched daily AI show (90k views); this segment is a practitioner's list of failure causes rather than reaction commentary.",
+     "confidence": "medium",
+     "duration_source": "YouTube watch page (read 2026-10-08)",
+     "published_source": "YouTube watch page (read 2026-10-08)"
+    }
+   ],
+   "no_video_reason": null,
    "reference_keep": [
     "https://virtualizationreview.com/articles/2025/08/19/mit-report-finds-most-ai-business-investments-fail-reveals-genai-divide.aspx"
    ],
@@ -109,8 +126,25 @@
    "current_links": [
     "https://a16z.com/insights-for-enterprise-ai-builders/"
    ],
-   "videos": [],
-   "no_video_reason": "a16z \"From Demos to Deals\" is a written piece; no matching a16z video found. Keep the article.",
+   "videos": [
+    {
+     "url": "https://www.youtube.com/watch?v=aakZLqxRQfo&t=1295s",
+     "oembed_title": "Lighthouse or Landgrab? How to Pick Your AI Sales Strategy",
+     "channel": "a16z",
+     "duration": "43:55",
+     "published": "2026-08-13",
+     "views": 19391,
+     "segment": "21:35–26:40",
+     "segment_source": "transcript",
+     "effective_minutes": 5.1,
+     "watch_for": "Why AI proofs of concept turn into endless science projects, and the fix: a fixed trial length, success criteria and benchmarks agreed up front, and forward-deployed help to get it running.",
+     "why_this_one": "Official a16z discussion with an operator who sold to enterprises (Aug 2026).",
+     "confidence": "medium",
+     "duration_source": "YouTube watch page (read 2026-10-08)",
+     "published_source": "YouTube watch page (read 2026-10-08)"
+    }
+   ],
+   "no_video_reason": null,
    "reference_keep": [
     "https://a16z.com/insights-for-enterprise-ai-builders/"
    ],
@@ -195,8 +229,25 @@
    "current_links": [
     "https://huyenchip.com/2024/01/16/sampling.html"
    ],
-   "videos": [],
-   "no_video_reason": "No temperature/top-p video from a proven channel found; results are small tutorial channels. Temperature is already shown at the end of 3Blue1Brown Chapter 5 (same day), but its chapter timestamp could not be sourced. Keep Chip Huyen as the main item for top-k/top-p.",
+   "videos": [
+    {
+     "url": "https://www.youtube.com/watch?v=-KEUQEoyje8&t=272s",
+     "oembed_title": "Temperature? Top-p? Top-k? A practical guide to AI parameters",
+     "channel": "Probably Private",
+     "duration": "18:40",
+     "published": "2026-05-17",
+     "views": 634,
+     "segment": "4:32–15:20",
+     "segment_source": "chapters",
+     "effective_minutes": 10.8,
+     "watch_for": "How logits become probabilities, what temperature does to that distribution (with a live demo), how top-p and top-k cut the tail, and which to tune first.",
+     "why_this_one": "Clear, human-presented explainer by an ML practitioner, with a live llama.cpp demo; chaptered; recent (May 2026).",
+     "confidence": "medium",
+     "duration_source": "YouTube watch page (read 2026-10-08)",
+     "published_source": "YouTube watch page (read 2026-10-08)"
+    }
+   ],
+   "no_video_reason": null,
    "reference_keep": [
     "https://huyenchip.com/2024/01/16/sampling.html"
    ],
@@ -482,8 +533,25 @@
    "current_links": [
     "https://cdn.openai.com/business-guides-and-resources/ai-in-the-enterprise.pdf"
    ],
-   "videos": [],
-   "no_video_reason": "OpenAI business PDF; no matching OpenAI video found. Keep the PDF.",
+   "videos": [
+    {
+     "url": "https://www.youtube.com/watch?v=5DL7YOPR3b8",
+     "oembed_title": "7 Lessons for Enterprise AI",
+     "channel": "The AI Daily Brief: Artificial Intelligence News",
+     "duration": "9:19",
+     "published": "2025-05-05",
+     "views": 2791,
+     "segment": null,
+     "segment_source": null,
+     "effective_minutes": 9.3,
+     "watch_for": "The seven lessons in the OpenAI report one by one (evals first, AI inside products, start early, customize, experts, unblock developers, bold automation goals), with the company example for each.",
+     "why_this_one": "Short walk-through of exactly this report by a well-known daily AI show; brief sponsor mention near 7:30.",
+     "confidence": "medium",
+     "duration_source": "YouTube watch page (read 2026-10-08)",
+     "published_source": "YouTube watch page (read 2026-10-08)"
+    }
+   ],
+   "no_video_reason": null,
    "reference_keep": [
     "https://cdn.openai.com/business-guides-and-resources/ai-in-the-enterprise.pdf"
    ],

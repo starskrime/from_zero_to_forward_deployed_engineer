@@ -250,8 +250,26 @@
    "current_links": [
     "https://learn.microsoft.com/en-us/azure/search/search-security-trimming-for-azure-search"
    ],
-   "videos": [],
-   "no_video_reason": "The first-pass pick (SANS, 60 min, 142 views) was too long and too little-seen. The best official option, Microsoft Reactor \"Data Access Control for AI RAG Apps on Azure\" (4PKug91OSw8, Pamela Fox + Azure AI Search PM Matt Gotteiner, 2024-07-17), is a 1-hour livestream with no chapters found. Keep the Azure security-trimming doc as the main item.",
+   "videos": [
+    {
+     "url": "https://www.youtube.com/watch?v=By_q6YCQlv4&t=400s",
+     "oembed_title": "Permissions & Access Control for RAG - a Deep Dive Tutorial",
+     "channel": "Paragon",
+     "duration": "20:29",
+     "published": "2025-08-07",
+     "views": 331,
+     "segment": "6:40–17:30",
+     "segment_source": "transcript",
+     "effective_minutes": 10.8,
+     "watch_for": "One shared index per tenant with an access list per document, and the choice between filtering before retrieval (what the lesson does with allowed groups in chunk metadata) and filtering after it.",
+     "why_this_one": "Integration vendor's engineering tutorial that compares the main permission strategies without a hard sell; the demo shows post-retrieval checks.",
+     "confidence": "medium",
+     "duration_source": "YouTube watch page (read 2026-10-08)",
+     "published_source": "YouTube watch page (read 2026-10-08)",
+     "code_note": "Watch for the idea, not the code: the video uses Pinecone and a permissions graph; the lesson stores allowed groups on each chunk and filters in the Chroma query."
+    }
+   ],
+   "no_video_reason": null,
    "reference_keep": [
     "https://learn.microsoft.com/en-us/azure/search/search-security-trimming-for-azure-search"
    ],

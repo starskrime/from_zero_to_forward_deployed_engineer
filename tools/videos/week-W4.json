@@ -70,8 +70,25 @@
    "current_links": [
     "https://cognition.com/blog/dont-build-multi-agents"
    ],
-   "videos": [],
-   "no_video_reason": "No verified video. The likely candidate ('Don't Build Multi-Agents: Principles of Context Engineering', tvqHG0HqGDI) failed YouTube oEmbed twice, so it can't be used, and the other results were secondary commentary. The Cognition post is short. Keep it as the main item, read right after the Anthropic material.",
+   "videos": [
+    {
+     "url": "https://www.youtube.com/watch?v=t44aU9VpY7E",
+     "oembed_title": "Should You Build Single Agents or Multi Agent Systems?",
+     "channel": "The AI Daily Brief: Artificial Intelligence News",
+     "duration": "11:47",
+     "published": "2025-06-17",
+     "views": 3851,
+     "segment": null,
+     "segment_source": null,
+     "effective_minutes": 11.8,
+     "watch_for": "Both sides of the debate: Anthropic's multi-agent research system, then from 4:28 Cognition's two principles (share full context and traces; actions carry implicit decisions) and when each design fits.",
+     "why_this_one": "Well-known daily AI show summarizing both source posts side by side; under 12 minutes.",
+     "confidence": "medium",
+     "duration_source": "YouTube watch page (read 2026-10-08)",
+     "published_source": "YouTube watch page (read 2026-10-08)"
+    }
+   ],
+   "no_video_reason": null,
    "reference_keep": [
     "https://cognition.com/blog/dont-build-multi-agents"
    ],

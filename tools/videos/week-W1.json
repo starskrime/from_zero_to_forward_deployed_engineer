@@ -206,8 +206,25 @@
    "current_links": [
     "https://www.anthropic.com/engineering/writing-tools-for-agents"
    ],
-   "videos": [],
-   "no_video_reason": "No video of Anthropic's \"Writing effective tools for agents\" from Anthropic or a proven channel; only third-party \"read and highlighted\" narrations. Keep the article.",
+   "videos": [
+    {
+     "url": "https://www.youtube.com/watch?v=LjjaMduwzAg&t=344s",
+     "oembed_title": "Building tools for agents — with agents",
+     "channel": "Prompt Engineering",
+     "duration": "17:00",
+     "published": "2025-09-25",
+     "views": 5928,
+     "segment": "5:44–16:40",
+     "segment_source": "transcript",
+     "effective_minutes": 10.9,
+     "watch_for": "Anthropic's tool-design principles applied: fewer, task-level tools instead of API wrappers, namespacing, meaningful and token-efficient returns, clear names and descriptions, and evaluating tools on realistic tasks.",
+     "why_this_one": "Experienced AI-engineering channel walking through Anthropic's post point by point; the segment skips the sponsor read.",
+     "confidence": "medium",
+     "duration_source": "YouTube watch page (read 2026-10-08)",
+     "published_source": "YouTube watch page (read 2026-10-08)"
+    }
+   ],
+   "no_video_reason": null,
    "reference_keep": [
     "https://www.anthropic.com/engineering/writing-tools-for-agents"
    ],
@@ -324,8 +341,25 @@
    "current_links": [
     "https://genai.owasp.org/llmrisk/llm062025-excessive-agency/"
    ],
-   "videos": [],
-   "no_video_reason": "No proven-channel video on the 2025 Excessive Agency entry. Candidates found: \"OWASP Top 10 for LLM06:2025 - Excessive Agency\" (Vandana Verma, OWASP board member, length/date unverified) and IBM Technology's OWASP LLM Top 10 overview (2023 list, where this was LLM08). Keep the OWASP page.",
+   "videos": [
+    {
+     "url": "https://www.youtube.com/watch?v=bSUVVxSFGZA",
+     "oembed_title": "OWASP LLM06: Excessive Agency Explained + Hands-On Hack (LLMGoat)",
+     "channel": "Raghu The Security Expert",
+     "duration": "4:06",
+     "published": "2026-08-23",
+     "views": 282,
+     "segment": null,
+     "segment_source": null,
+     "effective_minutes": 4.1,
+     "watch_for": "A chatbot with write access to an HR database raises salaries and terminates everyone without a human check, then the mitigations: least privilege, guardrails, and human approval for writes.",
+     "why_this_one": "Short hands-on demo (Aug 2026) on the deliberately vulnerable LLMGoat app; makes the risk concrete before the PR review.",
+     "confidence": "medium",
+     "duration_source": "YouTube watch page (read 2026-10-08)",
+     "published_source": "YouTube watch page (read 2026-10-08)"
+    }
+   ],
+   "no_video_reason": null,
    "reference_keep": [
     "https://genai.owasp.org/llmrisk/llm062025-excessive-agency/"
    ],
@@ -512,8 +546,25 @@
     "https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-protected-branches/about-protected-branches",
     "https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners"
    ],
-   "videos": [],
-   "no_video_reason": "No official GitHub or proven-channel video on branch protection plus CODEOWNERS; results are small tutorial channels, and GitHub's settings UI (rulesets) changes often. Keep the docs.",
+   "videos": [
+    {
+     "url": "https://www.youtube.com/watch?v=BBj5CrJBhaI",
+     "oembed_title": "From CODEOWNERS to Governance: Required Reviews by Team in GitHub",
+     "channel": "Mickey Gousset",
+     "duration": "42:26",
+     "published": "2025-12-09",
+     "views": 1149,
+     "segment": "0:00–11:40",
+     "segment_source": "transcript",
+     "effective_minutes": 11.7,
+     "watch_for": "CODEOWNERS assigns who reviews which paths, and a ruleset on main requires a PR, passing checks and code-owner approval; you can skip the 'review from specific teams' preview feature (5:00–6:40).",
+     "why_this_one": "GitHub DevOps advocate demonstrating current rulesets, the modern form of branch protection (Dec 2025).",
+     "confidence": "medium",
+     "duration_source": "YouTube watch page (read 2026-10-08)",
+     "published_source": "YouTube watch page (read 2026-10-08)"
+    }
+   ],
+   "no_video_reason": null,
    "reference_keep": [
     "https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-protected-branches/about-protected-branches",
     "https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners"

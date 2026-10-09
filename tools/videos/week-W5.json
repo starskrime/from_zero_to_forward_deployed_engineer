@@ -281,8 +281,25 @@
    "current_links": [
     "https://pair.withgoogle.com/chapter/explainability-trust/"
    ],
-   "videos": [],
-   "no_video_reason": "No video covers PAIR's confidence-display guidance specifically. Google Design's 'Getting Started with the People + AI Guidebook' (n3HsvqBJrlY, oEmbed OK) is a general intro and doesn't teach 'show alternatives, not percentages'. Keep the chapter.",
+   "videos": [
+    {
+     "url": "https://www.youtube.com/watch?v=url4vqpuRaw&t=840s",
+     "oembed_title": "Designing Trust in the Age of Uncertainty -- UX Days 2026",
+     "channel": "Siebel Center for Design at Illinois",
+     "duration": "29:42",
+     "published": "2026-05-05",
+     "views": 67,
+     "segment": "14:00–18:25",
+     "segment_source": "transcript",
+     "effective_minutes": 4.4,
+     "watch_for": "A clinicians' tool that showed '78% confidence' and was ignored, rebuilt to say what the signal means and what to check before acting, plus an honest 'not enough information yet' state.",
+     "why_this_one": "Designer's talk at UIUC UX Days 2026; small audience, but the example matches the lesson's 'no raw percentages' rule.",
+     "confidence": "medium",
+     "duration_source": "YouTube watch page (read 2026-10-08)",
+     "published_source": "YouTube watch page (read 2026-10-08)"
+    }
+   ],
+   "no_video_reason": null,
    "reference_keep": [
     "https://pair.withgoogle.com/chapter/explainability-trust/"
    ],

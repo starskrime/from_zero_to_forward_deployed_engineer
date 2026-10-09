@@ -181,8 +181,26 @@
    "current_links": [
     "https://www.anthropic.com/news/contextual-retrieval"
    ],
-   "videos": [],
-   "no_video_reason": "The Pinecone webinar (u-ocR-2P_YA) is 54 min with 4k views and no chapters. Other contextual-retrieval videos are hype/explainer channels. Anthropic's post is short and has the exact prompt, so it stays as the main item.",
+   "videos": [
+    {
+     "url": "https://www.youtube.com/watch?v=6efwN_US-zk",
+     "oembed_title": "Contextual Retrieval with Any LLM: A Step-by-Step Guide",
+     "channel": "Prompt Engineering",
+     "duration": "15:37",
+     "published": "2024-09-30",
+     "views": 31610,
+     "segment": "0:00–9:55",
+     "segment_source": "chapters",
+     "effective_minutes": 9.9,
+     "watch_for": "Why plain chunks lose context, the contextualizing prompt (50–100 words situating each chunk), and indexing the contextualized chunks in both a vector store and BM25.",
+     "why_this_one": "Popular AI-engineering channel; step-by-step implementation of Anthropic's method with the reported failure-rate gains.",
+     "confidence": "medium",
+     "duration_source": "YouTube watch page (read 2026-10-08)",
+     "published_source": "YouTube watch page (read 2026-10-08)",
+     "code_note": "Watch for the idea, not the code: Sept 2024 LangChain/OpenAI code with a custom prompt; use Anthropic's exact prompt and prompt caching as the lesson does."
+    }
+   ],
+   "no_video_reason": null,
    "reference_keep": [
     "https://www.anthropic.com/news/contextual-retrieval"
    ],
@@ -342,8 +360,26 @@
    "current_links": [
     "https://platform.claude.com/docs/en/test-and-evaluate/develop-tests"
    ],
-   "videos": [],
-   "no_video_reason": "The previous slot's video covers LLM-as-judge in general; Anthropic's page adds Claude-specific grading tips (code vs model vs human grading, rubric wording, reasoning before verdict). No official video covers those; keep the doc.",
+   "videos": [
+    {
+     "url": "https://www.youtube.com/watch?v=t-tR9lqG_ok",
+     "oembed_title": "LLM-as-a-Judge for Agents: How to Build a Custom Eval Rubric That Works | Ep. 7",
+     "channel": "Arize AI",
+     "duration": "8:23",
+     "published": "2026-07-20",
+     "views": 583,
+     "segment": null,
+     "segment_source": null,
+     "effective_minutes": 8.4,
+     "watch_for": "Code checks first, then an LLM judge with a specific pass/fail rubric, examples for each label, and the judge explaining its reasoning before it gives the label.",
+     "why_this_one": "Short, focused episode from an eval-platform team (Jul 2026); the rubric advice matches Anthropic's grading tips.",
+     "confidence": "medium",
+     "duration_source": "YouTube watch page (read 2026-10-08)",
+     "published_source": "YouTube watch page (read 2026-10-08)",
+     "code_note": "Watch for the idea, not the code: it uses Arize's eval UI and SDK; the lesson writes its judge prompt directly."
+    }
+   ],
+   "no_video_reason": null,
    "reference_keep": [
     "https://platform.claude.com/docs/en/test-and-evaluate/develop-tests"
    ],

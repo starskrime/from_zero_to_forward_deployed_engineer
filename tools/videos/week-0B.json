@@ -431,8 +431,42 @@
    "current_links": [
     "https://docs.github.com/en/webhooks/using-webhooks/best-practices-for-using-webhooks"
    ],
-   "videos": [],
-   "no_video_reason": "GitHub-specific operational rules (10-second response limit, queueing, X-GitHub-Delivery for replays); no verified video covers them, and the doc is short.",
+   "videos": [
+    {
+     "url": "https://www.youtube.com/watch?v=PORrSAtN-hI&t=244s",
+     "oembed_title": "Building resilient webhook systems at scale",
+     "channel": "Stripe Developers",
+     "duration": "23:15",
+     "published": "2025-08-19",
+     "views": 16398,
+     "segment": "4:04–12:57",
+     "segment_source": "chapters",
+     "effective_minutes": 8.9,
+     "watch_for": "Duplicates and out-of-order delivery, idempotency strategies, and the core rule the lesson applies to GitHub: ingest, verify, queue, then process asynchronously.",
+     "why_this_one": "Hookdeck engineer's talk on the Stripe Developers channel, built on handling billions of webhooks; chaptered.",
+     "confidence": "high",
+     "duration_source": "YouTube watch page (read 2026-10-08)",
+     "published_source": "YouTube watch page (read 2026-10-08)"
+    },
+    {
+     "url": "https://www.youtube.com/watch?v=I2ZYUulreI4&t=198s",
+     "oembed_title": "Implementing Signature Verification for Webhooks (GitHub HMAC verification)",
+     "channel": "Hookdeck",
+     "duration": "11:27",
+     "published": "2022-07-11",
+     "views": 2693,
+     "segment": "3:18–9:48",
+     "segment_source": "chapters",
+     "effective_minutes": 6.5,
+     "watch_for": "How a GitHub webhook secret produces an HMAC-SHA256 signature header and how the receiver recomputes and compares it to reject forged requests.",
+     "why_this_one": "Webhook-infrastructure vendor's focused demo using GitHub as the provider; chaptered.",
+     "confidence": "medium",
+     "duration_source": "YouTube watch page (read 2026-10-08)",
+     "published_source": "YouTube watch page (read 2026-10-08)",
+     "code_note": "Watch for the idea, not the code: the demo is not in Python and routes traffic through Hookdeck's tool; the lesson verifies the signature in its own receiver (use a constant-time compare)."
+    }
+   ],
+   "no_video_reason": null,
    "reference_keep": [
     "https://docs.github.com/en/webhooks/using-webhooks/best-practices-for-using-webhooks"
    ],

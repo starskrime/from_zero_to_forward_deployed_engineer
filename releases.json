@@ -3,6 +3,48 @@
   "repo": "https://github.com/starskrime/from_zero_to_forward_deployed_engineer",
   "releases": [
     {
+      "version": "2026.10.08.2",
+      "date": "2026-10-08",
+      "title": "13 more videos",
+      "new": [
+        "13 more lesson slots now have a video, after a second search that also checked each video's transcript: webhooks at scale (Stripe Developers), temperature and top-p, building tools for agents, OWASP Excessive Agency, CODEOWNERS and branch rules, permission-aware RAG, contextual retrieval, LLM-as-a-judge, single vs multi-agent systems, showing uncertainty to users, and three enterprise-AI talks in Week 0C."
+      ],
+      "changed": [
+        "The 22 remaining slots keep their doc on purpose: no video checked out as accurate and current for them (for example GitHub and Zendesk API details, the newest Claude API behavior, and Lilian Weng's agents post)."
+      ],
+      "fixed": [],
+      "affects": [
+        {
+          "week": "0B",
+          "note": "Day 3 Enterprise now has webhook videos."
+        },
+        {
+          "week": "0C",
+          "note": "Days 1, 2 and 4 have new videos."
+        },
+        {
+          "week": "W1",
+          "note": "Days 2 and 4 have new videos."
+        },
+        {
+          "week": "W2",
+          "note": "Day 3 Enterprise has a permission-aware RAG video."
+        },
+        {
+          "week": "W3",
+          "note": "Days 3 and 4 have new videos."
+        },
+        {
+          "week": "W4",
+          "note": "Day 1 has a single vs multi-agent video."
+        },
+        {
+          "week": "W5",
+          "note": "Day 3 Enterprise has a video on showing uncertainty."
+        }
+      ]
+    },
+    {
       "version": "2026.10.08.1",
       "date": "2026-10-08",
       "title": "Videos in every lesson",
