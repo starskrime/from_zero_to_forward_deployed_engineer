@@ -1,0 +1,525 @@
+{
+ "week": "W1",
+ "slots": [
+  {
+   "section": "d1",
+   "part": "Core · Agents, workflows, and tools",
+   "day_title": "What an agent is, and your first tool call",
+   "current_links": [
+    "https://www.anthropic.com/engineering/building-effective-agents"
+   ],
+   "videos": [
+    {
+     "url": "https://www.youtube.com/watch?v=LP5OCa20Zpg",
+     "oembed_title": "Tips for building AI agents",
+     "channel": "Anthropic",
+     "duration": "18:19",
+     "published": "2025-02-13",
+     "segment": null,
+     "watch_for": "When to use a workflow vs an agent, keeping agents simple, and thinking from the agent's point of view, from the essay's authors.",
+     "why_this_one": "Official Anthropic channel; the people behind \"Building effective agents\" discussing it.",
+     "confidence": "high",
+     "duration_source": "YouTube watch page (meta.json, read 2026-10-08)",
+     "published_source": "YouTube watch page (meta.json, read 2026-10-08)",
+     "views": 586021,
+     "segment_source": null,
+     "effective_minutes": 18.3
+    }
+   ],
+   "no_video_reason": null,
+   "reference_keep": [
+    "https://www.anthropic.com/engineering/building-effective-agents"
+   ],
+   "drop": []
+  },
+  {
+   "section": "d1",
+   "part": "Core · Agents, workflows, and tools",
+   "day_title": "What an agent is, and your first tool call",
+   "current_links": [
+    "https://www.youtube.com/watch?v=D7_ipDqhtwk"
+   ],
+   "videos": [
+    {
+     "url": "https://www.youtube.com/watch?v=D7_ipDqhtwk",
+     "oembed_title": "How We Build Effective Agents: Barry Zhang, Anthropic",
+     "channel": "AI Engineer",
+     "duration": "15:09",
+     "published": "2025-04-04",
+     "segment": null,
+     "watch_for": "Don't build agents for everything; an agent is environment + tools + system prompt in a loop; think like your agent.",
+     "why_this_one": "Existing link, verified; Anthropic speaker at AI Engineer Summit.",
+     "confidence": "high",
+     "duration_source": "YouTube watch page (meta.json, read 2026-10-08)",
+     "published_source": "YouTube watch page (meta.json, read 2026-10-08)",
+     "views": 556933,
+     "segment_source": null,
+     "effective_minutes": 15.2
+    }
+   ],
+   "no_video_reason": null,
+   "reference_keep": [],
+   "drop": []
+  },
+  {
+   "section": "d1",
+   "part": "Core · Agents, workflows, and tools",
+   "day_title": "What an agent is, and your first tool call",
+   "current_links": [
+    "https://developers.openai.com/api/docs/guides/function-calling"
+   ],
+   "videos": [
+    {
+     "url": "https://www.youtube.com/watch?v=h8gMhXYAv1k",
+     "oembed_title": "What is Tool Calling? Connecting LLMs to Your Data",
+     "channel": "IBM Technology",
+     "duration": "4:56",
+     "published": "2025-01-13",
+     "segment": null,
+     "watch_for": "The model never runs the tool: it returns a call with arguments, your code runs it and sends the result back.",
+     "why_this_one": "IBM Technology; short concept explainer.",
+     "confidence": "medium",
+     "duration_source": "YouTube watch page (meta.json, read 2026-10-08)",
+     "published_source": "YouTube watch page (meta.json, read 2026-10-08)",
+     "views": 60113,
+     "segment_source": null,
+     "effective_minutes": 4.9
+    },
+    {
+     "url": "https://www.youtube.com/watch?v=KUEmEb71vzQ&t=104s",
+     "oembed_title": "Function Calling is All You Need — Full Workshop, with Ilan Bigio of OpenAI",
+     "channel": "AI Engineer",
+     "duration": "1:42:54",
+     "published": "2025-04-23",
+     "segment": "1:44–25:00",
+     "watch_for": "An OpenAI engineer walks the schema → call → execute → result cycle in code. Recorded before the Responses API launch, so the code uses older request shapes: copy the idea, not the code.",
+     "why_this_one": "OpenAI developer-experience engineer at AI Engineer Summit.",
+     "confidence": "medium",
+     "duration_source": "YouTube watch page (meta.json, read 2026-10-08)",
+     "published_source": "YouTube watch page (meta.json, read 2026-10-08)",
+     "views": 33878,
+     "segment_source": "uploader chapters in the video description (chapters.json, read 2026-10-08): \"History of Function Calling\" + \"Agent Loop Setup\"",
+     "effective_minutes": 23.3,
+     "code_note": "Watch for the idea, not the code: recorded before the Responses API, so it uses Chat Completions request shapes."
+    }
+   ],
+   "no_video_reason": null,
+   "reference_keep": [
+    "https://developers.openai.com/api/docs/guides/function-calling"
+   ],
+   "drop": []
+  },
+  {
+   "section": "d1",
+   "part": "Deep practice · Where the loop came from",
+   "day_title": "What an agent is, and your first tool call",
+   "current_links": [
+    "https://arxiv.org/abs/2210.03629"
+   ],
+   "videos": [
+    {
+     "url": "https://www.youtube.com/watch?v=F8NKVhkZZWI",
+     "oembed_title": "What are AI Agents?",
+     "channel": "IBM Technology",
+     "duration": "12:28",
+     "published": "2024-07-15",
+     "segment": null,
+     "watch_for": "From compound AI systems to agents that reason, act and observe in a loop (the ReAct pattern).",
+     "why_this_one": "IBM Technology; widely used explainer that names ReAct.",
+     "confidence": "medium",
+     "duration_source": "YouTube watch page (meta.json, read 2026-10-08)",
+     "published_source": "YouTube watch page (meta.json, read 2026-10-08)",
+     "views": 1785020,
+     "segment_source": null,
+     "effective_minutes": 12.5
+    }
+   ],
+   "no_video_reason": null,
+   "reference_keep": [
+    "https://arxiv.org/abs/2210.03629"
+   ],
+   "drop": []
+  },
+  {
+   "section": "d1",
+   "part": "Deep practice · Where the loop came from",
+   "day_title": "What an agent is, and your first tool call",
+   "current_links": [
+    "https://lilianweng.github.io/posts/2023-06-23-agent/"
+   ],
+   "videos": [],
+   "no_video_reason": "No video from Lilian Weng or a proven channel; results are \"read and highlighted\" reader channels and paper-summary channels. Keep the blog post.",
+   "reference_keep": [
+    "https://lilianweng.github.io/posts/2023-06-23-agent/"
+   ],
+   "drop": []
+  },
+  {
+   "section": "d1",
+   "part": "Enterprise · Working on a team's codebase I: small PRs on a customer's repo",
+   "day_title": "What an agent is, and your first tool call",
+   "current_links": [
+    "https://google.github.io/eng-practices/review/developer/small-cls.html"
+   ],
+   "videos": [],
+   "no_video_reason": "No proven-channel video on small changelists/PR sizing found. Google's short guide is quicker than any video. Keep it.",
+   "reference_keep": [
+    "https://google.github.io/eng-practices/review/developer/small-cls.html"
+   ],
+   "drop": []
+  },
+  {
+   "section": "d1",
+   "part": "Enterprise · Working on a team's codebase I: small PRs on a customer's repo",
+   "day_title": "What an agent is, and your first tool call",
+   "current_links": [
+    "https://git-scm.com/book/en/v2/Git-Branching-Rebasing"
+   ],
+   "videos": [
+    {
+     "url": "https://www.youtube.com/watch?v=0chZFIZLR_0",
+     "oembed_title": "Git MERGE vs REBASE: Everything You Need to Know",
+     "channel": "ByteByteGo",
+     "duration": "4:34",
+     "published": "2023-08-10",
+     "segment": null,
+     "watch_for": "How rebase replays your commits on top of the new main, and the golden rule: never rebase commits others have already pulled.",
+     "why_this_one": "ByteByteGo (proven short system-design/tooling explainers).",
+     "confidence": "medium",
+     "duration_source": "YouTube watch page (meta.json, read 2026-10-08)",
+     "published_source": "YouTube watch page (meta.json, read 2026-10-08)",
+     "views": 765908,
+     "segment_source": null,
+     "effective_minutes": 4.6
+    }
+   ],
+   "no_video_reason": null,
+   "reference_keep": [
+    "https://git-scm.com/book/en/v2/Git-Branching-Rebasing"
+   ],
+   "drop": []
+  },
+  {
+   "section": "d2",
+   "part": "Core · Tools a model can use well, and output your code can trust",
+   "day_title": "Designing tools, and structured output",
+   "current_links": [
+    "https://www.anthropic.com/engineering/writing-tools-for-agents"
+   ],
+   "videos": [],
+   "no_video_reason": "No video of Anthropic's \"Writing effective tools for agents\" from Anthropic or a proven channel; only third-party \"read and highlighted\" narrations. Keep the article.",
+   "reference_keep": [
+    "https://www.anthropic.com/engineering/writing-tools-for-agents"
+   ],
+   "drop": []
+  },
+  {
+   "section": "d2",
+   "part": "Core · Tools a model can use well, and output your code can trust",
+   "day_title": "Designing tools, and structured output",
+   "current_links": [
+    "https://developers.openai.com/api/docs/guides/structured-outputs"
+   ],
+   "videos": [
+    {
+     "url": "https://www.youtube.com/watch?v=kE4BkATIl9c",
+     "oembed_title": "OpenAI DevDay 2024 | Structured outputs for reliable applications",
+     "channel": "OpenAI",
+     "duration": "40:39",
+     "published": "2024-12-17",
+     "segment": null,
+     "watch_for": "How strict mode guarantees schema-valid JSON (constrained decoding), the schema rules it imposes, and how refusals are returned. The lesson uses responses.parse; the talk may show the Chat Completions helper.",
+     "why_this_one": "Official OpenAI talk by the team that built the feature.",
+     "confidence": "medium",
+     "duration_source": "YouTube watch page (meta.json, read 2026-10-08)",
+     "published_source": "YouTube watch page (meta.json, read 2026-10-08)",
+     "views": 97504,
+     "segment_source": null,
+     "effective_minutes": 40.6,
+     "code_note": "Watch for the idea, not the code: the talk shows the Chat Completions parse helper; the lesson uses responses.parse.",
+     "over_25_no_segment": true
+    }
+   ],
+   "no_video_reason": null,
+   "reference_keep": [
+    "https://developers.openai.com/api/docs/guides/structured-outputs"
+   ],
+   "drop": []
+  },
+  {
+   "section": "d2",
+   "part": "Deep practice · Agentic design patterns",
+   "day_title": "Designing tools, and structured output",
+   "current_links": [
+    "https://www.deeplearning.ai/the-batch/how-agents-can-improve-llm-performance",
+    "https://www.deeplearning.ai/the-batch/agentic-design-patterns-part-2-reflection",
+    "https://www.deeplearning.ai/the-batch/agentic-design-patterns-part-3-tool-use",
+    "https://www.deeplearning.ai/the-batch/agentic-design-patterns-part-4-planning",
+    "https://www.deeplearning.ai/the-batch/agentic-design-patterns-part-5-multi-agent-collaboration"
+   ],
+   "videos": [
+    {
+     "url": "https://www.youtube.com/watch?v=sal78ACtGTc",
+     "oembed_title": "What's next for AI agentic workflows ft. Andrew Ng of AI Fund",
+     "channel": "Sequoia Capital",
+     "duration": "13:40",
+     "published": "2024-03-26",
+     "segment": null,
+     "watch_for": "Andrew Ng's four agentic design patterns (reflection, tool use, planning, multi-agent) and why iterating beats one-shot prompting.",
+     "why_this_one": "Andrew Ng presenting the same four patterns as the Batch letters.",
+     "confidence": "high",
+     "duration_source": "YouTube watch page (meta.json, read 2026-10-08)",
+     "published_source": "YouTube watch page (meta.json, read 2026-10-08)",
+     "views": 415051,
+     "segment_source": null,
+     "effective_minutes": 13.7
+    }
+   ],
+   "no_video_reason": null,
+   "reference_keep": [
+    "https://www.deeplearning.ai/the-batch/how-agents-can-improve-llm-performance"
+   ],
+   "drop": [
+    "https://www.deeplearning.ai/the-batch/agentic-design-patterns-part-2-reflection",
+    "https://www.deeplearning.ai/the-batch/agentic-design-patterns-part-3-tool-use",
+    "https://www.deeplearning.ai/the-batch/agentic-design-patterns-part-4-planning",
+    "https://www.deeplearning.ai/the-batch/agentic-design-patterns-part-5-multi-agent-collaboration"
+   ]
+  },
+  {
+   "section": "d2",
+   "part": "Enterprise · Working on a team's codebase II: reviewing agent code",
+   "day_title": "Designing tools, and structured output",
+   "current_links": [
+    "https://google.github.io/eng-practices/review/reviewer/comments.html"
+   ],
+   "videos": [
+    {
+     "url": "https://www.youtube.com/watch?v=0t4_MfHgb_A",
+     "oembed_title": "How to Do Code Reviews Like a Human",
+     "channel": "PyGotham 2018",
+     "duration": "22:49",
+     "published": "2018-10-26",
+     "segment": null,
+     "watch_for": "Review comments that explain why, phrase suggestions as questions, and separate blocking issues from nitpicks.",
+     "why_this_one": "Conference talk by Michael Lynch, author of the widely cited essay of the same name; stable topic.",
+     "confidence": "medium",
+     "duration_source": "YouTube watch page (meta.json, read 2026-10-08)",
+     "published_source": "YouTube watch page (meta.json, read 2026-10-08)",
+     "views": 53613,
+     "segment_source": null,
+     "effective_minutes": 22.8
+    }
+   ],
+   "no_video_reason": null,
+   "reference_keep": [
+    "https://google.github.io/eng-practices/review/reviewer/comments.html"
+   ],
+   "drop": []
+  },
+  {
+   "section": "d2",
+   "part": "Enterprise · Working on a team's codebase II: reviewing agent code",
+   "day_title": "Designing tools, and structured output",
+   "current_links": [
+    "https://genai.owasp.org/llmrisk/llm062025-excessive-agency/"
+   ],
+   "videos": [],
+   "no_video_reason": "No proven-channel video on the 2025 Excessive Agency entry. Candidates found: \"OWASP Top 10 for LLM06:2025 - Excessive Agency\" (Vandana Verma, OWASP board member, length/date unverified) and IBM Technology's OWASP LLM Top 10 overview (2023 list, where this was LLM08). Keep the OWASP page.",
+   "reference_keep": [
+    "https://genai.owasp.org/llmrisk/llm062025-excessive-agency/"
+   ],
+   "drop": []
+  },
+  {
+   "section": "d3",
+   "part": "Deep practice · The same loop on Claude, from memory",
+   "day_title": "The agent loop, by hand",
+   "current_links": [
+    "https://platform.claude.com/docs/en/agents-and-tools/tool-use/overview",
+    "https://platform.claude.com/docs/en/agents-and-tools/tool-use/handle-tool-calls"
+   ],
+   "videos": [],
+   "no_video_reason": "Deep-practice task is \"rebuild from the docs\"; the exact field names (input_schema, tool_use_id, is_error, stop_reason) are the point. The only official video, Anthropic's \"Tool use with the Claude 3 model family\" (2024), predates current models. Keep the docs.",
+   "reference_keep": [
+    "https://platform.claude.com/docs/en/agents-and-tools/tool-use/overview",
+    "https://platform.claude.com/docs/en/agents-and-tools/tool-use/handle-tool-calls"
+   ],
+   "drop": []
+  },
+  {
+   "section": "d3",
+   "part": "Enterprise · Working on a team's codebase III: CI that runs your tests",
+   "day_title": "The agent loop, by hand",
+   "current_links": [
+    "https://docs.github.com/en/actions/tutorials/build-and-test-code/python"
+   ],
+   "videos": [
+    {
+     "url": "https://www.youtube.com/watch?v=BQrohJ3PT7I",
+     "oembed_title": "How to use GitHub Actions | GitHub for Beginners",
+     "channel": "GitHub",
+     "duration": "8:04",
+     "published": "2026-03-16",
+     "segment": null,
+     "watch_for": "The anatomy of a workflow file: triggers (on:), jobs on fresh runners, and steps. The example is not Python, so map it onto the lesson's pytest job.",
+     "why_this_one": "Official GitHub channel.",
+     "confidence": "medium",
+     "duration_source": "YouTube watch page (meta.json, read 2026-10-08)",
+     "published_source": "YouTube watch page (meta.json, read 2026-10-08)",
+     "views": 60278,
+     "segment_source": null,
+     "effective_minutes": 8.1
+    }
+   ],
+   "no_video_reason": null,
+   "reference_keep": [
+    "https://docs.github.com/en/actions/tutorials/build-and-test-code/python"
+   ],
+   "drop": []
+  },
+  {
+   "section": "d3",
+   "part": "Enterprise · Working on a team's codebase III: CI that runs your tests",
+   "day_title": "The agent loop, by hand",
+   "current_links": [
+    "https://github.com/actions/setup-python"
+   ],
+   "videos": [],
+   "no_video_reason": "The cache key and what setup-python caches are README-level detail; no video covers them reliably. Keep the README section.",
+   "reference_keep": [
+    "https://github.com/actions/setup-python"
+   ],
+   "drop": []
+  },
+  {
+   "section": "d4",
+   "part": "Core · Instructions and memory",
+   "day_title": "Prompts, memory, patterns, and testing agents",
+   "current_links": [
+    "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices"
+   ],
+   "videos": [
+    {
+     "url": "https://www.youtube.com/watch?v=XSZP9GhhuAc",
+     "oembed_title": "Prompting for Agents | Code w/ Claude",
+     "channel": "Anthropic",
+     "duration": "29:27",
+     "published": "2025-07-31",
+     "segment": null,
+     "watch_for": "How prompting changes for agents: give heuristics and stopping rules, describe tools well, and read the agent's transcripts to find what to fix.",
+     "why_this_one": "Official Anthropic channel; matches the \"agentic systems\" section of the guide.",
+     "confidence": "high",
+     "duration_source": "YouTube watch page (meta.json, read 2026-10-08)",
+     "published_source": "YouTube watch page (meta.json, read 2026-10-08)",
+     "views": 96809,
+     "segment_source": null,
+     "effective_minutes": 29.4,
+     "over_25_no_segment": true
+    }
+   ],
+   "no_video_reason": null,
+   "reference_keep": [
+    "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices"
+   ],
+   "drop": []
+  },
+  {
+   "section": "d4",
+   "part": "Deep practice · Reflection, and the builder's guide",
+   "day_title": "Prompts, memory, patterns, and testing agents",
+   "current_links": [
+    "https://arxiv.org/abs/2303.11366"
+   ],
+   "videos": [
+    {
+     "url": "https://www.youtube.com/watch?v=v5ymBTXNqtk",
+     "oembed_title": "Reflection Agents",
+     "channel": "LangChain",
+     "duration": "21:10",
+     "published": "2024-02-21",
+     "segment": null,
+     "watch_for": "Simple reflection vs Reflexion (an agent critiques its own failed attempt in words and retries with that feedback). Watch for the ideas only; the code is early LangGraph.",
+     "why_this_one": "LangChain official channel; covers Reflexion directly.",
+     "confidence": "low",
+     "duration_source": "YouTube watch page (meta.json, read 2026-10-08)",
+     "published_source": "YouTube watch page (meta.json, read 2026-10-08)",
+     "views": 40107,
+     "segment_source": null,
+     "effective_minutes": 21.2,
+     "code_note": "Watch for the idea, not the code: early-2024 LangGraph (MessageGraph-era imports)."
+    }
+   ],
+   "no_video_reason": null,
+   "reference_keep": [
+    "https://arxiv.org/abs/2303.11366"
+   ],
+   "drop": []
+  },
+  {
+   "section": "d4",
+   "part": "Deep practice · Reflection, and the builder's guide",
+   "day_title": "Prompts, memory, patterns, and testing agents",
+   "current_links": [
+    "https://cdn.openai.com/business-guides-and-resources/a-practical-guide-to-building-agents.pdf"
+   ],
+   "videos": [],
+   "no_video_reason": "No official OpenAI video of \"A practical guide to building agents\"; results are third-party summaries. Keep the PDF (the lesson asks for three specific sections).",
+   "reference_keep": [
+    "https://cdn.openai.com/business-guides-and-resources/a-practical-guide-to-building-agents.pdf"
+   ],
+   "drop": []
+  },
+  {
+   "section": "d4",
+   "part": "Enterprise · Working on a team's codebase IV: guardrails in the repo",
+   "day_title": "Prompts, memory, patterns, and testing agents",
+   "current_links": [
+    "https://docs.astral.sh/ruff/configuration/",
+    "https://github.com/astral-sh/ruff-pre-commit"
+   ],
+   "videos": [
+    {
+     "url": "https://www.youtube.com/watch?v=828S-DMQog8",
+     "oembed_title": "Python Tutorial: Ruff - A Fast Linter & Formatter to Replace Multiple Tools and Improve Code Quality",
+     "channel": "Corey Schafer",
+     "duration": "35:47",
+     "published": "2025-05-19",
+     "segment": null,
+     "watch_for": "ruff check, ruff check --fix and ruff format, configured in pyproject.toml with an explicit rule list.",
+     "why_this_one": "Corey Schafer (proven Python teacher).",
+     "confidence": "medium",
+     "duration_source": "YouTube watch page (meta.json, read 2026-10-08)",
+     "published_source": "YouTube watch page (meta.json, read 2026-10-08)",
+     "views": 106772,
+     "segment_source": null,
+     "effective_minutes": 35.8,
+     "over_25_no_segment": true
+    }
+   ],
+   "no_video_reason": null,
+   "reference_keep": [
+    "https://docs.astral.sh/ruff/configuration/",
+    "https://github.com/astral-sh/ruff-pre-commit"
+   ],
+   "drop": []
+  },
+  {
+   "section": "d4",
+   "part": "Enterprise · Working on a team's codebase IV: guardrails in the repo",
+   "day_title": "Prompts, memory, patterns, and testing agents",
+   "current_links": [
+    "https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-protected-branches/about-protected-branches",
+    "https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners"
+   ],
+   "videos": [],
+   "no_video_reason": "No official GitHub or proven-channel video on branch protection plus CODEOWNERS; results are small tutorial channels, and GitHub's settings UI (rulesets) changes often. Keep the docs.",
+   "reference_keep": [
+    "https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-protected-branches/about-protected-branches",
+    "https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners"
+   ],
+   "drop": []
+  }
+ ],
+ "checked": "2026-10-08 (pass 2: real lengths, dates, views)"
+}

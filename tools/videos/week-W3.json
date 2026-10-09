@@ -1,0 +1,368 @@
+{
+ "week": "W3",
+ "slots": [
+  {
+   "section": "d1",
+   "part": "Core · When exact words matter",
+   "day_title": "Keyword search and hybrid retrieval",
+   "current_links": [
+    "https://en.wikipedia.org/wiki/Okapi_BM25"
+   ],
+   "videos": [
+    {
+     "url": "https://www.youtube.com/watch?v=TW9vHU1GpU4",
+     "oembed_title": "A no nonsense intro to BM25",
+     "channel": "Abhishek Thakur",
+     "duration": "15:45",
+     "published": "2025-11-19",
+     "segment": null,
+     "watch_for": "How BM25 scores a chunk: IDF (rare words count more), term frequency that saturates (k1) and length normalization (b), and why a chunk sharing no query word scores 0.",
+     "why_this_one": "Abhishek Thakur (4x Kaggle Grandmaster) explains the formula directly, no hype; the Wikipedia formula section is the same content.",
+     "confidence": "medium",
+     "duration_source": "YouTube watch page (meta.json, read 2026-10-08)",
+     "published_source": "YouTube watch page (meta.json, read 2026-10-08)",
+     "views": 8890,
+     "segment_source": null,
+     "effective_minutes": 15.8
+    }
+   ],
+   "no_video_reason": null,
+   "reference_keep": [
+    "https://en.wikipedia.org/wiki/Okapi_BM25"
+   ],
+   "drop": [],
+   "note": "RRF talk (px4YBYrz0NU, 39 min, 2.9k views, no chapters) removed. Short RRF videos found come from small channels; the lesson summary explains RRF (sum of 1/(k+rank), k=60)."
+  },
+  {
+   "section": "d1",
+   "part": "Core · When exact words matter",
+   "day_title": "Keyword search and hybrid retrieval",
+   "current_links": [
+    "https://github.com/dorianbrown/rank_bm25"
+   ],
+   "videos": [],
+   "no_video_reason": "Library README: exact API and the key caveat (no text preprocessing, caller must tokenize). Needed while coding; no video covers this small library.",
+   "reference_keep": [
+    "https://github.com/dorianbrown/rank_bm25"
+   ],
+   "drop": []
+  },
+  {
+   "section": "d1",
+   "part": "Certification · Task 4.1: explicit criteria",
+   "day_title": "Keyword search and hybrid retrieval",
+   "current_links": [
+    "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices"
+   ],
+   "videos": [
+    {
+     "url": "https://www.youtube.com/watch?v=ysPbXH0LpIE",
+     "oembed_title": "Prompting 101 | Code w/ Claude",
+     "channel": "Anthropic",
+     "duration": "24:52",
+     "published": "2025-07-31",
+     "segment": null,
+     "watch_for": "Anthropic's Applied AI team iterates one real prompt live: set the task and context up front, state explicit instructions and background, and see vague prompts produce unconfident or wrong verdicts.",
+     "why_this_one": "Official Anthropic talk by the Applied AI team, current Claude prompting practice; matches the 'be clear and explicit' and 'add context' sections.",
+     "confidence": "high",
+     "duration_source": "YouTube watch page (meta.json, read 2026-10-08)",
+     "published_source": "YouTube watch page (meta.json, read 2026-10-08)",
+     "views": 535189,
+     "segment_source": null,
+     "effective_minutes": 24.9
+    }
+   ],
+   "no_video_reason": null,
+   "reference_keep": [
+    "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices"
+   ],
+   "drop": [],
+   "note": "Keep the prompting best-practices page as reference; the exam leans on its exact wording."
+  },
+  {
+   "section": "d1",
+   "part": "Enterprise · Evals are the acceptance contract",
+   "day_title": "Keyword search and hybrid retrieval",
+   "current_links": [
+    "https://platform.claude.com/docs/en/test-and-evaluate/develop-tests"
+   ],
+   "videos": [
+    {
+     "url": "https://www.youtube.com/watch?v=BsWxPI9UM4c&t=3651s",
+     "oembed_title": "Why AI evals are the hottest new skill for product builders | Hamel Husain & Shreya Shankar",
+     "channel": "Lenny's Podcast",
+     "duration": "1:46:33",
+     "published": "2025-09-25",
+     "segment": "1:00:51–1:05:09",
+     "watch_for": "An eval set with agreed checks and thresholds works as the product requirement: it turns 'feels unreliable' into a measurable pass/fail the customer signs off on.",
+     "why_this_one": "Hamel Husain and Shreya Shankar, the most cited practitioners on LLM evals; this chapter is exactly the acceptance-contract idea.",
+     "confidence": "medium",
+     "duration_source": "YouTube watch page (meta.json, read 2026-10-08)",
+     "published_source": "YouTube watch page (meta.json, read 2026-10-08)",
+     "views": 157273,
+     "segment_source": "uploader chapters in the video description (chapters.json, read 2026-10-08): \"Evals are the new PRDs\"",
+     "effective_minutes": 4.3
+    }
+   ],
+   "no_video_reason": null,
+   "reference_keep": [
+    "https://platform.claude.com/docs/en/test-and-evaluate/develop-tests"
+   ],
+   "drop": [],
+   "note": "Keep the Anthropic 'define success criteria' doc: the SMART-criteria task uses its wording. Timestamps come from the podcast page; verify they line up on YouTube."
+  },
+  {
+   "section": "d2",
+   "part": "Core · Numbers you can defend",
+   "day_title": "Measuring retrieval",
+   "current_links": [
+    "https://hamel.dev/blog/posts/evals/"
+   ],
+   "videos": [
+    {
+     "url": "https://www.youtube.com/watch?v=BsWxPI9UM4c&t=297s",
+     "oembed_title": "Why AI evals are the hottest new skill for product builders | Hamel Husain & Shreya Shankar",
+     "channel": "Lenny's Podcast",
+     "duration": "1:46:33",
+     "published": "2025-09-25",
+     "segment": "4:57–9:56",
+     "watch_for": "Why every AI product needs its own evals (not generic benchmarks), and what the eval loop looks like before you build metrics.",
+     "why_this_one": "Hamel Husain, author of the assigned article, explaining the same argument; short segment of a recent episode.",
+     "confidence": "medium",
+     "duration_source": "YouTube watch page (meta.json, read 2026-10-08)",
+     "published_source": "YouTube watch page (meta.json, read 2026-10-08)",
+     "views": 157273,
+     "segment_source": "uploader chapters in the video description (chapters.json, read 2026-10-08): \"What are evals?\"",
+     "effective_minutes": 5.0
+    }
+   ],
+   "no_video_reason": null,
+   "reference_keep": [],
+   "drop": [
+    "https://hamel.dev/blog/posts/evals/"
+   ],
+   "note": "The article can stay as optional reading; the segment covers its core argument."
+  },
+  {
+   "section": "d2",
+   "part": "Enterprise · Building the golden set with the customer",
+   "day_title": "Measuring retrieval",
+   "current_links": [
+    "https://hamel.dev/blog/posts/evals-faq/"
+   ],
+   "videos": [
+    {
+     "url": "https://www.youtube.com/watch?v=BsWxPI9UM4c&t=596s",
+     "oembed_title": "Why AI evals are the hottest new skill for product builders | Hamel Husain & Shreya Shankar",
+     "channel": "Lenny's Podcast",
+     "duration": "1:46:33",
+     "published": "2025-09-25",
+     "segment": "9:56–31:39",
+     "watch_for": "How to build the golden set with a domain expert: read real traces, write open notes on each failure, and let one domain expert (the 'benevolent dictator') make the final call on labels. Binary pass/fail is covered in the FAQ, not this segment.",
+     "why_this_one": "Live error-analysis demo by Husain and Shankar, co-authors of the assigned Evals FAQ.",
+     "confidence": "high",
+     "duration_source": "YouTube watch page (meta.json, read 2026-10-08)",
+     "published_source": "YouTube watch page (meta.json, read 2026-10-08)",
+     "views": 157273,
+     "segment_source": "uploader chapters in the video description (chapters.json, read 2026-10-08): demo on real traces to theoretical saturation",
+     "effective_minutes": 21.7
+    }
+   ],
+   "no_video_reason": null,
+   "reference_keep": [
+    "https://hamel.dev/blog/posts/evals-faq/"
+   ],
+   "drop": []
+  },
+  {
+   "section": "d3",
+   "part": "Core · A second opinion on ranking, and chunks that know where they came from",
+   "day_title": "Reranking and contextual retrieval",
+   "current_links": [
+    "https://www.anthropic.com/news/contextual-retrieval"
+   ],
+   "videos": [],
+   "no_video_reason": "The Pinecone webinar (u-ocR-2P_YA) is 54 min with 4k views and no chapters. Other contextual-retrieval videos are hype/explainer channels. Anthropic's post is short and has the exact prompt, so it stays as the main item.",
+   "reference_keep": [
+    "https://www.anthropic.com/news/contextual-retrieval"
+   ],
+   "drop": [],
+   "note": "Keep the Anthropic post: the measured gains (35/49/67%) and the 'skip RAG under ~200k tokens' advice are only there."
+  },
+  {
+   "section": "d3",
+   "part": "Core · A second opinion on ranking, and chunks that know where they came from",
+   "day_title": "Reranking and contextual retrieval",
+   "current_links": [
+    "https://www.sbert.net/examples/cross_encoder/applications/README.html"
+   ],
+   "videos": [
+    {
+     "url": "https://www.youtube.com/watch?v=Uh9bYiVrW_s",
+     "oembed_title": "RAG But Better: Rerankers with Cohere AI",
+     "channel": "James Briggs",
+     "duration": "23:42",
+     "published": "2023-10-18",
+     "segment": null,
+     "watch_for": "Two-stage retrieval: a fast bi-encoder fetches candidates, a slower cross-encoder reads question and chunk together to rerank them more accurately.",
+     "why_this_one": "Official video companion to Pinecone's 'Rerankers and Two-Stage Retrieval' chapter; uses Cohere's hosted reranker, but the bi- vs cross-encoder idea is what matters.",
+     "confidence": "medium",
+     "duration_source": "YouTube watch page (meta.json, read 2026-10-08)",
+     "published_source": "YouTube watch page (meta.json, read 2026-10-08)",
+     "views": 77148,
+     "segment_source": null,
+     "effective_minutes": 23.7,
+     "code_note": "Watch for the idea, not the code: 2023 Cohere hosted rerank SDK; the lesson uses a local cross-encoder."
+    }
+   ],
+   "no_video_reason": null,
+   "reference_keep": [
+    "https://www.sbert.net/examples/cross_encoder/applications/README.html"
+   ],
+   "drop": [],
+   "note": "Keep the sbert.net page as reference for the CrossEncoder API."
+  },
+  {
+   "section": "d3",
+   "part": "Core · Rewriting the question before you search (40 min)",
+   "day_title": "Reranking and contextual retrieval",
+   "current_links": [
+    "https://github.com/Raudaschl/rag-fusion"
+   ],
+   "videos": [
+    {
+     "url": "https://www.youtube.com/watch?v=77qELPbNgxA",
+     "oembed_title": "RAG from scratch: Part 6 (Query Translation -- RAG Fusion)",
+     "channel": "LangChain",
+     "duration": "5:42",
+     "published": "2024-02-14",
+     "segment": null,
+     "watch_for": "Multi-query plus Reciprocal Rank Fusion: generate several phrasings, search each, fuse the rankings.",
+     "why_this_one": "Lance Martin (LangChain), same series as Week 2; the method is the one in the Raudaschl README.",
+     "confidence": "high",
+     "duration_source": "YouTube watch page (meta.json, read 2026-10-08)",
+     "published_source": "YouTube watch page (meta.json, read 2026-10-08)",
+     "views": 41502,
+     "segment_source": null,
+     "effective_minutes": 5.7,
+     "code_note": "Watch for the idea, not the code: early-2024 LangChain chains."
+    },
+    {
+     "url": "https://www.youtube.com/watch?v=SaDzIVkYqyY",
+     "oembed_title": "RAG from scratch: Part 9 (Query Translation -- HyDE)",
+     "channel": "LangChain",
+     "duration": "4:46",
+     "published": "2024-02-14",
+     "segment": null,
+     "watch_for": "HyDE: search with a model-written hypothetical answer, because it looks more like a document than the question does; use it only as a search key.",
+     "why_this_one": "Same series; covers the second rewrite technique the lesson implements.",
+     "confidence": "high",
+     "duration_source": "YouTube watch page (meta.json, read 2026-10-08)",
+     "published_source": "YouTube watch page (meta.json, read 2026-10-08)",
+     "views": 26830,
+     "segment_source": null,
+     "effective_minutes": 4.8,
+     "code_note": "Watch for the idea, not the code: early-2024 LangChain chains."
+    }
+   ],
+   "no_video_reason": null,
+   "reference_keep": [
+    "https://github.com/Raudaschl/rag-fusion"
+   ],
+   "drop": [],
+   "note": "Parts 7 (Decomposition, h0OPWlEOank) and 8 (Step Back, xn1jEjRyJ2U) are also oEmbed-verified LangChain videos if the owner wants all four techniques. The 2024 LangChain code is dated; watch for the ideas. Keep the README: its with/without-reranker results are the point of the reading."
+  },
+  {
+   "section": "d3",
+   "part": "Certification · Task 4.2: a few targeted examples",
+   "day_title": "Reranking and contextual retrieval",
+   "current_links": [
+    "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices"
+   ],
+   "videos": [
+    {
+     "url": "https://www.youtube.com/watch?v=ysPbXH0LpIE&t=792s",
+     "oembed_title": "Prompting 101 | Code w/ Claude",
+     "channel": "Anthropic",
+     "duration": "24:52",
+     "published": "2025-07-31",
+     "segment": "13:12–24:52",
+     "watch_for": "Few-shot examples steer Claude on tricky edge cases; wrap them in XML tags so they are not confused with instructions.",
+     "why_this_one": "Official Anthropic; same talk as Day 1, so learners only rewatch a short part.",
+     "confidence": "medium",
+     "duration_source": "YouTube watch page (meta.json, read 2026-10-08)",
+     "published_source": "YouTube watch page (meta.json, read 2026-10-08)",
+     "views": 535189,
+     "segment_source": "start: transcript timecode (sozai.app, first pass); end = end of video",
+     "effective_minutes": 11.7
+    }
+   ],
+   "no_video_reason": null,
+   "reference_keep": [
+    "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices"
+   ],
+   "drop": [],
+   "note": "Keep the best-practices page ('Use examples effectively'): the 3–5 examples, relevant/diverse/tagged guidance is quoted from it."
+  },
+  {
+   "section": "d4",
+   "part": "Core · Grading answers, and following a conversation",
+   "day_title": "Measuring answers, and conversations",
+   "current_links": [
+    "https://hamel.dev/blog/posts/evals-faq/"
+   ],
+   "videos": [
+    {
+     "url": "https://www.youtube.com/watch?v=BsWxPI9UM4c&t=2766s",
+     "oembed_title": "Why AI evals are the hottest new skill for product builders | Hamel Husain & Shreya Shankar",
+     "channel": "Lenny's Podcast",
+     "duration": "1:46:33",
+     "published": "2025-09-25",
+     "segment": "46:06–1:00:51",
+     "watch_for": "One criterion per judge, binary pass/fail, and validating the judge against human labels before trusting its numbers.",
+     "why_this_one": "Husain and Shankar, authors of the assigned FAQ answers, in the same episode used on Days 1–2.",
+     "confidence": "high",
+     "duration_source": "YouTube watch page (meta.json, read 2026-10-08)",
+     "published_source": "YouTube watch page (meta.json, read 2026-10-08)",
+     "views": 157273,
+     "segment_source": "uploader chapters in the video description (chapters.json, read 2026-10-08): building an LLM-as-judge to testing it against humans",
+     "effective_minutes": 14.8
+    }
+   ],
+   "no_video_reason": null,
+   "reference_keep": [
+    "https://hamel.dev/blog/posts/evals-faq/"
+   ],
+   "drop": []
+  },
+  {
+   "section": "d4",
+   "part": "Core · Grading answers, and following a conversation",
+   "day_title": "Measuring answers, and conversations",
+   "current_links": [
+    "https://platform.claude.com/docs/en/test-and-evaluate/develop-tests"
+   ],
+   "videos": [],
+   "no_video_reason": "The previous slot's video covers LLM-as-judge in general; Anthropic's page adds Claude-specific grading tips (code vs model vs human grading, rubric wording, reasoning before verdict). No official video covers those; keep the doc.",
+   "reference_keep": [
+    "https://platform.claude.com/docs/en/test-and-evaluate/develop-tests"
+   ],
+   "drop": []
+  },
+  {
+   "section": "d4",
+   "part": "Enterprise · Evals after launch",
+   "day_title": "Measuring answers, and conversations",
+   "current_links": [
+    "https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents"
+   ],
+   "videos": [],
+   "no_video_reason": "Anthropic's engineering post (2026-01-09) has no companion video, and no verified talk covers its agent-eval vocabulary (tasks, trials, graders, transcripts, regression vs capability suites). Keep the post as the main item.",
+   "reference_keep": [
+    "https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents"
+   ],
+   "drop": []
+  }
+ ],
+ "checked": "2026-10-08 (pass 2: real lengths, dates, views)"
+}

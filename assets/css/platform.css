@@ -590,3 +590,25 @@ body.modal-open { overflow: hidden; }
 .update-status.ok { background: var(--ph-green-soft); }
 .update-status.warn { background: var(--ph-orange-soft); }
 .lesson-row .lr-title .rn-badge { font-size: 11px; color: var(--ph-orange); }
+
+/* ---------- Watch cards (YouTube) and optional references ---------- */
+.reading.video .vbody { display: grid; grid-template-columns: 160px 1fr; gap: 12px; align-items: start; min-width: 0; }
+.reading .vthumb { position: relative; display: block; border-radius: 8px; overflow: hidden; background: var(--surface-2); aspect-ratio: 16 / 9; }
+.reading .vthumb img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.reading .vthumb::after { content: ""; position: absolute; left: 50%; top: 50%; width: 34px; height: 24px; transform: translate(-50%, -50%); border-radius: 7px; background: rgba(0,0,0,.65) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 10'%3E%3Cpath d='M3 2l5 3-5 3z' fill='white'/%3E%3C/svg%3E") center / 14px no-repeat; }
+.reading .vthumb:hover::after { background-color: #e02020; }
+.reading .vlen { position: absolute; right: 5px; bottom: 5px; background: rgba(0,0,0,.78); color: #fff; font-size: 11px; font-weight: 700; padding: 1px 5px; border-radius: 4px; font-variant-numeric: tabular-nums; }
+.reading .vtext { min-width: 0; overflow-wrap: anywhere; }
+.reading .vmeta { font-size: 12.5px; color: var(--ink-3); margin: 2px 0 4px; }
+.reading .vnote { font-size: 12.5px; color: var(--ink-3); font-style: italic; }
+.reading.ref-opt { display: block; padding: 8px 12px; background: transparent; border-style: dashed; }
+.reading.ref-opt summary { cursor: pointer; font-size: 13px; font-weight: 600; color: var(--ink-3); }
+.reading.ref-opt ul { margin: 6px 0 2px; padding-left: 18px; }
+.reading.ref-opt li { font-size: 13.5px; margin: 3px 0; overflow-wrap: anywhere; }
+.reading.ref-opt a { font-weight: 500; }
+@media (max-width: 560px) {
+  .reading.video { grid-template-columns: 1fr; }
+  .reading.video .kind { justify-self: start; }
+  .reading.video .vbody { grid-template-columns: 1fr; }
+  .reading .vthumb { max-width: 280px; }
+}

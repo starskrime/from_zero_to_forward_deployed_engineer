@@ -1,0 +1,388 @@
+{
+ "week": "W4",
+ "slots": [
+  {
+   "section": "d1",
+   "part": "Core · Splitting work, and what not to give a model at all",
+   "day_title": "One agent or a team?",
+   "current_links": [
+    "https://www.anthropic.com/engineering/building-effective-agents"
+   ],
+   "videos": [
+    {
+     "url": "https://www.youtube.com/watch?v=D7_ipDqhtwk",
+     "oembed_title": "How We Build Effective Agents: Barry Zhang, Anthropic",
+     "channel": "AI Engineer",
+     "duration": "15:09",
+     "duration_source": "YouTube watch page (meta.json, read 2026-10-08)",
+     "published": "2025-04-04",
+     "published_source": "YouTube watch page (meta.json, read 2026-10-08)",
+     "segment": null,
+     "watch_for": "Ask first whether you need an agent at all, then build the smallest loop that works: the same 'start simple' rule the lesson uses before splitting into a team.",
+     "why_this_one": "Talk by a co-author of 'Building effective agents', on the official AI Engineer channel; chaptered and 15 min.",
+     "confidence": "high",
+     "views": 556933,
+     "segment_source": null,
+     "effective_minutes": 15.2
+    }
+   ],
+   "no_video_reason": null,
+   "reference_keep": [
+    "https://www.anthropic.com/engineering/building-effective-agents"
+   ],
+   "drop": []
+  },
+  {
+   "section": "d1",
+   "part": "Core · Splitting work, and what not to give a model at all",
+   "day_title": "One agent or a team?",
+   "current_links": [
+    "https://www.anthropic.com/engineering/multi-agent-research-system"
+   ],
+   "videos": [
+    {
+     "url": "https://www.youtube.com/watch?v=uhJJgc-0iTQ&t=570s",
+     "oembed_title": "Building more effective AI agents",
+     "channel": "Anthropic",
+     "duration": "18:58",
+     "duration_source": "YouTube watch page (meta.json, read 2026-10-08)",
+     "published": "2025-10-17",
+     "published_source": "YouTube watch page (meta.json, read 2026-10-08)",
+     "segment": "9:30–15:00",
+     "watch_for": "Watch the multi-agent part: when a lead agent hands work to subagents, what each subagent should get back, and why observability and verification get harder.",
+     "why_this_one": "Anthropic's own channel; Erik Schluntz (co-author of 'Building effective agents', works on multi-agent research) with Alex Albert.",
+     "confidence": "medium",
+     "views": 100327,
+     "segment_source": "uploader chapters in the video description (chapters.json, read 2026-10-08): multi-agent chapters, 9:30 to \"Best practices\"",
+     "effective_minutes": 5.5
+    }
+   ],
+   "no_video_reason": null,
+   "reference_keep": [
+    "https://www.anthropic.com/engineering/multi-agent-research-system"
+   ],
+   "drop": []
+  },
+  {
+   "section": "d1",
+   "part": "Core · Splitting work, and what not to give a model at all",
+   "day_title": "One agent or a team?",
+   "current_links": [
+    "https://cognition.com/blog/dont-build-multi-agents"
+   ],
+   "videos": [],
+   "no_video_reason": "No verified video. The likely candidate ('Don't Build Multi-Agents: Principles of Context Engineering', tvqHG0HqGDI) failed YouTube oEmbed twice, so it can't be used, and the other results were secondary commentary. The Cognition post is short. Keep it as the main item, read right after the Anthropic material.",
+   "reference_keep": [
+    "https://cognition.com/blog/dont-build-multi-agents"
+   ],
+   "drop": []
+  },
+  {
+   "section": "d1",
+   "part": "Certification · Task 1.2: coordinator and subagents",
+   "day_title": "One agent or a team?",
+   "current_links": [
+    "https://code.claude.com/docs/en/agent-sdk/subagents"
+   ],
+   "videos": [
+    {
+     "url": "https://www.youtube.com/watch?v=TqC1qOfiVcQ&t=3973s",
+     "oembed_title": "Claude Agent SDK [Full Workshop] — Thariq Shihipar, Anthropic",
+     "channel": "AI Engineer",
+     "duration": "1:52:25",
+     "duration_source": "YouTube watch page (meta.json, read 2026-10-08)",
+     "published": "2026-01-05",
+     "published_source": "YouTube watch page (meta.json, read 2026-10-08)",
+     "segment": "1:06:13–1:10:36",
+     "watch_for": "Subagents as a way to manage context: give a reviewing subagent a fresh context instead of the parent's full history, and return only the useful result to the coordinator.",
+     "why_this_one": "Anthropic engineer (Agent SDK team) at AI Engineer Code 2025. The segment boundaries come from the transcript notes on ai.engineer; the published chapters don't cover this part.",
+     "confidence": "low",
+     "views": 152818,
+     "segment_source": "ai.engineer talk-page summary text only; uploader chapters (possibly auto-generated) show \"The Monitor\" at 1:05:00, not subagents. WEAK, spot-check",
+     "effective_minutes": 4.4
+    }
+   ],
+   "no_video_reason": null,
+   "reference_keep": [
+    "https://code.claude.com/docs/en/agent-sdk/subagents"
+   ],
+   "drop": []
+  },
+  {
+   "section": "d1",
+   "part": "Enterprise · OAuth 2.0: roles, flows and PKCE",
+   "day_title": "One agent or a team?",
+   "current_links": [
+    "https://oauth.net/2/",
+    "https://datatracker.ietf.org/doc/rfc9700/",
+    "https://datatracker.ietf.org/doc/html/rfc7636"
+   ],
+   "videos": [
+    {
+     "url": "https://www.youtube.com/watch?v=t18YB3xDfXI",
+     "oembed_title": "An Illustrated Guide to OAuth and OpenID Connect",
+     "channel": "OktaDev",
+     "duration": "16:35",
+     "duration_source": "YouTube watch page (meta.json, read 2026-10-08)",
+     "published": "2019-11-05",
+     "published_source": "YouTube watch page (meta.json, read 2026-10-08)",
+     "segment": null,
+     "watch_for": "Learn the four OAuth roles, the authorization-code flow, scopes and consent, and how OpenID Connect adds an ID token on top. This also sets up Day 2.",
+     "why_this_one": "Okta's developer channel; a widely used illustrated explainer. The concepts are stable, so its age is fine.",
+     "confidence": "high",
+     "views": 817055,
+     "segment_source": null,
+     "effective_minutes": 16.6
+    },
+    {
+     "url": "https://www.youtube.com/watch?v=nzayiUAXMqc",
+     "oembed_title": "#PKCE explained - Proof Key for Code Exchange for #OAuth2 Authz Code Grant | Niko Köbler (@dasniko)",
+     "channel": "Niko Köbler - Expert for Keycloak IAM & SSO",
+     "duration": "16:59",
+     "duration_source": "YouTube watch page (meta.json, read 2026-10-08)",
+     "published": "2024-12-09",
+     "published_source": "YouTube watch page (meta.json, read 2026-10-08)",
+     "segment": null,
+     "watch_for": "See how code_verifier and code_challenge stop a stolen authorization code from being swapped for tokens. That is what PKCE adds to the code flow.",
+     "why_this_one": "Focused PKCE explainer from a well-known Keycloak/IAM expert. Not a big channel; length and date not verified.",
+     "confidence": "medium",
+     "views": 7635,
+     "segment_source": null,
+     "effective_minutes": 17.0
+    }
+   ],
+   "no_video_reason": null,
+   "reference_keep": [
+    "https://datatracker.ietf.org/doc/html/rfc7636",
+    "https://datatracker.ietf.org/doc/rfc9700/"
+   ],
+   "drop": [
+    "https://oauth.net/2/"
+   ]
+  },
+  {
+   "section": "d2",
+   "part": "Core · Hand-offs you can test",
+   "day_title": "A team in plain Python",
+   "current_links": [
+    "https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents"
+   ],
+   "videos": [
+    {
+     "url": "https://www.youtube.com/watch?v=4GiqzUHD5AA",
+     "oembed_title": "Context Engineering for Agents",
+     "channel": "LangChain",
+     "duration": "22:06",
+     "duration_source": "YouTube watch page (meta.json, read 2026-10-08)",
+     "published": "2025-07-02",
+     "published_source": "YouTube watch page (meta.json, read 2026-10-08)",
+     "segment": null,
+     "watch_for": "Context as a budget: write, select, compress and isolate. The 'isolate' part explains why each agent in a team should see only its own slice.",
+     "why_this_one": "Lance Martin (LangChain) on the official LangChain channel. It covers the Anthropic vs Cognition trade-off from Day 1.",
+     "confidence": "high",
+     "views": 202030,
+     "segment_source": null,
+     "effective_minutes": 22.1
+    }
+   ],
+   "no_video_reason": null,
+   "reference_keep": [
+    "https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents"
+   ],
+   "drop": []
+  },
+  {
+   "section": "d2",
+   "part": "Enterprise · OpenID Connect: ID tokens and what to check",
+   "day_title": "A team in plain Python",
+   "current_links": [
+    "https://openid.net/specs/openid-connect-core-1_0.html#IDTokenValidation",
+    "https://pyjwt.readthedocs.io/en/stable/usage.html"
+   ],
+   "videos": [
+    {
+     "url": "https://www.youtube.com/watch?v=3u1el6f6mdE",
+     "oembed_title": "OpenID Connect - id_token, what they are, how they work",
+     "channel": "Sascha Preibisch",
+     "duration": "20:10",
+     "duration_source": "YouTube watch page (meta.json, read 2026-10-08)",
+     "published": "2020-09-16",
+     "published_source": "YouTube watch page (meta.json, read 2026-10-08)",
+     "segment": null,
+     "watch_for": "What an ID token is and which claims you check before trusting it (issuer, audience, expiry, signature). Then use the spec section as your checklist in code.",
+     "why_this_one": "Focused id_token explainer by an identity/API-security practitioner and author. A small channel; length and date not verified.",
+     "confidence": "low",
+     "views": 12290,
+     "segment_source": null,
+     "effective_minutes": 20.2
+    }
+   ],
+   "no_video_reason": null,
+   "reference_keep": [
+    "https://openid.net/specs/openid-connect-core-1_0.html#IDTokenValidation",
+    "https://pyjwt.readthedocs.io/en/stable/usage.html"
+   ],
+   "drop": []
+  },
+  {
+   "section": "d3",
+   "part": "Core · The same team as a graph",
+   "day_title": "LangGraph, and agents in parallel",
+   "current_links": [
+    "https://docs.langchain.com/oss/python/langgraph/graph-api"
+   ],
+   "videos": [
+    {
+     "url": "https://www.youtube.com/watch?v=JQznvlSatPQ",
+     "oembed_title": "LangGraph - Controllability with Map Reduce",
+     "channel": "LangChain",
+     "duration": "9:05",
+     "duration_source": "YouTube watch page (meta.json, read 2026-10-08)",
+     "published": "2024-07-30",
+     "published_source": "YouTube watch page (meta.json, read 2026-10-08)",
+     "segment": null,
+     "watch_for": "How Send fans one node out into many parallel branches and a reducer merges their results. This is the 'one sub-agent per stop' pattern in Exercise 3.",
+     "why_this_one": "Official LangChain channel. It covers Send/map-reduce only; state, reducers, conditional edges and Command still come from the doc.",
+     "confidence": "medium",
+     "views": 8337,
+     "segment_source": null,
+     "effective_minutes": 9.1,
+     "code_note": "Watch for the idea, not the code: imports Send from langgraph.constants; current code uses langgraph.types."
+    }
+   ],
+   "no_video_reason": null,
+   "reference_keep": [
+    "https://docs.langchain.com/oss/python/langgraph/graph-api"
+   ],
+   "drop": []
+  },
+  {
+   "section": "d3",
+   "part": "Core · The same team as a graph",
+   "day_title": "LangGraph, and agents in parallel",
+   "current_links": [
+    "https://docs.langchain.com/oss/python/langgraph/workflows-agents"
+   ],
+   "videos": [
+    {
+     "url": "https://www.youtube.com/watch?v=aHCDrAbH_go&t=540s",
+     "oembed_title": "Building Effective Agents with LangGraph",
+     "channel": "LangChain",
+     "duration": "31:49",
+     "duration_source": "YouTube watch page (meta.json, read 2026-10-08)",
+     "published": "2025-01-27",
+     "published_source": "YouTube watch page (meta.json, read 2026-10-08)",
+     "segment": "9:00–20:00",
+     "watch_for": "Anthropic's workflow patterns (chaining, routing, parallelization, orchestrator–worker, evaluator–optimizer) built one by one in LangGraph. The orchestrator–worker part uses Send.",
+     "why_this_one": "Official LangChain walkthrough that mirrors the 'Workflows and agents' doc page one to one.",
+     "confidence": "high",
+     "views": 260037,
+     "segment_source": "uploader chapters in the video description (chapters.json, read 2026-10-08): parallelization, routing, orchestrator-worker (chapter times are round minutes)",
+     "effective_minutes": 11.0,
+     "code_note": "Mostly current (Jan 2025), but check imports against the lesson (e.g. Send now lives in langgraph.types)."
+    }
+   ],
+   "no_video_reason": null,
+   "reference_keep": [
+    "https://docs.langchain.com/oss/python/langgraph/workflows-agents"
+   ],
+   "drop": []
+  },
+  {
+   "section": "d3",
+   "part": "Certification · Parallel subagents and their limits",
+   "day_title": "LangGraph, and agents in parallel",
+   "current_links": [
+    "https://code.claude.com/docs/en/agent-sdk/subagents"
+   ],
+   "videos": [],
+   "no_video_reason": "The lesson asks for one specific doc section (capping subagent depth, concurrency and spend in the Agent SDK). No video covers those controls. The Agent SDK workshop only mentions race conditions with parallel subagents in passing (about 1:10:36). Keep the doc.",
+   "reference_keep": [
+    "https://code.claude.com/docs/en/agent-sdk/subagents"
+   ],
+   "drop": []
+  },
+  {
+   "section": "d3",
+   "part": "Enterprise · SAML single sign-on",
+   "day_title": "LangGraph, and agents in parallel",
+   "current_links": [
+    "https://developer.okta.com/docs/concepts/saml/"
+   ],
+   "videos": [
+    {
+     "url": "https://www.youtube.com/watch?v=0fmNoqz6Urw",
+     "oembed_title": "Intro to SAML: What, How and Why",
+     "channel": "Ping Identity TV",
+     "duration": "4:25",
+     "duration_source": "YouTube watch page (meta.json, read 2026-10-08)",
+     "published": "2010-10-10",
+     "published_source": "YouTube watch page (meta.json, read 2026-10-08)",
+     "segment": null,
+     "watch_for": "The SAML cast (user, identity provider, service provider), the signed assertion, and SP- vs IdP-initiated sign-on, which is how enterprise SSO reaches your app.",
+     "why_this_one": "Official channel of an identity vendor that co-authored SAML deployments. Length and date not verified.",
+     "confidence": "medium",
+     "views": 457230,
+     "segment_source": null,
+     "effective_minutes": 4.4
+    }
+   ],
+   "no_video_reason": null,
+   "reference_keep": [
+    "https://developer.okta.com/docs/concepts/saml/"
+   ],
+   "drop": []
+  },
+  {
+   "section": "d4",
+   "part": "Core · Pause, resume, remember, and measure",
+   "day_title": "State that survives, humans who approve",
+   "current_links": [
+    "https://docs.langchain.com/oss/python/langgraph/persistence",
+    "https://docs.langchain.com/oss/python/langgraph/interrupts"
+   ],
+   "videos": [
+    {
+     "url": "https://www.youtube.com/watch?v=YE6A5d8kNp4",
+     "oembed_title": "LangGraph: Persistence",
+     "channel": "LangChain",
+     "duration": "4:13",
+     "duration_source": "YouTube watch page (meta.json, read 2026-10-08)",
+     "published": "2024-02-05",
+     "published_source": "YouTube watch page (meta.json, read 2026-10-08)",
+     "segment": null,
+     "watch_for": "Checkpointers and thread_id: every step is saved, so a trip's graph can stop and later resume exactly where it left off.",
+     "why_this_one": "Official LangChain channel. The checkpointer/thread model it shows is unchanged in current LangGraph.",
+     "confidence": "medium",
+     "views": 16761,
+     "segment_source": null,
+     "effective_minutes": 4.2,
+     "code_note": "Watch for the idea, not the code: early-2024 LangGraph checkpointer imports have changed; follow the lesson."
+    },
+    {
+     "url": "https://www.youtube.com/watch?v=6t7YJcEFUIY",
+     "oembed_title": "LangGraph interrupt: Making it easier to build human-in-the-loop agents",
+     "channel": "LangChain",
+     "duration": "7:49",
+     "duration_source": "YouTube watch page (meta.json, read 2026-10-08)",
+     "published": "2024-12-14",
+     "published_source": "YouTube watch page (meta.json, read 2026-10-08)",
+     "segment": null,
+     "watch_for": "interrupt() pauses before booking and Command(resume=...) carries the human's approve/edit/reject back in. This is the approval step in Exercise 4.",
+     "why_this_one": "Official LangChain launch video for the interrupt() API, the API the lesson uses.",
+     "confidence": "high",
+     "views": 25225,
+     "segment_source": null,
+     "effective_minutes": 7.8
+    }
+   ],
+   "no_video_reason": null,
+   "reference_keep": [
+    "https://docs.langchain.com/oss/python/langgraph/persistence",
+    "https://docs.langchain.com/oss/python/langgraph/interrupts"
+   ],
+   "drop": []
+  }
+ ],
+ "checked": "2026-10-08 (pass 2: real lengths, dates, views)"
+}

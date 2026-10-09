@@ -167,10 +167,13 @@ When you start the platform with `start.sh` or `start.bat`, it keeps itself up t
 │       └── home.js · plan.js · practice.js
 ├── docs/screenshots/
 ├── docs/releases.md      How updates and release notes work
+├── docs/videos.md        How lesson videos are chosen and maintained
 ├── releases.json         Release notes (shown in the app as "What's new")
 ├── tools/
 │   ├── serve.py          Local server + automatic updates (standard library only)
 │   ├── check_releases.py Validates releases.json; GitHub Release text
+│   ├── apply_videos.py   Turns approved video picks (tools/videos/) into Watch cards
+│   ├── check_videos.py   Checks every linked YouTube video still exists
 │   └── hooks/pre-commit  Optional maintainer hook: no visible change without a note
 └── start.sh · start.bat  One-command local start
 ```

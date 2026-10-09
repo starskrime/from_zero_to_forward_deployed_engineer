@@ -3,6 +3,24 @@
   "repo": "https://github.com/starskrime/from_zero_to_forward_deployed_engineer",
   "releases": [
     {
+      "version": "2026.10.08.1",
+      "date": "2026-10-08",
+      "title": "Videos in every lesson",
+      "new": [
+        "In Weeks 0A–5, most reading items are now short YouTube videos (about 100 picks from channels like Anthropic, LangChain, 3Blue1Brown, Andrej Karpathy, IBM Technology and Corey Schafer). Each card shows the length, the exact part to watch when only part of a long video matters, and what to look for. The docs are still there under \"Reference (optional)\"."
+      ],
+      "changed": [
+        "Lessons: each doc that a video replaces now sits under \"Reference (optional)\", so you can still check exact API details while coding."
+      ],
+      "fixed": [],
+      "affects": [
+        {
+          "page": "lessons",
+          "note": "Readings in Weeks 0A–5 became videos. If you already read a doc for a day, you don't need to watch its video."
+        }
+      ]
+    },
+    {
       "version": "2026.10.08",
       "date": "2026-10-08",
       "title": "Week 5 published, and the platform now updates itself",
@@ -17,7 +35,10 @@
       ],
       "fixed": [],
       "affects": [
-        { "page": "practice", "note": "Questions c-d2-05 and c-d4-04 changed. If you answered them before, try them again." }
+        {
+          "page": "practice",
+          "note": "Questions c-d2-05 and c-d4-04 changed. If you answered them before, try them again."
+        }
       ]
     },
     {
@@ -42,11 +63,26 @@
         "Long quiz answers now wrap on small screens instead of running off the side."
       ],
       "affects": [
-        { "week": "0B", "note": "Enterprise track replaced, and quiz questions D1–D3 h4 and weekly w12 changed. Retake those if you already finished them." },
-        { "week": "W1", "note": "Enterprise days 1–4 replaced, and quiz questions D2 h4 and weekly w6 changed. A coding gym was added." },
-        { "week": "W2", "note": "New card on choosing an embedding model, and a coding gym." },
-        { "week": "W3", "note": "New Day 3 section with its own mini-quiz, an API + Streamlit add-on, new Interview room questions and a coding gym. Day 3 is now 4.5 hours." },
-        { "page": "practice", "note": "Some practice-bank questions for Weeks 0B and 1 were replaced." }
+        {
+          "week": "0B",
+          "note": "Enterprise track replaced, and quiz questions D1–D3 h4 and weekly w12 changed. Retake those if you already finished them."
+        },
+        {
+          "week": "W1",
+          "note": "Enterprise days 1–4 replaced, and quiz questions D2 h4 and weekly w6 changed. A coding gym was added."
+        },
+        {
+          "week": "W2",
+          "note": "New card on choosing an embedding model, and a coding gym."
+        },
+        {
+          "week": "W3",
+          "note": "New Day 3 section with its own mini-quiz, an API + Streamlit add-on, new Interview room questions and a coding gym. Day 3 is now 4.5 hours."
+        },
+        {
+          "page": "practice",
+          "note": "Some practice-bank questions for Weeks 0B and 1 were replaced."
+        }
       ]
     },
     {

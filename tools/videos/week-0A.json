@@ -1,0 +1,595 @@
+{
+ "week": "0A",
+ "checked": "2026-10-08 (pass 2: real lengths, dates, views)",
+ "slots": [
+  {
+   "section": "d1",
+   "part": "Core · Your workbench",
+   "day_title": "Your workbench, and what an FDE is",
+   "kind": "Read",
+   "current_links": [
+    "https://docs.python.org/3/tutorial/venv.html"
+   ],
+   "videos": [
+    {
+     "url": "https://www.youtube.com/watch?v=Kg1Yvry_Ydk",
+     "oembed_title": "Python Tutorial: VENV (Mac & Linux) - How to Use Virtual Environments with the Built-In venv Module",
+     "channel": "Corey Schafer",
+     "duration": "14:17",
+     "duration_source": "YouTube watch page (meta.json, read 2026-10-08)",
+     "published": "2019-04-02",
+     "published_source": "YouTube watch page (meta.json, read 2026-10-08)",
+     "segment": null,
+     "watch_for": "How to create, activate, deactivate and delete a venv on Mac/Linux and install packages into it with pip, which is exactly the Day 1 workbench setup.",
+     "why_this_one": "Corey Schafer is the standard reference channel for Python fundamentals; uses the built-in venv module the lesson uses.",
+     "confidence": "high",
+     "views": 311115,
+     "segment_source": null,
+     "effective_minutes": 14.3
+    },
+    {
+     "url": "https://www.youtube.com/watch?v=APOPm01BVrk",
+     "oembed_title": "Python Tutorial: VENV (Windows) - How to Use Virtual Environments with the Built-In venv Module",
+     "channel": "Corey Schafer",
+     "duration": "17:09",
+     "duration_source": "YouTube watch page (meta.json, read 2026-10-08)",
+     "published": "2019-04-02",
+     "published_source": "YouTube watch page (meta.json, read 2026-10-08)",
+     "segment": null,
+     "watch_for": "The same workflow with the Windows activation commands; Windows learners watch this one instead of the Mac/Linux version.",
+     "why_this_one": "Same series, same author; covers the Windows-specific commands the lesson calls out.",
+     "confidence": "high",
+     "views": 607034,
+     "segment_source": null,
+     "effective_minutes": 17.1,
+     "alternative": "On Windows? Watch this one instead of the Mac/Linux video above."
+    }
+   ],
+   "no_video_reason": null,
+   "reference_keep": [
+    "https://docs.python.org/3/tutorial/venv.html"
+   ],
+   "drop": []
+  },
+  {
+   "section": "d1",
+   "part": "Core · Your workbench",
+   "day_title": "Your workbench, and what an FDE is",
+   "kind": "Read",
+   "current_links": [
+    "https://packaging.python.org/en/latest/guides/installing-using-pip-and-virtual-environments/"
+   ],
+   "videos": [],
+   "no_video_reason": "Covered by the two Corey Schafer venv videos in the previous slot (Mac/Linux and Windows commands). Keep the PyPA page as the copy-paste command reference.",
+   "reference_keep": [
+    "https://packaging.python.org/en/latest/guides/installing-using-pip-and-virtual-environments/"
+   ],
+   "drop": []
+  },
+  {
+   "section": "d1",
+   "part": "Deep practice · The big picture of LLMs",
+   "day_title": "Your workbench, and what an FDE is",
+   "kind": "Watch",
+   "current_links": [
+    "https://www.youtube.com/watch?v=zjkBMFhNj_g"
+   ],
+   "videos": [
+    {
+     "url": "https://www.youtube.com/watch?v=zjkBMFhNj_g",
+     "oembed_title": "[1hr Talk] Intro to Large Language Models",
+     "channel": "Andrej Karpathy",
+     "duration": "59:48",
+     "duration_source": "YouTube watch page (meta.json, read 2026-10-08)",
+     "published": "2023-11-22",
+     "published_source": "YouTube watch page (meta.json, read 2026-10-08)",
+     "segment": "0:00–25:43",
+     "watch_for": "Part 1: what a model physically is (parameters file + run file), and how pre-training then fine-tuning make an assistant. Answers the first two note-taking questions.",
+     "why_this_one": "Existing link, still the best one-hour overview of LLMs; by Andrej Karpathy (OpenAI founding member, ex-Tesla AI lead).",
+     "confidence": "high",
+     "views": 4197707,
+     "segment_source": "uploader chapters in the video description (chapters.json, read 2026-10-08): Part 1 \"LLMs\", intro to end of appendix",
+     "effective_minutes": 25.7
+    },
+    {
+     "url": "https://www.youtube.com/watch?v=zjkBMFhNj_g&t=2743s",
+     "oembed_title": "[1hr Talk] Intro to Large Language Models",
+     "channel": "Andrej Karpathy",
+     "duration": "59:48",
+     "duration_source": "YouTube watch page (meta.json, read 2026-10-08)",
+     "published": "2023-11-22",
+     "published_source": "YouTube watch page (meta.json, read 2026-10-08)",
+     "segment": "45:43–59:23",
+     "watch_for": "LLM security (jailbreaks, prompt injection, data poisoning): answers the third question. Part 2 (25:43-45:43, future of LLMs) is optional.",
+     "why_this_one": "Existing link, still the best one-hour overview of LLMs; by Andrej Karpathy (OpenAI founding member, ex-Tesla AI lead).",
+     "confidence": "high",
+     "views": 4197707,
+     "segment_source": "uploader chapters in the video description (chapters.json, read 2026-10-08): \"LLM Security Intro\" to \"Outro\"",
+     "effective_minutes": 13.7
+    }
+   ],
+   "no_video_reason": null,
+   "reference_keep": [],
+   "drop": []
+  },
+  {
+   "section": "d1",
+   "part": "Enterprise · What a Forward Deployed Engineer is",
+   "day_title": "Your workbench, and what an FDE is",
+   "kind": "Read",
+   "current_links": [
+    "https://newsletter.pragmaticengineer.com/p/forward-deployed-engineers"
+   ],
+   "videos": [
+    {
+     "url": "https://www.youtube.com/watch?v=KwhgfwOSToQ",
+     "oembed_title": "Forward Deployed Engineering 101 — Kevin Bai, Anthropic, ex Palantir & Rippling Founding FDE",
+     "channel": "AI Engineer",
+     "duration": "17:48",
+     "duration_source": "YouTube watch page (meta.json, read 2026-10-08)",
+     "published": "2026-07-28",
+     "published_source": "YouTube watch page (meta.json, read 2026-10-08)",
+     "segment": null,
+     "watch_for": "What an FDE sells (an outcome, not hours), when a company needs FDEs at all, and why FDEs must build on shared platform primitives instead of one-off code.",
+     "why_this_one": "Conference talk by an Anthropic applied-AI engineer who also built FDE teams at Palantir and Rippling; recent and on the official AI Engineer channel.",
+     "confidence": "high",
+     "views": 72565,
+     "segment_source": null,
+     "effective_minutes": 17.8
+    }
+   ],
+   "no_video_reason": null,
+   "reference_keep": [
+    "https://newsletter.pragmaticengineer.com/p/forward-deployed-engineers"
+   ],
+   "drop": []
+  },
+  {
+   "section": "d1",
+   "part": "Enterprise · What a Forward Deployed Engineer is",
+   "day_title": "Your workbench, and what an FDE is",
+   "kind": "Read",
+   "current_links": [
+    "https://blog.palantir.com/dev-versus-delta-demystifying-engineering-roles-at-palantir-ad44c2a6e87"
+   ],
+   "videos": [],
+   "no_video_reason": "No video explains Palantir's specific \"Dev versus Delta\" contrast (\"one capability, many customers\" vs \"one customer, many capabilities\"). The Kevin Bai talk in the previous slot covers the same idea (platform primitives vs bespoke field work, chapters 7:19 and 15:58). Keep the Palantir post; it is short.",
+   "reference_keep": [
+    "https://blog.palantir.com/dev-versus-delta-demystifying-engineering-roles-at-palantir-ad44c2a6e87"
+   ],
+   "drop": []
+  },
+  {
+   "section": "d2",
+   "part": "Core · Packages and git",
+   "day_title": "From one file to a project: packages, imports and git",
+   "kind": "Read",
+   "current_links": [
+    "https://docs.python.org/3/tutorial/modules.html"
+   ],
+   "videos": [
+    {
+     "url": "https://www.youtube.com/watch?v=CqvZ3vGoGs0",
+     "oembed_title": "Python Tutorial for Beginners 9: Import Modules and Exploring The Standard Library",
+     "channel": "Corey Schafer",
+     "duration": "21:57",
+     "duration_source": "YouTube watch page (meta.json, read 2026-10-08)",
+     "published": "2017-05-17",
+     "published_source": "YouTube watch page (meta.json, read 2026-10-08)",
+     "segment": null,
+     "watch_for": "How import finds modules (sys.path), import vs from-import, and aliasing, which is the base for Day 2's package layout.",
+     "why_this_one": "Corey Schafer beginner series; stable topic.",
+     "confidence": "high",
+     "views": 1029834,
+     "segment_source": null,
+     "effective_minutes": 21.9
+    },
+    {
+     "url": "https://www.youtube.com/watch?v=FRxDmVVm0d0",
+     "oembed_title": "python: what is `__main__` / `__main__.py` ? (beginner - intermediate) anthony explains #344",
+     "channel": "anthonywritescode",
+     "duration": "7:24",
+     "duration_source": "YouTube watch page (meta.json, read 2026-10-08)",
+     "published": "2021-10-11",
+     "published_source": "YouTube watch page (meta.json, read 2026-10-08)",
+     "segment": null,
+     "watch_for": "What __main__.py does and how python -m runs a package, which the Day 2 exercise uses for the CLI entry point.",
+     "why_this_one": "Anthony Sottile maintains pytest, pre-commit and other core Python tooling; short and precise.",
+     "confidence": "medium",
+     "views": 5110,
+     "segment_source": null,
+     "effective_minutes": 7.4
+    }
+   ],
+   "no_video_reason": null,
+   "reference_keep": [
+    "https://docs.python.org/3/tutorial/modules.html"
+   ],
+   "drop": []
+  },
+  {
+   "section": "d2",
+   "part": "Core · Packages and git",
+   "day_title": "From one file to a project: packages, imports and git",
+   "kind": "Read",
+   "current_links": [
+    "https://git-scm.com/book/en/v2/Git-Basics-Recording-Changes-to-the-Repository",
+    "https://git-scm.com/book/en/v2/Git-Basics-Getting-a-Git-Repository"
+   ],
+   "videos": [
+    {
+     "url": "https://www.youtube.com/watch?v=HVsySz-h9r4",
+     "oembed_title": "Git Tutorial for Beginners: Command-Line Fundamentals",
+     "channel": "Corey Schafer",
+     "duration": "30:33",
+     "duration_source": "YouTube watch page (meta.json, read 2026-10-08)",
+     "published": "2015-08-03",
+     "published_source": "YouTube watch page (meta.json, read 2026-10-08)",
+     "segment": null,
+     "watch_for": "git init, status, add, commit and .gitignore from the command line: exactly the Day 2 git exercise. (Later parts on remotes and branches are optional today.)",
+     "why_this_one": "Corey Schafer, widely used command-line git intro; git basics have not changed.",
+     "confidence": "high",
+     "views": 2316223,
+     "segment_source": null,
+     "effective_minutes": 30.6,
+     "over_25_no_segment": true
+    }
+   ],
+   "no_video_reason": null,
+   "reference_keep": [
+    "https://git-scm.com/book/en/v2/Git-Basics-Recording-Changes-to-the-Repository"
+   ],
+   "drop": [
+    "https://git-scm.com/book/en/v2/Git-Basics-Getting-a-Git-Repository"
+   ]
+  },
+  {
+   "section": "d2",
+   "part": "Enterprise · A day in the life",
+   "day_title": "From one file to a project: packages, imports and git",
+   "kind": "Read",
+   "current_links": [
+    "https://blog.palantir.com/a-day-in-the-life-of-a-palantir-forward-deployed-software-engineer-45ef2de257b1"
+   ],
+   "videos": [
+    {
+     "url": "https://www.youtube.com/watch?v=5OYy_UtINo4",
+     "oembed_title": "The Role of a Forward Deployed Software Engineer",
+     "channel": "Palantir",
+     "duration": "3:37",
+     "duration_source": "YouTube watch page (meta.json, read 2026-10-08)",
+     "published": "2015-08-24",
+     "published_source": "YouTube watch page (meta.json, read 2026-10-08)",
+     "segment": null,
+     "watch_for": "How Palantir describes the FDSE job: owning technical success at a customer deployment, working on site with customer data and users.",
+     "why_this_one": "Palantir's own channel; Palantir invented the role.",
+     "confidence": "medium",
+     "views": 93036,
+     "segment_source": null,
+     "effective_minutes": 3.6
+    }
+   ],
+   "no_video_reason": null,
+   "reference_keep": [
+    "https://blog.palantir.com/a-day-in-the-life-of-a-palantir-forward-deployed-software-engineer-45ef2de257b1"
+   ],
+   "drop": []
+  },
+  {
+   "section": "d3",
+   "part": "Core · Files and bad data",
+   "day_title": "Files, CSV, JSON, and handling bad data",
+   "kind": "Read",
+   "current_links": [
+    "https://docs.python.org/3/tutorial/errors.html"
+   ],
+   "videos": [
+    {
+     "url": "https://www.youtube.com/watch?v=NIWwJbo-9_8",
+     "oembed_title": "Python Tutorial: Using Try/Except Blocks for Error Handling",
+     "channel": "Corey Schafer",
+     "duration": "10:34",
+     "duration_source": "YouTube watch page (meta.json, read 2026-10-08)",
+     "published": "2015-11-13",
+     "published_source": "YouTube watch page (meta.json, read 2026-10-08)",
+     "segment": null,
+     "watch_for": "try / except with specific exception types, else, finally and raise, which you need for \"catch, record, continue\" on bad rows.",
+     "why_this_one": "Corey Schafer; covers the same ground as tutorial sections 8.2–8.6.",
+     "confidence": "high",
+     "views": 815920,
+     "segment_source": null,
+     "effective_minutes": 10.6
+    }
+   ],
+   "no_video_reason": null,
+   "reference_keep": [
+    "https://docs.python.org/3/tutorial/errors.html"
+   ],
+   "drop": []
+  },
+  {
+   "section": "d3",
+   "part": "Core · Files and bad data",
+   "day_title": "Files, CSV, JSON, and handling bad data",
+   "kind": "Read",
+   "current_links": [
+    "https://docs.python.org/3/library/csv.html"
+   ],
+   "videos": [
+    {
+     "url": "https://www.youtube.com/watch?v=q5uM4VKywbA",
+     "oembed_title": "Python Tutorial: CSV Module - How to Read, Parse, and Write CSV Files",
+     "channel": "Corey Schafer",
+     "duration": "16:11",
+     "duration_source": "YouTube watch page (meta.json, read 2026-10-08)",
+     "published": "2017-08-09",
+     "published_source": "YouTube watch page (meta.json, read 2026-10-08)",
+     "segment": null,
+     "watch_for": "csv.reader vs csv.DictReader and DictWriter: reading rows as dicts by column name, as the Lead Intake CLI does.",
+     "why_this_one": "Corey Schafer; standard-library csv has not changed.",
+     "confidence": "high",
+     "views": 1467486,
+     "segment_source": null,
+     "effective_minutes": 16.2
+    }
+   ],
+   "no_video_reason": null,
+   "reference_keep": [
+    "https://docs.python.org/3/library/csv.html"
+   ],
+   "drop": []
+  },
+  {
+   "section": "d3",
+   "part": "Enterprise · Why AI companies hire FDEs",
+   "day_title": "Files, CSV, JSON, and handling bad data",
+   "kind": "Read",
+   "current_links": [
+    "https://a16z.com/services-led-growth/"
+   ],
+   "videos": [],
+   "no_video_reason": "No video version of the a16z \"Trading margin for moat\" argument was found. It is a business essay; keep it as the item (short read).",
+   "reference_keep": [
+    "https://a16z.com/services-led-growth/"
+   ],
+   "drop": []
+  },
+  {
+   "section": "d4",
+   "part": "Core · Config, logs and CLIs",
+   "day_title": "Configuration, logging and command-line tools",
+   "kind": "Read",
+   "current_links": [
+    "https://docs.python.org/3/howto/logging.html"
+   ],
+   "videos": [
+    {
+     "url": "https://www.youtube.com/watch?v=-ARI4Cz-awo",
+     "oembed_title": "Python Tutorial: Logging Basics - Logging to Files, Setting Levels, and Formatting",
+     "channel": "Corey Schafer",
+     "duration": "14:25",
+     "duration_source": "YouTube watch page (meta.json, read 2026-10-08)",
+     "published": "2017-03-15",
+     "published_source": "YouTube watch page (meta.json, read 2026-10-08)",
+     "segment": null,
+     "watch_for": "basicConfig, log levels, writing to a file and formatting messages, which matches the \"Basic Logging Tutorial\" section.",
+     "why_this_one": "Corey Schafer; uses only the standard logging module.",
+     "confidence": "high",
+     "views": 573625,
+     "segment_source": null,
+     "effective_minutes": 14.4
+    }
+   ],
+   "no_video_reason": null,
+   "reference_keep": [
+    "https://docs.python.org/3/howto/logging.html"
+   ],
+   "drop": []
+  },
+  {
+   "section": "d4",
+   "part": "Core · Config, logs and CLIs",
+   "day_title": "Configuration, logging and command-line tools",
+   "kind": "Read",
+   "current_links": [
+    "https://docs.python.org/3/howto/argparse.html"
+   ],
+   "videos": [
+    {
+     "url": "https://www.youtube.com/watch?v=0twL6MXCLdQ",
+     "oembed_title": "Argparse for CLI - Intermediate Python Programming p.3",
+     "channel": "sentdex",
+     "duration": "10:48",
+     "duration_source": "YouTube watch page (meta.json, read 2026-10-08)",
+     "published": "2016-11-03",
+     "published_source": "YouTube watch page (meta.json, read 2026-10-08)",
+     "segment": null,
+     "watch_for": "Positional vs optional arguments, defaults and help text with argparse, enough to build the Lead Intake CLI flags.",
+     "why_this_one": "sentdex is a long-running, well-known Python teaching channel; argparse API is stable.",
+     "confidence": "medium",
+     "views": 86328,
+     "segment_source": null,
+     "effective_minutes": 10.8
+    }
+   ],
+   "no_video_reason": null,
+   "reference_keep": [
+    "https://docs.python.org/3/howto/argparse.html"
+   ],
+   "drop": []
+  },
+  {
+   "section": "d4",
+   "part": "Core · Config, logs and CLIs",
+   "day_title": "Configuration, logging and command-line tools",
+   "kind": "Read",
+   "current_links": [
+    "https://pypi.org/project/python-dotenv/"
+   ],
+   "videos": [
+    {
+     "url": "https://www.youtube.com/watch?v=YdgIWTYQ69A",
+     "oembed_title": "Hide API keys in Python scripts using python-dotenv, .env, and .gitignore",
+     "channel": "Jonathan Soma",
+     "duration": "15:51",
+     "duration_source": "YouTube watch page (meta.json, read 2026-10-08)",
+     "published": "2021-06-27",
+     "published_source": "YouTube watch page (meta.json, read 2026-10-08)",
+     "segment": null,
+     "watch_for": "Put secrets in a .env file, load them with load_dotenv() and os.getenv, and keep .env out of git with .gitignore.",
+     "why_this_one": "Jonathan Soma teaches data journalism/Python at Columbia; covers the exact trio the lesson uses (dotenv + env vars + .gitignore).",
+     "confidence": "medium",
+     "views": 50918,
+     "segment_source": null,
+     "effective_minutes": 15.8
+    }
+   ],
+   "no_video_reason": null,
+   "reference_keep": [
+    "https://pypi.org/project/python-dotenv/"
+   ],
+   "drop": []
+  },
+  {
+   "section": "d4",
+   "part": "Deep practice · Undoing things in git",
+   "day_title": "Configuration, logging and command-line tools",
+   "kind": "Read",
+   "current_links": [
+    "https://git-scm.com/book/en/v2/Git-Basics-Undoing-Things"
+   ],
+   "videos": [
+    {
+     "url": "https://www.youtube.com/watch?v=FdZecVxzJbk",
+     "oembed_title": "Git Tutorial: Fixing Common Mistakes and Undoing Bad Commits",
+     "channel": "Corey Schafer",
+     "duration": "21:31",
+     "duration_source": "YouTube watch page (meta.json, read 2026-10-08)",
+     "published": "2015-10-26",
+     "published_source": "YouTube watch page (meta.json, read 2026-10-08)",
+     "segment": null,
+     "watch_for": "Amending the last commit, unstaging, discarding changes and when reset/revert are safe; only amend commits you have not pushed.",
+     "why_this_one": "Corey Schafer; clear and practical. Note: it uses git checkout/reset where Pro Git §2.4 now also shows git restore.",
+     "confidence": "medium",
+     "views": 395793,
+     "segment_source": null,
+     "effective_minutes": 21.5
+    }
+   ],
+   "no_video_reason": null,
+   "reference_keep": [
+    "https://git-scm.com/book/en/v2/Git-Basics-Undoing-Things"
+   ],
+   "drop": []
+  },
+  {
+   "section": "d4",
+   "part": "Enterprise · Read real job postings",
+   "day_title": "Configuration, logging and command-line tools",
+   "kind": "Read",
+   "current_links": [
+    "https://job-boards.greenhouse.io/anthropic/jobs/5302966008"
+   ],
+   "videos": [],
+   "no_video_reason": "This is a real job posting to read and annotate; no video applies.",
+   "reference_keep": [
+    "https://job-boards.greenhouse.io/anthropic/jobs/5302966008"
+   ],
+   "drop": []
+  },
+  {
+   "section": "d4",
+   "part": "Enterprise · Read real job postings",
+   "day_title": "Configuration, logging and command-line tools",
+   "kind": "Read",
+   "current_links": [
+    "https://www.amazon.jobs/en/jobs/10517491/sr-forward-deployed-engineer-aws-forward-deployed-engineering"
+   ],
+   "videos": [],
+   "no_video_reason": "This is a real job posting to read and annotate; no video applies.",
+   "reference_keep": [
+    "https://www.amazon.jobs/en/jobs/10517491/sr-forward-deployed-engineer-aws-forward-deployed-engineering"
+   ],
+   "drop": []
+  },
+  {
+   "section": "d4",
+   "part": "Enterprise · Read real job postings",
+   "day_title": "Configuration, logging and command-line tools",
+   "kind": "Read",
+   "current_links": [
+    "https://openai.com/careers/forward-deployed-engineer-(fde)-healthcare-sf-san-francisco/"
+   ],
+   "videos": [],
+   "no_video_reason": "This is a real job posting to read and annotate; no video applies.",
+   "reference_keep": [
+    "https://openai.com/careers/forward-deployed-engineer-(fde)-healthcare-sf-san-francisco/"
+   ],
+   "drop": []
+  },
+  {
+   "section": "w1",
+   "part": "Deep practice · Branches",
+   "day_title": "Accounts, then build the Lead Intake CLI",
+   "kind": "Read",
+   "current_links": [
+    "https://git-scm.com/book/en/v2/Git-Branching-Branches-in-a-Nutshell"
+   ],
+   "videos": [
+    {
+     "url": "https://www.youtube.com/watch?v=QV0kVNvkMxc",
+     "oembed_title": "Git & GitHub Tutorial for Beginners #8 - Branches",
+     "channel": "Net Ninja",
+     "duration": "10:06",
+     "duration_source": "YouTube watch page (meta.json, read 2026-10-08)",
+     "published": "2017-06-13",
+     "published_source": "YouTube watch page (meta.json, read 2026-10-08)",
+     "segment": null,
+     "watch_for": "Creating, switching and merging branches, and the idea that a branch is just a pointer to a commit.",
+     "why_this_one": "Net Ninja is a proven beginner web/dev tutorial channel; short episode in a structured series.",
+     "confidence": "medium",
+     "views": 396260,
+     "segment_source": null,
+     "effective_minutes": 10.1
+    }
+   ],
+   "no_video_reason": null,
+   "reference_keep": [
+    "https://git-scm.com/book/en/v2/Git-Branching-Branches-in-a-Nutshell"
+   ],
+   "drop": []
+  },
+  {
+   "section": "w2",
+   "part": "Enterprise · Case study and communication practice",
+   "day_title": "Finish, check, document, ship",
+   "kind": "Read",
+   "current_links": [
+    "https://www.latent.space/p/forward-deployed-engineers-aiewf"
+   ],
+   "videos": [
+    {
+     "url": "https://www.youtube.com/watch?v=Byv311hdoHE",
+     "oembed_title": "The Dirty Secret of Forward Deployed Engineering — Natalie Meurer, Sierra",
+     "channel": "AI Engineer",
+     "duration": "16:49",
+     "duration_source": "YouTube watch page (meta.json, read 2026-10-08)",
+     "published": "2026-07-28",
+     "published_source": "YouTube watch page (meta.json, read 2026-10-08)",
+     "segment": null,
+     "watch_for": "What FDEs actually do across a deployment (keeping it running, data integration, tools, customer enablement) and why outcome accountability ties it together.",
+     "why_this_one": "This is the talk the Latent Space post summarizes (the post cites Meurer's World's Fair FDE-track talk); official AI Engineer channel.",
+     "confidence": "high",
+     "views": 20429,
+     "segment_source": null,
+     "effective_minutes": 16.8
+    }
+   ],
+   "no_video_reason": null,
+   "reference_keep": [
+    "https://www.latent.space/p/forward-deployed-engineers-aiewf"
+   ],
+   "drop": []
+  }
+ ]
+}

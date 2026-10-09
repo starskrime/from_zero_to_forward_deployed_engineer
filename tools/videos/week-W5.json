@@ -1,0 +1,357 @@
+{
+ "week": "W5",
+ "slots": [
+  {
+   "section": "d1",
+   "part": "Core · Chained, speech-to-speech, or full duplex",
+   "day_title": "A voice pipeline you can measure",
+   "current_links": [
+    "https://voiceaiandvoiceagents.com/"
+   ],
+   "videos": [
+    {
+     "url": "https://www.youtube.com/watch?v=N7b1PJc7SFc",
+     "oembed_title": "Engineering voice agents: Latency, quality, and scale — Rishabh Bhargava, Together AI",
+     "channel": "AI Engineer",
+     "duration": "24:35",
+     "duration_source": "YouTube watch page (meta.json, read 2026-10-08)",
+     "published": "2026-05-31",
+     "published_source": "YouTube watch page (meta.json, read 2026-10-08)",
+     "segment": null,
+     "watch_for": "Targets for each stage of the cascade (STT, LLM time-to-first-token, TTS first audio, network) and what changes with speech-to-speech. Use them to fill your per-stage latency budget.",
+     "why_this_one": "Recent, chaptered conference talk that gives concrete per-stage numbers.",
+     "confidence": "high",
+     "views": 10871,
+     "segment_source": null,
+     "effective_minutes": 24.6
+    },
+    {
+     "url": "https://www.youtube.com/watch?v=dRQHikOrH2A&t=713s",
+     "oembed_title": "How to build the world's fastest voice bot: Kwindla Hultman Kramer",
+     "channel": "AI Engineer",
+     "duration": "20:38",
+     "duration_source": "YouTube watch page (meta.json, read 2026-10-08)",
+     "published": "2025-02-10",
+     "published_source": "YouTube watch page (meta.json, read 2026-10-08)",
+     "segment": "11:53–18:11",
+     "watch_for": "Measure voice-to-voice latency as the silence the user hears, and keep it separate from each service's own timings. That is the measurement habit Exercise 1 asks for.",
+     "why_this_one": "Daily/Pipecat CEO, the team behind the primer, so it carries the same vendor view the lesson warns about.",
+     "confidence": "high",
+     "views": 4943,
+     "segment_source": "ai.engineer talk page chapters (site-generated from the transcript, not uploader chapters)",
+     "effective_minutes": 6.3
+    }
+   ],
+   "no_video_reason": null,
+   "reference_keep": [
+    "https://voiceaiandvoiceagents.com/"
+   ],
+   "drop": []
+  },
+  {
+   "section": "d1",
+   "part": "Core · Chained, speech-to-speech, or full duplex",
+   "day_title": "A voice pipeline you can measure",
+   "current_links": [
+    "https://developers.openai.com/api/docs/guides/voice-agents"
+   ],
+   "videos": [
+    {
+     "url": "https://www.youtube.com/watch?v=-OXiljTJxQU",
+     "oembed_title": "Building Effective Voice Agents — Toki Sherbakov + Anoop Kotha, OpenAI",
+     "channel": "AI Engineer",
+     "duration": "17:17",
+     "duration_source": "YouTube watch page (meta.json, read 2026-10-08)",
+     "published": "2025-07-20",
+     "published_source": "YouTube watch page (meta.json, read 2026-10-08)",
+     "segment": null,
+     "watch_for": "Chained vs speech-to-speech compared by what an error costs. It explains why a chained pipeline still wins when determinism matters, as in an ordering flow.",
+     "why_this_one": "OpenAI solution architects presenting the same framing as OpenAI's voice-agents guide.",
+     "confidence": "high",
+     "views": 14678,
+     "segment_source": null,
+     "effective_minutes": 17.3
+    }
+   ],
+   "no_video_reason": null,
+   "reference_keep": [
+    "https://developers.openai.com/api/docs/guides/voice-agents"
+   ],
+   "drop": []
+  },
+  {
+   "section": "d1",
+   "part": "Certification · Task 4.3: an order schema that can say \"not stated\"",
+   "day_title": "A voice pipeline you can measure",
+   "current_links": [
+    "https://platform.claude.com/docs/en/build-with-claude/structured-outputs",
+    "https://docs.pydantic.dev/latest/concepts/validators/"
+   ],
+   "videos": [
+    {
+     "url": "https://www.youtube.com/watch?v=502XOB0u8OY&t=339s",
+     "oembed_title": "Why Python Needs Pydantic for Real Applications",
+     "channel": "ArjanCodes",
+     "duration": "13:56",
+     "duration_source": "YouTube page (browser, 2026-10-08)",
+     "published": "2024-03-08",
+     "published_source": "YouTube page (browser, 2026-10-08)",
+     "views": 124731,
+     "segment": "5:39–9:32",
+     "segment_source": "yt.chop.dev chapter list (\"Field validation\" 5:39, \"Model Validation\" 7:45, next chapter 9:32)",
+     "effective_minutes": 3.9,
+     "watch_for": "Field-level and model-level validators: rules a schema alone cannot express, such as allowing \"not stated\" while rejecting a quantity of 0.",
+     "why_this_one": "ArjanCodes, Pydantic v2; chaptered, so only the validators part is needed. Claude structured outputs stay in the doc.",
+     "confidence": "medium",
+     "new_in_pass2": true
+    }
+   ],
+   "no_video_reason": null,
+   "reference_keep": [
+    "https://platform.claude.com/docs/en/build-with-claude/structured-outputs",
+    "https://docs.pydantic.dev/latest/concepts/validators/"
+   ],
+   "drop": []
+  },
+  {
+   "section": "d1",
+   "part": "Enterprise · Reviewing a voice flow with HAX and PAIR",
+   "day_title": "A voice pipeline you can measure",
+   "current_links": [
+    "https://www.microsoft.com/en-us/haxtoolkit/library/",
+    "https://pair.withgoogle.com/chapter/explainability-trust/"
+   ],
+   "videos": [],
+   "no_video_reason": "Only video found (Microsoft Research HAX tutorial) is 40 min, 2022, 787 views, no chapters: the HAX library and PAIR chapter stay as the main items.",
+   "reference_keep": [
+    "https://www.microsoft.com/en-us/haxtoolkit/library/",
+    "https://pair.withgoogle.com/chapter/explainability-trust/"
+   ],
+   "drop": []
+  },
+  {
+   "section": "d2",
+   "part": "Core · Who is talking, and what did they hear?",
+   "day_title": "Taking turns, and saying it back",
+   "current_links": [
+    "https://docs.pipecat.ai/guides/learn/speech-input"
+   ],
+   "videos": [
+    {
+     "url": "https://www.youtube.com/watch?v=nxuTVd7v7dg&t=974s",
+     "oembed_title": "Full Workshop: Realtime Voice AI — Mark Backman, Daily",
+     "channel": "AI Engineer",
+     "duration": "1:09:40",
+     "duration_source": "YouTube watch page (meta.json, read 2026-10-08)",
+     "published": "2025-08-03",
+     "published_source": "YouTube watch page (meta.json, read 2026-10-08)",
+     "segment": "16:14–19:43",
+     "watch_for": "Silero VAD detects that the user started speaking, and Pipecat turns that into an interruption that clears the bot's queued audio.",
+     "why_this_one": "The Pipecat maintainers (Daily) on the official AI Engineer channel; chaptered.",
+     "confidence": "medium",
+     "views": 16075,
+     "segment_source": "ai.engineer talk page chapters (site-generated from the transcript, not uploader chapters): \"Choose the transport, then detect the user's turn\"",
+     "effective_minutes": 3.5
+    },
+    {
+     "url": "https://www.youtube.com/watch?v=c8gQYxchU9g",
+     "oembed_title": "Pipecat TV - Episode 2 - Smart Turn v3",
+     "channel": "Daily",
+     "duration": "10:19",
+     "duration_source": "YouTube page (browser, 2026-10-08)",
+     "published": "2025-09-13",
+     "published_source": "YouTube page (browser, 2026-10-08)",
+     "views": 1279,
+     "segment": null,
+     "segment_source": null,
+     "effective_minutes": 10.3,
+     "watch_for": "Why a fixed silence timeout cuts people off, and how Smart Turn v3 decides from the audio whether a turn is complete, so the bot waits through a pause in the middle of a part number.",
+     "why_this_one": "Official Daily/Pipecat channel, dedicated to the turn model the lesson uses; replaces a 3-min workshop segment.",
+     "confidence": "high",
+     "new_in_pass2": true
+    }
+   ],
+   "no_video_reason": null,
+   "reference_keep": [
+    "https://docs.pipecat.ai/guides/learn/speech-input"
+   ],
+   "drop": []
+  },
+  {
+   "section": "d2",
+   "part": "Core · Who is talking, and what did they hear?",
+   "day_title": "Taking turns, and saying it back",
+   "current_links": [
+    "https://docs.livekit.io/agents/build/turns/"
+   ],
+   "videos": [
+    {
+     "url": "https://www.youtube.com/watch?v=1v9zBiZKlIY",
+     "oembed_title": "Why ChatGPT Keeps Interrupting You — Dr. Tom Shapland, LiveKit",
+     "channel": "AI Engineer",
+     "duration": "27:02",
+     "duration_source": "YouTube watch page (meta.json, read 2026-10-08)",
+     "published": "2025-07-31",
+     "published_source": "YouTube watch page (meta.json, read 2026-10-08)",
+     "segment": null,
+     "watch_for": "End-of-turn detection with conversational context, and why a backchannel ('mm-hm') is not an interruption, which is the job of LiveKit's turn modes and false-interruption handling.",
+     "why_this_one": "LiveKit's own speaker on the official AI Engineer channel; chaptered. A little over 25 min, but every chapter is on topic.",
+     "confidence": "high",
+     "views": 3893,
+     "segment_source": null,
+     "effective_minutes": 27.0,
+     "over_25_no_segment": true
+    },
+    {
+     "url": "https://www.youtube.com/watch?v=iXhba366fQc&t=1924s",
+     "oembed_title": "Building voice agents with OpenAI — Dominik Kundel, OpenAI",
+     "channel": "AI Engineer",
+     "duration": "1:25:35",
+     "duration_source": "YouTube watch page (meta.json, read 2026-10-08)",
+     "published": "2025-06-29",
+     "published_source": "YouTube watch page (meta.json, read 2026-10-08)",
+     "segment": "32:04–38:03",
+     "watch_for": "After a barge-in, trim the history to what the listener actually heard, not to what the model generated. Exercise 2 implements exactly that.",
+     "why_this_one": "OpenAI developer-experience lead; the chapter 'Track what the listener actually heard'.",
+     "confidence": "high",
+     "views": 29369,
+     "segment_source": "ai.engineer talk page chapters (site-generated from the transcript, not uploader chapters): \"Track what the listener actually heard\"",
+     "effective_minutes": 6.0,
+     "code_note": "Watch for the idea, not the code: June 2025 Agents SDK realtime code; ai.engineer notes the launch-era code removed the interrupted transcript instead of trimming it. Follow the lesson."
+    }
+   ],
+   "no_video_reason": null,
+   "reference_keep": [
+    "https://docs.livekit.io/agents/build/turns/"
+   ],
+   "drop": []
+  },
+  {
+   "section": "d2",
+   "part": "Certification · stop_reason first: truncated and refused output",
+   "day_title": "Taking turns, and saying it back",
+   "current_links": [
+    "https://platform.claude.com/docs/en/agents-and-tools/tool-use/strict-tool-use",
+    "https://platform.claude.com/docs/api/errors"
+   ],
+   "videos": [],
+   "no_video_reason": "This is current Claude API detail (stop_reason values such as max_tokens and refusal, strict tool use, prefill errors on newer models). No accurate, up-to-date video covers it, and older videos teach prefill, which the lesson says no longer works. Keep the docs.",
+   "reference_keep": [
+    "https://platform.claude.com/docs/en/agents-and-tools/tool-use/strict-tool-use",
+    "https://platform.claude.com/docs/api/errors"
+   ],
+   "drop": []
+  },
+  {
+   "section": "d3",
+   "part": "Core · Images in, a part number (or a question) out",
+   "day_title": "Photos that propose, a catalog that decides",
+   "current_links": [
+    "https://platform.claude.com/docs/en/build-with-claude/vision"
+   ],
+   "videos": [],
+   "no_video_reason": "No official or high-quality video covers Claude vision's current limits, token formula and weak spots. Search turned up only small-channel API demos, some built on Claude 3-era models. The doc's worked token sizes are what learners need while coding. Keep the doc.",
+   "reference_keep": [
+    "https://platform.claude.com/docs/en/build-with-claude/vision"
+   ],
+   "drop": []
+  },
+  {
+   "section": "d3",
+   "part": "Core · Images in, a part number (or a question) out",
+   "day_title": "Photos that propose, a catalog that decides",
+   "current_links": [
+    "https://docs.ollama.com/capabilities/vision",
+    "https://ollama.com/library/gemma4",
+    "https://ollama.com/library/qwen3-vl"
+   ],
+   "videos": [],
+   "no_video_reason": "The lesson names gemma4 and qwen3-vl. The videos found test older models (Gemma 3, Qwen2.5-VL) or come from small channels. The Ollama docs and model pages answer the real question (which size fits a laptop), so keep them.",
+   "reference_keep": [
+    "https://docs.ollama.com/capabilities/vision",
+    "https://ollama.com/library/gemma4",
+    "https://ollama.com/library/qwen3-vl"
+   ],
+   "drop": []
+  },
+  {
+   "section": "d3",
+   "part": "Enterprise · Show alternatives, not percentages",
+   "day_title": "Photos that propose, a catalog that decides",
+   "current_links": [
+    "https://pair.withgoogle.com/chapter/explainability-trust/"
+   ],
+   "videos": [],
+   "no_video_reason": "No video covers PAIR's confidence-display guidance specifically. Google Design's 'Getting Started with the People + AI Guidebook' (n3HsvqBJrlY, oEmbed OK) is a general intro and doesn't teach 'show alternatives, not percentages'. Keep the chapter.",
+   "reference_keep": [
+    "https://pair.withgoogle.com/chapter/explainability-trust/"
+   ],
+   "drop": []
+  },
+  {
+   "section": "d4",
+   "part": "Core · The model proposes, a person decides",
+   "day_title": "A person approves the risky orders",
+   "current_links": [
+    "https://docs.langchain.com/oss/python/langgraph/use-subgraphs",
+    "https://docs.langchain.com/oss/python/langgraph/interrupts"
+   ],
+   "videos": [
+    {
+     "url": "https://www.youtube.com/watch?v=6t7YJcEFUIY",
+     "oembed_title": "LangGraph interrupt: Making it easier to build human-in-the-loop agents",
+     "channel": "LangChain",
+     "duration": "7:49",
+     "duration_source": "YouTube watch page (meta.json, read 2026-10-08)",
+     "published": "2024-12-14",
+     "published_source": "YouTube watch page (meta.json, read 2026-10-08)",
+     "segment": null,
+     "watch_for": "interrupt() inside a node, and resuming with Command(resume=...) carrying approve / edit / reject: the risk-gated approval in the checkout subgraph.",
+     "why_this_one": "Official LangChain launch video for interrupt(). The same video is also used in W4 Day 4.",
+     "confidence": "high",
+     "views": 25225,
+     "segment_source": null,
+     "effective_minutes": 7.8
+    },
+    {
+     "url": "https://www.youtube.com/watch?v=Z8l7C031xkM",
+     "oembed_title": "LangGraph Agents - Controllability - Sub-graphs",
+     "channel": "LangChain",
+     "duration": "8:42",
+     "duration_source": "YouTube watch page (meta.json, read 2026-10-08)",
+     "published": "2024-07-29",
+     "published_source": "YouTube watch page (meta.json, read 2026-10-08)",
+     "segment": null,
+     "watch_for": "A compiled graph used as a node in a parent graph, and how state passes between parent and subgraph. Interrupts inside subgraphs are covered only in the doc.",
+     "why_this_one": "Official LangChain channel. It is older, so check it against the current subgraphs doc (shared vs different state schemas).",
+     "confidence": "medium",
+     "views": 10939,
+     "segment_source": null,
+     "effective_minutes": 8.7,
+     "code_note": "Watch for the idea, not the code: mid-2024 subgraph API; follow the current \"use subgraphs\" doc."
+    }
+   ],
+   "no_video_reason": null,
+   "reference_keep": [
+    "https://docs.langchain.com/oss/python/langgraph/use-subgraphs",
+    "https://docs.langchain.com/oss/python/langgraph/interrupts"
+   ],
+   "drop": []
+  },
+  {
+   "section": "d4",
+   "part": "Certification · Exam answer vs current API: forced tool_choice and prefill",
+   "day_title": "A person approves the risky orders",
+   "current_links": [
+    "https://platform.claude.com/docs/en/agents-and-tools/tool-use/define-tools"
+   ],
+   "videos": [],
+   "no_video_reason": "This slot compares the exam's answer with what the current API accepts (forced tool_choice and its model support, prefill). Only the current doc is authoritative; videos would be outdated or wrong. Keep the doc.",
+   "reference_keep": [
+    "https://platform.claude.com/docs/en/agents-and-tools/tool-use/define-tools"
+   ],
+   "drop": []
+  }
+ ],
+ "checked": "2026-10-08 (pass 2: real lengths, dates, views)"
+}

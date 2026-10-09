@@ -1,0 +1,325 @@
+{
+ "week": "W2",
+ "slots": [
+  {
+   "section": "d1",
+   "part": "Core · The pipeline, and step one",
+   "day_title": "Why RAG, and loading real documents",
+   "current_links": [
+    "https://www.youtube.com/playlist?list=PLfaIDFEXuae2LXbO1_PKyVJiQ23ZztA0x"
+   ],
+   "videos": [
+    {
+     "url": "https://www.youtube.com/watch?v=sVcwVQRHIc8",
+     "oembed_title": "Learn RAG From Scratch – Python AI Tutorial from a LangChain Engineer",
+     "channel": "freeCodeCamp.org",
+     "duration": "2:33:11",
+     "published": "2024-04-17",
+     "segment": "0:00–22:06",
+     "watch_for": "The two phases of RAG (index offline: load, split, embed, store; answer per question: embed, retrieve, generate) and why retrieved passages fix knowledge cutoff and private-data gaps.",
+     "why_this_one": "Same Lance Martin (LangChain) videos as the current playlist, stitched into one video on freeCodeCamp.org; watch for ideas, not the 2024 LangChain code.",
+     "confidence": "medium",
+     "duration_source": "YouTube watch page (meta.json, read 2026-10-08)",
+     "published_source": "YouTube watch page (meta.json, read 2026-10-08)",
+     "views": 1699829,
+     "segment_source": "transcript timecodes on a third-party summary (my.infocaptor.com), first pass",
+     "effective_minutes": 22.1,
+     "code_note": "Watch for the idea, not the code: 2024 LangChain imports; the lesson builds the pipeline its own way."
+    }
+   ],
+   "no_video_reason": null,
+   "reference_keep": [
+    "https://www.youtube.com/playlist?list=PLfaIDFEXuae2LXbO1_PKyVJiQ23ZztA0x"
+   ],
+   "drop": [],
+   "note": "Playlist kept as an alternative (oEmbed-verified: 'RAG From Scratch' by LangChain); it contains the same 4 videos."
+  },
+  {
+   "section": "d1",
+   "part": "Certification · Orientation",
+   "day_title": "Why RAG, and loading real documents",
+   "current_links": [
+    "https://everpath-course-content.s3-accelerate.amazonaws.com/instructor%2F6nizmqk8tpzpfjvt6qmmav7rh%2Fpublic%2F1783542750%2FClaude+Certified+Architect+%E2%80%93+Foundations+Exam+Guide.pdf"
+   ],
+   "videos": [],
+   "no_video_reason": "The exam guide is an official PDF that learners must read end to end; no video reproduces it, and unofficial 'exam prep' videos are third-party and risk being out of date.",
+   "reference_keep": [
+    "https://everpath-course-content.s3-accelerate.amazonaws.com/instructor%2F6nizmqk8tpzpfjvt6qmmav7rh%2Fpublic%2F1783542750%2FClaude+Certified+Architect+%E2%80%93+Foundations+Exam+Guide.pdf"
+   ],
+   "drop": []
+  },
+  {
+   "section": "d1",
+   "part": "Certification · Orientation",
+   "day_title": "Why RAG, and loading real documents",
+   "current_links": [
+    "https://anthropic.skilljar.com/claude-with-the-anthropic-api"
+   ],
+   "videos": [],
+   "no_video_reason": "This is an enrollment action for Anthropic's free Skilljar course, which already is video-based. Nothing to replace.",
+   "reference_keep": [
+    "https://anthropic.skilljar.com/claude-with-the-anthropic-api"
+   ],
+   "drop": []
+  },
+  {
+   "section": "d1",
+   "part": "Enterprise · Where enterprise knowledge lives",
+   "day_title": "Why RAG, and loading real documents",
+   "current_links": [
+    "https://learn.microsoft.com/en-us/graph/overview"
+   ],
+   "videos": [
+    {
+     "url": "https://www.youtube.com/watch?v=d1s5iVhpBbY",
+     "oembed_title": "Developer's guide to Microsoft Graph",
+     "channel": "Microsoft Developer",
+     "duration": "21:03",
+     "duration_source": "YouTube page (browser, 2026-10-08)",
+     "published": "2021-04-14",
+     "published_source": "YouTube page (browser, 2026-10-08)",
+     "views": 8910,
+     "segment": null,
+     "segment_source": null,
+     "effective_minutes": 21.1,
+     "watch_for": "Microsoft Graph as one API over Microsoft 365 (users, mail, files in SharePoint/OneDrive, Teams): where an FDE goes first to find enterprise knowledge.",
+     "why_this_one": "Official Microsoft Developer channel. Length and date pending: keep only if it is recent and 25 min or less; otherwise the doc stays.",
+     "confidence": "medium",
+     "new_in_pass2": true
+    }
+   ],
+   "no_video_reason": null,
+   "reference_keep": [
+    "https://learn.microsoft.com/en-us/graph/overview"
+   ],
+   "drop": []
+  },
+  {
+   "section": "d2",
+   "part": "Core · Splitting documents so retrieval can find the right piece",
+   "day_title": "Chunking",
+   "current_links": [
+    "https://www.pinecone.io/learn/chunking-strategies/"
+   ],
+   "videos": [
+    {
+     "url": "https://www.youtube.com/watch?v=8OJC21T2SL4&t=417s",
+     "oembed_title": "The 5 Levels Of Text Splitting For Retrieval",
+     "channel": "Greg Kamradt",
+     "duration": "1:08:59",
+     "published": "2024-01-08",
+     "segment": "6:57–32:10",
+     "watch_for": "Levels 1-3: fixed-size character splitting, recursive splitting, and document-structure splitting (Markdown, code, PDF), with visuals of what each produces.",
+     "why_this_one": "The most cited video on chunking, by the creator of the needle-in-a-haystack test; concepts match the Pinecone article exactly.",
+     "confidence": "medium",
+     "duration_source": "YouTube watch page (meta.json, read 2026-10-08)",
+     "published_source": "YouTube watch page (meta.json, read 2026-10-08)",
+     "views": 152007,
+     "segment_source": "uploader chapters in the video description (chapters.json, read 2026-10-08): Levels 1-3 (character, recursive, document-specific)",
+     "effective_minutes": 25.2,
+     "code_note": "Watch for the idea, not the code: Jan 2024 LangChain/LlamaIndex splitter imports."
+    },
+    {
+     "url": "https://www.youtube.com/watch?v=8OJC21T2SL4&t=1930s",
+     "oembed_title": "The 5 Levels Of Text Splitting For Retrieval",
+     "channel": "Greg Kamradt",
+     "duration": "1:08:59",
+     "published": "2024-01-08",
+     "segment": "32:10–48:02",
+     "watch_for": "Level 4: semantic splitting (break where embedding similarity drops). Skip Level 5 (agentic splitting).",
+     "why_this_one": "The most cited video on chunking, by the creator of the needle-in-a-haystack test; concepts match the Pinecone article exactly.",
+     "confidence": "medium",
+     "duration_source": "YouTube watch page (meta.json, read 2026-10-08)",
+     "published_source": "YouTube watch page (meta.json, read 2026-10-08)",
+     "views": 152007,
+     "segment_source": "uploader chapters in the video description (chapters.json, read 2026-10-08): \"Level 4 Semantic Splitting\"",
+     "effective_minutes": 15.9,
+     "code_note": "Watch for the idea, not the code: Jan 2024 LangChain/LlamaIndex splitter imports."
+    }
+   ],
+   "no_video_reason": null,
+   "reference_keep": [
+    "https://www.pinecone.io/learn/chunking-strategies/"
+   ],
+   "drop": []
+  },
+  {
+   "section": "d2",
+   "part": "Certification · The Messages API",
+   "day_title": "Chunking",
+   "current_links": [
+    "https://platform.claude.com/docs/en/build-with-claude/working-with-messages",
+    "https://platform.claude.com/docs/en/build-with-claude/handling-stop-reasons"
+   ],
+   "videos": [],
+   "no_video_reason": "No official Anthropic video on the current Messages API details taught here (stateless calls, system field, the full stop_reason list including pause_turn, refusal and model_context_window_exceeded, prefill unsupported on 4.6+). Third-party API walkthroughs found are from small channels and risk teaching prefill or an older stop_reason list. Keep the two docs plus the Skilljar course section as the main items.",
+   "reference_keep": [
+    "https://platform.claude.com/docs/en/build-with-claude/working-with-messages",
+    "https://platform.claude.com/docs/en/build-with-claude/handling-stop-reasons"
+   ],
+   "drop": []
+  },
+  {
+   "section": "d2",
+   "part": "Enterprise · Reading SharePoint through Microsoft Graph",
+   "day_title": "Chunking",
+   "current_links": [
+    "https://learn.microsoft.com/en-us/graph/permissions-overview",
+    "https://learn.microsoft.com/en-us/graph/api/driveitem-list-children"
+   ],
+   "videos": [
+    {
+     "url": "https://www.youtube.com/watch?v=_BfI4L7j1Po",
+     "oembed_title": "Delegated and application permissions in the Microsoft Identity Platform",
+     "channel": "Microsoft Community Learning",
+     "duration": "15:23",
+     "published": "2021-05-11",
+     "segment": null,
+     "watch_for": "Delegated permissions act as the signed-in user and see only what that user sees; application permissions (e.g. Files.Read.All) see everything and need admin consent, which is why an indexer must re-apply user permissions at query time.",
+     "why_this_one": "Microsoft-run community learning channel; the delegated/application distinction is stable identity-platform behavior.",
+     "confidence": "medium",
+     "duration_source": "YouTube watch page (meta.json, read 2026-10-08)",
+     "published_source": "YouTube watch page (meta.json, read 2026-10-08)",
+     "views": 7953,
+     "segment_source": null,
+     "effective_minutes": 15.4
+    }
+   ],
+   "no_video_reason": null,
+   "reference_keep": [
+    "https://learn.microsoft.com/en-us/graph/api/driveitem-list-children"
+   ],
+   "drop": [
+    "https://learn.microsoft.com/en-us/graph/permissions-overview"
+   ],
+   "note": "Keep the driveItem children API page as a coding reference (paging with @odata.nextLink); the permissions overview is covered by the video but can stay if the owner prefers."
+  },
+  {
+   "section": "d3",
+   "part": "Core · Storing meaning, and searching it",
+   "day_title": "Embeddings and vector stores",
+   "current_links": [
+    "https://www.pinecone.io/learn/vector-database/"
+   ],
+   "videos": [
+    {
+     "url": "https://www.youtube.com/watch?v=gl1r1XV0SLw",
+     "oembed_title": "What is a Vector Database? Powering Semantic Search & AI Applications",
+     "channel": "IBM Technology",
+     "duration": "9:48",
+     "published": "2025-03-24",
+     "segment": null,
+     "watch_for": "What a vector store adds on top of an array of embeddings: storing vectors with their text and metadata, approximate nearest-neighbor indexes such as HNSW, and metadata filtering.",
+     "why_this_one": "IBM Technology whiteboard explainer, recent, short and vendor-neutral.",
+     "confidence": "high",
+     "duration_source": "YouTube watch page (meta.json, read 2026-10-08)",
+     "published_source": "YouTube watch page (meta.json, read 2026-10-08)",
+     "views": 987460,
+     "segment_source": null,
+     "effective_minutes": 9.8
+    }
+   ],
+   "no_video_reason": null,
+   "reference_keep": [],
+   "drop": [
+    "https://www.pinecone.io/learn/vector-database/"
+   ]
+  },
+  {
+   "section": "d3",
+   "part": "Core · Storing meaning, and searching it",
+   "day_title": "Embeddings and vector stores",
+   "current_links": [
+    "https://docs.trychroma.com/docs/collections/manage-collections",
+    "https://docs.trychroma.com/docs/querying-collections/query-and-get",
+    "https://docs.trychroma.com/docs/querying-collections/metadata-filtering"
+   ],
+   "videos": [],
+   "no_video_reason": "These are exact Chroma API pages (collection configuration, query/get return shapes, metadata filter operators) that learners need open while coding; no video covers the current Chroma API at that precision, and older Chroma tutorials use pre-1.0 APIs.",
+   "reference_keep": [
+    "https://docs.trychroma.com/docs/collections/manage-collections",
+    "https://docs.trychroma.com/docs/querying-collections/query-and-get",
+    "https://docs.trychroma.com/docs/querying-collections/metadata-filtering"
+   ],
+   "drop": []
+  },
+  {
+   "section": "d3",
+   "part": "Enterprise · Permission-aware retrieval",
+   "day_title": "Embeddings and vector stores",
+   "current_links": [
+    "https://learn.microsoft.com/en-us/azure/search/search-security-trimming-for-azure-search"
+   ],
+   "videos": [],
+   "no_video_reason": "The first-pass pick (SANS, 60 min, 142 views) was too long and too little-seen. The best official option, Microsoft Reactor \"Data Access Control for AI RAG Apps on Azure\" (4PKug91OSw8, Pamela Fox + Azure AI Search PM Matt Gotteiner, 2024-07-17), is a 1-hour livestream with no chapters found. Keep the Azure security-trimming doc as the main item.",
+   "reference_keep": [
+    "https://learn.microsoft.com/en-us/azure/search/search-security-trimming-for-azure-search"
+   ],
+   "drop": []
+  },
+  {
+   "section": "d4",
+   "part": "Core · Answer only from the sources, and prove it",
+   "day_title": "Grounded answers with citations",
+   "current_links": [
+    "https://platform.claude.com/docs/en/test-and-evaluate/strengthen-guardrails/reduce-hallucinations"
+   ],
+   "videos": [],
+   "no_video_reason": "No official Anthropic video covers the three Claude-specific techniques this day implements (allow 'I don't know', ground in direct quotes, cite sources); general 'why LLMs hallucinate' explainers don't teach them. Keep the Claude doc as the main item.",
+   "reference_keep": [
+    "https://platform.claude.com/docs/en/test-and-evaluate/strengthen-guardrails/reduce-hallucinations"
+   ],
+   "drop": []
+  },
+  {
+   "section": "d4",
+   "part": "Enterprise · Build or buy",
+   "day_title": "Grounded answers with citations",
+   "current_links": [
+    "https://learn.microsoft.com/en-us/microsoft-365/copilot/connectors/overview",
+    "https://docs.snowflake.com/en/user-guide/snowflake-cortex/cortex-search/cortex-search-overview"
+   ],
+   "videos": [
+    {
+     "url": "https://www.youtube.com/watch?v=lfpDeM-J4us",
+     "oembed_title": "How Microsoft 365 Copilot can work with your external data",
+     "channel": "Microsoft Mechanics",
+     "duration": "8:08",
+     "published": "2023-09-26",
+     "segment": null,
+     "watch_for": "How synced connectors bring outside content into Microsoft's index so Copilot retrieves it with each user's permissions, the 'buy' option an FDE weighs against building a pipeline.",
+     "why_this_one": "Official Microsoft Mechanics; note it says 'Graph connectors' (now 'Copilot connectors') and predates federated connectors.",
+     "confidence": "medium",
+     "duration_source": "YouTube watch page (meta.json, read 2026-10-08)",
+     "published_source": "YouTube watch page (meta.json, read 2026-10-08)",
+     "views": 93619,
+     "segment_source": null,
+     "effective_minutes": 8.1
+    },
+    {
+     "url": "https://www.youtube.com/watch?v=yXgFs31MWUw",
+     "oembed_title": "Demo: Build A RAG Application With Snowflake Cortex Search | Summit 2024",
+     "channel": "Snowflake Developers",
+     "duration": "6:35",
+     "published": "2024-06-04",
+     "segment": null,
+     "watch_for": "Cortex Search as managed hybrid retrieval over warehouse tables: create a search service with SQL and query it from a RAG app, without running your own embeddings or vector store.",
+     "why_this_one": "Official Snowflake Developers channel, product demo from Summit 2024.",
+     "confidence": "medium",
+     "duration_source": "YouTube watch page (meta.json, read 2026-10-08)",
+     "published_source": "YouTube watch page (meta.json, read 2026-10-08)",
+     "views": 17717,
+     "segment_source": null,
+     "effective_minutes": 6.6
+    }
+   ],
+   "no_video_reason": null,
+   "reference_keep": [
+    "https://learn.microsoft.com/en-us/microsoft-365/copilot/connectors/overview",
+    "https://docs.snowflake.com/en/user-guide/snowflake-cortex/cortex-search/cortex-search-overview"
+   ],
+   "drop": []
+  }
+ ],
+ "checked": "2026-10-08 (pass 2: real lengths, dates, views)"
+}

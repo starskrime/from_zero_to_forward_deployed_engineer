@@ -1,0 +1,654 @@
+{
+ "week": "0B",
+ "checked": "2026-10-08 (pass 2: real lengths, dates, views)",
+ "slots": [
+  {
+   "section": "d1",
+   "part": "Core · HTTP and httpx",
+   "day_title": "HTTP and calling web APIs",
+   "kind": "Read",
+   "current_links": [
+    "https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/Overview"
+   ],
+   "videos": [
+    {
+     "url": "https://www.youtube.com/watch?v=iYM2zFP3Zn0",
+     "oembed_title": "HTTP Crash Course & Exploration",
+     "channel": "Traversy Media",
+     "duration": "38:30",
+     "duration_source": "YouTube watch page (meta.json, read 2026-10-08)",
+     "published": "2019-05-03",
+     "published_source": "YouTube watch page (meta.json, read 2026-10-08)",
+     "segment": null,
+     "watch_for": "Requests and responses, methods (GET/POST/PUT/DELETE), headers and status codes, shown in the browser dev tools.",
+     "why_this_one": "Traversy Media is a proven web-dev teaching channel; HTTP basics are stable.",
+     "confidence": "high",
+     "views": 1290980,
+     "segment_source": null,
+     "effective_minutes": 38.5,
+     "over_25_no_segment": true
+    }
+   ],
+   "no_video_reason": null,
+   "reference_keep": [],
+   "drop": [
+    "https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/Overview"
+   ]
+  },
+  {
+   "section": "d1",
+   "part": "Core · HTTP and httpx",
+   "day_title": "HTTP and calling web APIs",
+   "kind": "Read",
+   "current_links": [
+    "https://www.python-httpx.org/quickstart/"
+   ],
+   "videos": [
+    {
+     "url": "https://www.youtube.com/watch?v=qAh5dDODJ5k",
+     "oembed_title": "HTTPX Tutorial - A next-generation HTTP client for Python",
+     "channel": "Patrick Loeber",
+     "duration": "11:01",
+     "duration_source": "YouTube watch page (meta.json, read 2026-10-08)",
+     "published": "2022-07-28",
+     "published_source": "YouTube watch page (meta.json, read 2026-10-08)",
+     "segment": null,
+     "watch_for": "httpx.get with params, reading .json() and .status_code, using a Client, and setting timeouts.",
+     "why_this_one": "Patrick Loeber (formerly Python Engineer) is a well-known Python tutorial author; httpx core API is stable.",
+     "confidence": "medium",
+     "views": 116126,
+     "segment_source": null,
+     "effective_minutes": 11.0
+    }
+   ],
+   "no_video_reason": null,
+   "reference_keep": [
+    "https://www.python-httpx.org/quickstart/"
+   ],
+   "drop": []
+  },
+  {
+   "section": "d1",
+   "part": "Deep practice · SQL from zero (1 of 3)",
+   "day_title": "HTTP and calling web APIs",
+   "kind": "Do",
+   "current_links": [
+    "https://sqlbolt.com/lesson/select_queries_introduction"
+   ],
+   "videos": [
+    {
+     "url": "https://www.youtube.com/watch?v=zsjvFFKOm3c",
+     "oembed_title": "SQL Explained in 100 Seconds",
+     "channel": "Fireship",
+     "duration": "2:22",
+     "duration_source": "YouTube watch page (meta.json, read 2026-10-08)",
+     "published": "2021-04-06",
+     "published_source": "YouTube watch page (meta.json, read 2026-10-08)",
+     "segment": null,
+     "watch_for": "A quick picture of what tables, rows and a SELECT … WHERE … ORDER BY query are before you start SQLBolt.",
+     "why_this_one": "Fireship short overview (allowed for short overviews); SQLBolt stays the main hands-on item.",
+     "confidence": "medium",
+     "views": 1568855,
+     "segment_source": null,
+     "effective_minutes": 2.4
+    }
+   ],
+   "no_video_reason": null,
+   "reference_keep": [
+    "https://sqlbolt.com/lesson/select_queries_introduction"
+   ],
+   "drop": []
+  },
+  {
+   "section": "d1",
+   "part": "Enterprise · APIs I: read an enterprise API's docs before you code",
+   "day_title": "HTTP and calling web APIs",
+   "kind": "Read",
+   "current_links": [
+    "https://docs.github.com/en/rest/using-the-rest-api/getting-started-with-the-rest-api"
+   ],
+   "videos": [],
+   "no_video_reason": "The point of this Enterprise slot is to practise reading a real API's docs before coding (headers, auth, versions, errors on one GitHub page). A video would replace the skill being trained; no GitHub-official video on this page was found.",
+   "reference_keep": [
+    "https://docs.github.com/en/rest/using-the-rest-api/getting-started-with-the-rest-api"
+   ],
+   "drop": []
+  },
+  {
+   "section": "d1",
+   "part": "Enterprise · APIs I: read an enterprise API's docs before you code",
+   "day_title": "HTTP and calling web APIs",
+   "kind": "Read",
+   "current_links": [
+    "https://docs.github.com/en/rest/using-the-rest-api/rate-limits-for-the-rest-api"
+   ],
+   "videos": [],
+   "no_video_reason": "GitHub-specific rate-limit rules (primary vs secondary limits, retry headers). Generic rate-limiting videos explain the server side, not how a client should react. Keep the doc.",
+   "reference_keep": [
+    "https://docs.github.com/en/rest/using-the-rest-api/rate-limits-for-the-rest-api"
+   ],
+   "drop": []
+  },
+  {
+   "section": "d2",
+   "part": "Core · Pydantic",
+   "day_title": "Validating data with Pydantic",
+   "kind": "Read",
+   "current_links": [
+    "https://pydantic.dev/docs/validation/latest/concepts/models/"
+   ],
+   "videos": [
+    {
+     "url": "https://www.youtube.com/watch?v=502XOB0u8OY",
+     "oembed_title": "Why Python Needs Pydantic for Real Applications",
+     "channel": "ArjanCodes",
+     "duration": "13:56",
+     "duration_source": "YouTube page (browser, 2026-10-08)",
+     "published": "2024-03-08",
+     "published_source": "YouTube page (browser, 2026-10-08)",
+     "views": 124731,
+     "segment": null,
+     "segment_source": null,
+     "effective_minutes": 13.9,
+     "watch_for": "BaseModel, validation errors and type coercion, Field validation (5:39), model validation (7:45) and custom serialization (9:32), all in Pydantic v2. The FastAPI part at the end is optional.",
+     "why_this_one": "ArjanCodes, a proven Python channel; 14 min instead of the 89-min course. (YouTube title was renamed from \"Why You Should Use Pydantic in 2024\".)",
+     "confidence": "high",
+     "new_in_pass2": true
+    }
+   ],
+   "no_video_reason": null,
+   "reference_keep": [
+    "https://pydantic.dev/docs/validation/latest/concepts/models/"
+   ],
+   "drop": []
+  },
+  {
+   "section": "d2",
+   "part": "Core · Pydantic",
+   "day_title": "Validating data with Pydantic",
+   "kind": "Read",
+   "current_links": [
+    "https://pydantic.dev/docs/validation/latest/concepts/fields/"
+   ],
+   "videos": [],
+   "no_video_reason": "Field constraints are covered in the ArjanCodes video in the previous slot (\"Field validation\" chapter at 5:39). Keep the Fields page as the coding reference for ge/le/pattern.",
+   "reference_keep": [
+    "https://pydantic.dev/docs/validation/latest/concepts/fields/"
+   ],
+   "drop": []
+  },
+  {
+   "section": "d2",
+   "part": "Deep practice · SQL from zero (2 of 3)",
+   "day_title": "Validating data with Pydantic",
+   "kind": "Do",
+   "current_links": [
+    "https://sqlbolt.com/lesson/select_queries_review"
+   ],
+   "videos": [
+    {
+     "url": "https://www.youtube.com/watch?v=9yeOJ0ZMUYw",
+     "oembed_title": "SQL Joins Explained  |¦| Joins in SQL |¦| SQL Tutorial",
+     "channel": "Socratica",
+     "duration": "10:26",
+     "duration_source": "YouTube watch page (meta.json, read 2026-10-08)",
+     "published": "2019-03-25",
+     "published_source": "YouTube watch page (meta.json, read 2026-10-08)",
+     "segment": null,
+     "watch_for": "INNER vs LEFT/RIGHT/FULL OUTER joins and where NULLs come from, which is the part of SQLBolt 5–8 most people find hardest.",
+     "why_this_one": "Socratica is a respected CS/maths education channel with careful, short videos.",
+     "confidence": "medium",
+     "views": 892673,
+     "segment_source": null,
+     "effective_minutes": 10.4
+    }
+   ],
+   "no_video_reason": null,
+   "reference_keep": [
+    "https://sqlbolt.com/lesson/select_queries_review"
+   ],
+   "drop": []
+  },
+  {
+   "section": "d2",
+   "part": "Enterprise · APIs II: pagination done right",
+   "day_title": "Validating data with Pydantic",
+   "kind": "Read",
+   "current_links": [
+    "https://docs.github.com/en/rest/using-the-rest-api/using-pagination-in-the-rest-api"
+   ],
+   "videos": [
+    {
+     "url": "https://www.youtube.com/watch?v=mvlzhBgGS4s",
+     "oembed_title": "API Pagination - Offset and Cursor Pagination Explained - Backend Engineering",
+     "channel": "Caleb Curry",
+     "duration": "25:46",
+     "duration_source": "YouTube watch page (meta.json, read 2026-10-08)",
+     "published": "2025-09-08",
+     "published_source": "YouTube watch page (meta.json, read 2026-10-08)",
+     "segment": "0:00–22:19",
+     "watch_for": "Why APIs page results, and offset/page vs cursor (before/after) pagination; then apply it to GitHub's Link header in the doc.",
+     "why_this_one": "Caleb Curry is an established programming/database teacher; concept video, not GitHub-specific.",
+     "confidence": "medium",
+     "views": 27583,
+     "segment_source": "uploader chapters in the video description (chapters.json, read 2026-10-08): skips \"Client Side Pagination\" and outro",
+     "effective_minutes": 22.3
+    }
+   ],
+   "no_video_reason": null,
+   "reference_keep": [
+    "https://docs.github.com/en/rest/using-the-rest-api/using-pagination-in-the-rest-api"
+   ],
+   "drop": []
+  },
+  {
+   "section": "d3",
+   "part": "Core · async / await",
+   "day_title": "Tests with pytest, and doing many calls at once",
+   "kind": "Read",
+   "current_links": [
+    "https://docs.pytest.org/en/stable/getting-started.html"
+   ],
+   "videos": [
+    {
+     "url": "https://www.youtube.com/watch?v=mzlH8lp4ISA",
+     "oembed_title": "getting started with pytest (beginner - intermediate) anthony explains #518",
+     "channel": "anthonywritescode",
+     "duration": "13:18",
+     "duration_source": "YouTube watch page (meta.json, read 2026-10-08)",
+     "published": "2023-01-23",
+     "published_source": "YouTube watch page (meta.json, read 2026-10-08)",
+     "segment": null,
+     "watch_for": "Writing test_ functions with plain assert, running pytest, and reading failure output.",
+     "why_this_one": "Anthony Sottile is a pytest core maintainer.",
+     "confidence": "high",
+     "views": 112733,
+     "segment_source": null,
+     "effective_minutes": 13.3
+    }
+   ],
+   "no_video_reason": null,
+   "reference_keep": [
+    "https://docs.pytest.org/en/stable/getting-started.html"
+   ],
+   "drop": []
+  },
+  {
+   "section": "d3",
+   "part": "Core · async / await",
+   "day_title": "Tests with pytest, and doing many calls at once",
+   "kind": "Read",
+   "current_links": [
+    "https://docs.pytest.org/en/stable/how-to/parametrize.html",
+    "https://docs.pytest.org/en/stable/how-to/tmp_path.html"
+   ],
+   "videos": [
+    {
+     "url": "https://www.youtube.com/watch?v=aQH7hyJn-No",
+     "oembed_title": "pytest's parametrize (beginner - intermediate) anthony explains #027",
+     "channel": "anthonywritescode",
+     "duration": "12:24",
+     "duration_source": "YouTube watch page (meta.json, read 2026-10-08)",
+     "published": "2020-05-14",
+     "published_source": "YouTube watch page (meta.json, read 2026-10-08)",
+     "segment": null,
+     "watch_for": "Using @pytest.mark.parametrize to run one test over many input/expected pairs (e.g. good and bad lead rows).",
+     "why_this_one": "Anthony Sottile is a pytest core maintainer; parametrize API unchanged.",
+     "confidence": "high",
+     "views": 18275,
+     "segment_source": null,
+     "effective_minutes": 12.4
+    }
+   ],
+   "no_video_reason": null,
+   "reference_keep": [
+    "https://docs.pytest.org/en/stable/how-to/parametrize.html",
+    "https://docs.pytest.org/en/stable/how-to/tmp_path.html"
+   ],
+   "drop": []
+  },
+  {
+   "section": "d3",
+   "part": "Core · async / await",
+   "day_title": "Tests with pytest, and doing many calls at once",
+   "kind": "Read",
+   "current_links": [
+    "https://www.python-httpx.org/advanced/transports/",
+    "https://www.python-httpx.org/async/"
+   ],
+   "videos": [
+    {
+     "url": "https://www.youtube.com/watch?v=2FNcJKCfrzI",
+     "oembed_title": "HTTPX is the ASYNC Requests I was Looking For",
+     "channel": "John Watson Rooney",
+     "duration": "7:22",
+     "duration_source": "YouTube watch page (meta.json, read 2026-10-08)",
+     "published": "2022-01-09",
+     "published_source": "YouTube watch page (meta.json, read 2026-10-08)",
+     "segment": null,
+     "watch_for": "Using httpx.AsyncClient with async/await and asyncio.gather to make many calls at once. (MockTransport for tests is not covered: use the doc.)",
+     "why_this_one": "John Watson Rooney is a well-known Python web-scraping/HTTP channel.",
+     "confidence": "medium",
+     "views": 21923,
+     "segment_source": null,
+     "effective_minutes": 7.4
+    }
+   ],
+   "no_video_reason": null,
+   "reference_keep": [
+    "https://www.python-httpx.org/advanced/transports/",
+    "https://www.python-httpx.org/async/"
+   ],
+   "drop": []
+  },
+  {
+   "section": "d3",
+   "part": "Deep practice · SQL from zero (3 of 3)",
+   "day_title": "Tests with pytest, and doing many calls at once",
+   "kind": "Do",
+   "current_links": [
+    "https://sqlbolt.com/lesson/select_queries_with_expressions"
+   ],
+   "videos": [
+    {
+     "url": "https://www.youtube.com/watch?v=zgYqUP_PhQo",
+     "oembed_title": "Group By + Order By in MySQL | Beginner MySQL Series",
+     "channel": "Alex The Analyst",
+     "duration": "10:46",
+     "duration_source": "YouTube page (browser, 2026-10-08)",
+     "published": "2023-11-28",
+     "published_source": "YouTube page (browser, 2026-10-08)",
+     "views": 381079,
+     "segment": null,
+     "segment_source": null,
+     "effective_minutes": 10.8,
+     "watch_for": "GROUP BY with aggregates (COUNT, AVG, MAX, MIN) and sorting the grouped result: SQLBolt lessons 10-11 on video.",
+     "why_this_one": "Alex The Analyst: large, proven data-analyst teaching channel. MySQL, but the syntax shown is standard SQL that also runs in SQLite.",
+     "confidence": "medium",
+     "new_in_pass2": true
+    },
+    {
+     "url": "https://www.youtube.com/watch?v=dCNjUOc1cBY",
+     "oembed_title": "Having vs Where in MySQL | Beginner MySQL Series",
+     "channel": "Alex The Analyst",
+     "duration": "3:45",
+     "duration_source": "YouTube page (browser, 2026-10-08)",
+     "published": "2023-12-05",
+     "published_source": "YouTube page (browser, 2026-10-08)",
+     "views": 284625,
+     "segment": null,
+     "segment_source": null,
+     "effective_minutes": 3.8,
+     "watch_for": "WHERE filters rows before grouping, HAVING filters groups after: the query-order idea from SQLBolt lesson 12.",
+     "why_this_one": "Same series; short and focused on exactly the HAVING vs WHERE confusion.",
+     "confidence": "medium",
+     "new_in_pass2": true
+    }
+   ],
+   "no_video_reason": null,
+   "reference_keep": [
+    "https://sqlbolt.com/lesson/select_queries_with_expressions"
+   ],
+   "drop": []
+  },
+  {
+   "section": "d3",
+   "part": "Enterprise · APIs III: receiving webhooks safely",
+   "day_title": "Tests with pytest, and doing many calls at once",
+   "kind": "Read",
+   "current_links": [
+    "https://docs.github.com/en/webhooks/using-webhooks/validating-webhook-deliveries"
+   ],
+   "videos": [
+    {
+     "url": "https://www.youtube.com/watch?v=I2ZYUulreI4",
+     "oembed_title": "Implementing Signature Verification for Webhooks (GitHub HMAC verification)",
+     "channel": "Hookdeck",
+     "duration": "11:27",
+     "duration_source": "YouTube watch page (meta.json, read 2026-10-08)",
+     "published": "2022-07-11",
+     "published_source": "YouTube watch page (meta.json, read 2026-10-08)",
+     "segment": null,
+     "watch_for": "How the X-Hub-Signature-256 HMAC is computed over the raw body with your secret, and why you compare with a constant-time function.",
+     "why_this_one": "Hookdeck is a webhook-infrastructure vendor; the video targets GitHub's signature scheme specifically.",
+     "confidence": "medium",
+     "views": 2693,
+     "segment_source": null,
+     "effective_minutes": 11.4
+    }
+   ],
+   "no_video_reason": null,
+   "reference_keep": [
+    "https://docs.github.com/en/webhooks/using-webhooks/validating-webhook-deliveries"
+   ],
+   "drop": []
+  },
+  {
+   "section": "d3",
+   "part": "Enterprise · APIs III: receiving webhooks safely",
+   "day_title": "Tests with pytest, and doing many calls at once",
+   "kind": "Read",
+   "current_links": [
+    "https://docs.github.com/en/webhooks/using-webhooks/best-practices-for-using-webhooks"
+   ],
+   "videos": [],
+   "no_video_reason": "GitHub-specific operational rules (10-second response limit, queueing, X-GitHub-Delivery for replays); no verified video covers them, and the doc is short.",
+   "reference_keep": [
+    "https://docs.github.com/en/webhooks/using-webhooks/best-practices-for-using-webhooks"
+   ],
+   "drop": []
+  },
+  {
+   "section": "d4",
+   "part": "Core · SQLite from Python",
+   "day_title": "Storing data with SQL, and shipping through pull requests",
+   "kind": "Read",
+   "current_links": [
+    "https://docs.python.org/3/library/sqlite3.html#tutorial"
+   ],
+   "videos": [
+    {
+     "url": "https://www.youtube.com/watch?v=pd-0G0MigUA",
+     "oembed_title": "Python SQLite Tutorial: Complete Overview - Creating a Database, Table, and Running Queries",
+     "channel": "Corey Schafer",
+     "duration": "29:49",
+     "duration_source": "YouTube watch page (meta.json, read 2026-10-08)",
+     "published": "2017-04-18",
+     "published_source": "YouTube watch page (meta.json, read 2026-10-08)",
+     "segment": null,
+     "watch_for": "connect, cursor, execute, commit, fetch, and using ? / named placeholders instead of string formatting (which is what prevents SQL injection).",
+     "why_this_one": "Corey Schafer; sqlite3 module API is stable.",
+     "confidence": "high",
+     "views": 1068878,
+     "segment_source": null,
+     "effective_minutes": 29.8,
+     "over_25_no_segment": true
+    }
+   ],
+   "no_video_reason": null,
+   "reference_keep": [
+    "https://docs.python.org/3/library/sqlite3.html#tutorial"
+   ],
+   "drop": []
+  },
+  {
+   "section": "d4",
+   "part": "Core · SQLite from Python",
+   "day_title": "Storing data with SQL, and shipping through pull requests",
+   "kind": "Read",
+   "current_links": [
+    "https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request"
+   ],
+   "videos": [
+    {
+     "url": "https://www.youtube.com/watch?v=nCKdihvneS0",
+     "oembed_title": "How to create a pull request in 4 min | GitHub for Beginners",
+     "channel": "GitHub",
+     "duration": "3:44",
+     "duration_source": "YouTube page (browser, 2026-10-08)",
+     "published": "2024-08-12",
+     "published_source": "YouTube page (browser, 2026-10-08)",
+     "views": 328007,
+     "segment": null,
+     "segment_source": null,
+     "effective_minutes": 3.7,
+     "watch_for": "Branch, push, open a pull request with a clear title and description, and where reviewers comment: the exact flow for shipping today's change.",
+     "why_this_one": "Official GitHub channel (\"GitHub for Beginners\"); embedded in GitHub's own blog guide \"Creating a pull request\" (2024-08-12).",
+     "confidence": "high",
+     "new_in_pass2": true
+    }
+   ],
+   "no_video_reason": null,
+   "reference_keep": [
+    "https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request"
+   ],
+   "drop": []
+  },
+  {
+   "section": "d4",
+   "part": "Deep practice · SQL injection",
+   "day_title": "Storing data with SQL, and shipping through pull requests",
+   "kind": "Read",
+   "current_links": [
+    "https://community.owasp.org/attacks/SQL_Injection"
+   ],
+   "videos": [
+    {
+     "url": "https://www.youtube.com/watch?v=ciNHn38EyRc",
+     "oembed_title": "Running an SQL Injection Attack - Computerphile",
+     "channel": "Computerphile",
+     "duration": "17:11",
+     "duration_source": "YouTube watch page (meta.json, read 2026-10-08)",
+     "published": "2016-06-15",
+     "published_source": "YouTube watch page (meta.json, read 2026-10-08)",
+     "segment": null,
+     "watch_for": "Watching an injection actually work against a login query, and why parameterised queries stop it.",
+     "why_this_one": "Computerphile (University of Nottingham academics) is a highly trusted CS channel.",
+     "confidence": "high",
+     "views": 4603710,
+     "segment_source": null,
+     "effective_minutes": 17.2
+    }
+   ],
+   "no_video_reason": null,
+   "reference_keep": [],
+   "drop": [
+    "https://community.owasp.org/attacks/SQL_Injection"
+   ]
+  },
+  {
+   "section": "d4",
+   "part": "Enterprise · APIs IV: idempotency keys for safe writes",
+   "day_title": "Storing data with SQL, and shipping through pull requests",
+   "kind": "Read",
+   "current_links": [
+    "https://docs.stripe.com/api/idempotent_requests"
+   ],
+   "videos": [
+    {
+     "url": "https://www.youtube.com/watch?v=XAccGbtl3Z8",
+     "oembed_title": "Idempotency - What it is and How to Implement it",
+     "channel": "Alex Hyett",
+     "duration": "8:04",
+     "duration_source": "YouTube watch page (meta.json, read 2026-10-08)",
+     "published": "2023-09-22",
+     "published_source": "YouTube watch page (meta.json, read 2026-10-08)",
+     "segment": null,
+     "watch_for": "Why retried writes create duplicates and how an idempotency key lets the server return the saved first result instead.",
+     "why_this_one": "Alex Hyett is an experienced backend engineer with clear explainer videos; concept matches Stripe's model but is not Stripe-specific.",
+     "confidence": "medium",
+     "views": 82072,
+     "segment_source": null,
+     "effective_minutes": 8.1
+    }
+   ],
+   "no_video_reason": null,
+   "reference_keep": [
+    "https://docs.stripe.com/api/idempotent_requests"
+   ],
+   "drop": []
+  },
+  {
+   "section": "d5",
+   "part": "Deep practice · pandas essentials",
+   "day_title": "Readiness check",
+   "kind": "Read",
+   "current_links": [
+    "https://pandas.pydata.org/docs/user_guide/10min.html"
+   ],
+   "videos": [
+    {
+     "url": "https://www.youtube.com/watch?v=xvpNA7bC8cs",
+     "oembed_title": "How do I select multiple rows and columns from a pandas DataFrame?",
+     "channel": "Data School",
+     "duration": "21:46",
+     "duration_source": "YouTube page (browser, 2026-10-08)",
+     "published": "2016-06-07",
+     "published_source": "YouTube page (browser, 2026-10-08)",
+     "views": 357005,
+     "segment": null,
+     "segment_source": null,
+     "effective_minutes": 21.8,
+     "watch_for": "Selecting rows and columns with loc (labels) and iloc (positions), and the [] shortcut: the selection half of 10 minutes to pandas.",
+     "why_this_one": "Data School (Kevin Markham): classic pandas teaching series with very large reach; stable API.",
+     "confidence": "high",
+     "new_in_pass2": true
+    },
+    {
+     "url": "https://www.youtube.com/watch?v=qy0fDqoMJx8",
+     "oembed_title": "When should I use a \"groupby\" in pandas?",
+     "channel": "Data School",
+     "duration": "8:24",
+     "duration_source": "YouTube page (browser, 2026-10-08)",
+     "published": "2016-05-19",
+     "published_source": "YouTube page (browser, 2026-10-08)",
+     "views": 250908,
+     "segment": null,
+     "segment_source": null,
+     "effective_minutes": 8.4,
+     "watch_for": "groupby with mean, count and agg: the pandas version of SQL GROUP BY you learned this week.",
+     "why_this_one": "Same series; short and focused.",
+     "confidence": "high",
+     "new_in_pass2": true
+    }
+   ],
+   "no_video_reason": null,
+   "reference_keep": [
+    "https://pandas.pydata.org/docs/user_guide/10min.html"
+   ],
+   "drop": []
+  },
+  {
+   "section": "d5",
+   "part": "Enterprise · APIs V: incremental sync and rate-limit budgets",
+   "day_title": "Readiness check",
+   "kind": "Read",
+   "current_links": [
+    "https://developer.zendesk.com/documentation/ticketing/managing-tickets/using-the-incremental-export-api/"
+   ],
+   "videos": [],
+   "no_video_reason": "Zendesk-specific API behaviour (cursor vs time-based exports, deleted tickets, duplicates); no vendor video exists. Keep the doc.",
+   "reference_keep": [
+    "https://developer.zendesk.com/documentation/ticketing/managing-tickets/using-the-incremental-export-api/"
+   ],
+   "drop": []
+  },
+  {
+   "section": "w2",
+   "part": "Enterprise · Read a real client library, explain how your integration fails",
+   "day_title": "Test, review, merge",
+   "kind": "Read",
+   "current_links": [
+    "https://pygithub.readthedocs.io/en/stable/utilities.html",
+    "https://github.com/PyGithub/PyGithub"
+   ],
+   "videos": [],
+   "no_video_reason": "The task is to read a real client library's source (PaginatedList, GithubRetry.py); a video would defeat the exercise.",
+   "reference_keep": [
+    "https://pygithub.readthedocs.io/en/stable/utilities.html",
+    "https://github.com/PyGithub/PyGithub"
+   ],
+   "drop": []
+  }
+ ]
+}

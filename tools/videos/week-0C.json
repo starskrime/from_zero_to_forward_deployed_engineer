@@ -1,0 +1,536 @@
+{
+ "week": "0C",
+ "slots": [
+  {
+   "section": "d1",
+   "part": "Core · What an LLM actually does",
+   "day_title": "Next-token prediction and tokens",
+   "current_links": [
+    "https://www.youtube.com/watch?v=LPZh9BOjkQs"
+   ],
+   "videos": [
+    {
+     "url": "https://www.youtube.com/watch?v=LPZh9BOjkQs",
+     "oembed_title": "Large Language Models explained briefly",
+     "channel": "3Blue1Brown",
+     "duration": "7:58",
+     "published": "2024-11-20",
+     "segment": null,
+     "watch_for": "An LLM is a next-token probability machine; generation is a loop of predict, sample, append.",
+     "why_this_one": "3Blue1Brown; existing link, verified.",
+     "confidence": "high",
+     "duration_source": "YouTube watch page (meta.json, read 2026-10-08)",
+     "published_source": "YouTube watch page (meta.json, read 2026-10-08)",
+     "views": 7999293,
+     "segment_source": null,
+     "effective_minutes": 8.0
+    }
+   ],
+   "no_video_reason": null,
+   "reference_keep": [],
+   "drop": []
+  },
+  {
+   "section": "d1",
+   "part": "Core · What an LLM actually does",
+   "day_title": "Next-token prediction and tokens",
+   "current_links": [
+    "https://www.youtube.com/watch?v=zjkBMFhNj_g"
+   ],
+   "videos": [
+    {
+     "url": "https://www.youtube.com/watch?v=zjkBMFhNj_g",
+     "oembed_title": "[1hr Talk] Intro to Large Language Models",
+     "channel": "Andrej Karpathy",
+     "duration": "59:48",
+     "published": "2023-11-22",
+     "segment": "0:00–25:43",
+     "watch_for": "Repeat of Week 0A Day 1 (same 25 min). Skip if you watched it there; otherwise: a model is two files, pretraining makes a document \"dreamer\", fine-tuning turns it into an assistant.",
+     "why_this_one": "Karpathy; existing link, verified; segment matches description chapters (Part 2 starts 25:43).",
+     "confidence": "high",
+     "duration_source": "YouTube watch page (meta.json, read 2026-10-08)",
+     "published_source": "YouTube watch page (meta.json, read 2026-10-08)",
+     "views": 4197707,
+     "segment_source": "uploader chapters in the video description (chapters.json, read 2026-10-08): Part 1 \"LLMs\"",
+     "effective_minutes": 25.7
+    }
+   ],
+   "no_video_reason": null,
+   "reference_keep": [],
+   "drop": []
+  },
+  {
+   "section": "d1",
+   "part": "Deep practice · Deep Dive into LLMs, part 1 of 4",
+   "day_title": "Next-token prediction and tokens",
+   "current_links": [
+    "https://www.youtube.com/watch?v=7xTGNNLPyMI"
+   ],
+   "videos": [
+    {
+     "url": "https://www.youtube.com/watch?v=7xTGNNLPyMI",
+     "oembed_title": "Deep Dive into LLMs like ChatGPT",
+     "channel": "Andrej Karpathy",
+     "duration": "3:31:23",
+     "published": "2025-02-05",
+     "segment": "0:00–42:52",
+     "watch_for": "Where training text comes from, how BPE tokens are made, and what the network takes in and puts out at inference.",
+     "why_this_one": "Karpathy; existing link, verified; timestamps match description chapters.",
+     "confidence": "high",
+     "duration_source": "YouTube watch page (meta.json, read 2026-10-08)",
+     "published_source": "YouTube watch page (meta.json, read 2026-10-08)",
+     "views": 9921500,
+     "segment_source": "uploader chapters in the video description (chapters.json, read 2026-10-08): introduction to GPT-2",
+     "effective_minutes": 42.9
+    }
+   ],
+   "no_video_reason": null,
+   "reference_keep": [],
+   "drop": []
+  },
+  {
+   "section": "d1",
+   "part": "Enterprise · Why most AI pilots fail",
+   "day_title": "Next-token prediction and tokens",
+   "current_links": [
+    "https://virtualizationreview.com/articles/2025/08/19/mit-report-finds-most-ai-business-investments-fail-reveals-genai-divide.aspx"
+   ],
+   "videos": [],
+   "no_video_reason": "No credible video of the MIT NANDA \"GenAI Divide\" report: YouTube results are reaction/commentary channels or AI-voiced podcast summaries (e.g. \"Strategy Wave Podcast\"), several disputing the 95% headline. Keep the article as the main item.",
+   "reference_keep": [
+    "https://virtualizationreview.com/articles/2025/08/19/mit-report-finds-most-ai-business-investments-fail-reveals-genai-divide.aspx"
+   ],
+   "drop": []
+  },
+  {
+   "section": "d1",
+   "part": "Enterprise · Why most AI pilots fail",
+   "day_title": "Next-token prediction and tokens",
+   "current_links": [
+    "https://a16z.com/insights-for-enterprise-ai-builders/"
+   ],
+   "videos": [],
+   "no_video_reason": "a16z \"From Demos to Deals\" is a written piece; no matching a16z video found. Keep the article.",
+   "reference_keep": [
+    "https://a16z.com/insights-for-enterprise-ai-builders/"
+   ],
+   "drop": []
+  },
+  {
+   "section": "d2",
+   "part": "Core · Inside the model, without the heavy math",
+   "day_title": "Transformers, attention and sampling",
+   "current_links": [
+    "https://www.youtube.com/watch?v=wjZofJX0v4M"
+   ],
+   "videos": [
+    {
+     "url": "https://www.youtube.com/watch?v=wjZofJX0v4M",
+     "oembed_title": "Transformers, the tech behind LLMs | Deep Learning Chapter 5",
+     "channel": "3Blue1Brown",
+     "duration": "27:14",
+     "published": "2024-04-01",
+     "segment": "0:00–26:03",
+     "watch_for": "Tokens become embedding vectors, flow through attention and MLP blocks, and the last vector is unembedded into logits and softmax (with temperature) probabilities.",
+     "why_this_one": "3Blue1Brown; existing link, verified.",
+     "confidence": "high",
+     "duration_source": "YouTube watch page (meta.json, read 2026-10-08)",
+     "published_source": "YouTube watch page (meta.json, read 2026-10-08)",
+     "views": 11376788,
+     "segment_source": "uploader chapters in the video description (chapters.json, read 2026-10-08): stops at \"Up next\"",
+     "effective_minutes": 26.1
+    }
+   ],
+   "no_video_reason": null,
+   "reference_keep": [],
+   "drop": []
+  },
+  {
+   "section": "d2",
+   "part": "Core · Inside the model, without the heavy math",
+   "day_title": "Transformers, attention and sampling",
+   "current_links": [
+    "https://www.youtube.com/watch?v=eMlx5fFNoYc"
+   ],
+   "videos": [
+    {
+     "url": "https://www.youtube.com/watch?v=eMlx5fFNoYc",
+     "oembed_title": "Attention in transformers, step-by-step | Deep Learning Chapter 6",
+     "channel": "3Blue1Brown",
+     "duration": "26:09",
+     "published": "2024-04-07",
+     "segment": "0:00–24:54",
+     "watch_for": "Queries, keys and values let each token pull in context from earlier tokens; this is why cost grows with context length.",
+     "why_this_one": "3Blue1Brown; existing link, verified.",
+     "confidence": "high",
+     "duration_source": "YouTube watch page (meta.json, read 2026-10-08)",
+     "published_source": "YouTube watch page (meta.json, read 2026-10-08)",
+     "views": 4728374,
+     "segment_source": "uploader chapters in the video description (chapters.json, read 2026-10-08): stops at \"Ending\"",
+     "effective_minutes": 24.9
+    }
+   ],
+   "no_video_reason": null,
+   "reference_keep": [],
+   "drop": []
+  },
+  {
+   "section": "d2",
+   "part": "Core · Inside the model, without the heavy math",
+   "day_title": "Transformers, attention and sampling",
+   "current_links": [
+    "https://poloclub.github.io/transformer-explainer/"
+   ],
+   "videos": [],
+   "no_video_reason": "Interactive tool (Play), not a reading: the Transformer Explainer itself is the activity. Keep as is.",
+   "reference_keep": [
+    "https://poloclub.github.io/transformer-explainer/"
+   ],
+   "drop": []
+  },
+  {
+   "section": "d2",
+   "part": "Core · Inside the model, without the heavy math",
+   "day_title": "Transformers, attention and sampling",
+   "current_links": [
+    "https://huyenchip.com/2024/01/16/sampling.html"
+   ],
+   "videos": [],
+   "no_video_reason": "No temperature/top-p video from a proven channel found; results are small tutorial channels. Temperature is already shown at the end of 3Blue1Brown Chapter 5 (same day), but its chapter timestamp could not be sourced. Keep Chip Huyen as the main item for top-k/top-p.",
+   "reference_keep": [
+    "https://huyenchip.com/2024/01/16/sampling.html"
+   ],
+   "drop": []
+  },
+  {
+   "section": "d2",
+   "part": "Core · Inside the model, without the heavy math",
+   "day_title": "Transformers, attention and sampling",
+   "current_links": [
+    "https://openai.com/index/why-language-models-hallucinate/",
+    "https://arxiv.org/abs/2509.04664"
+   ],
+   "videos": [
+    {
+     "url": "https://www.youtube.com/watch?v=btToTJw0KFE",
+     "oembed_title": "Santosh Vempala - Why Language Models Hallucinate  [Alignment Workshop]",
+     "channel": "FAR․AI",
+     "duration": "5:07",
+     "published": "2026-02-14",
+     "segment": null,
+     "watch_for": "Hallucination is a statistical consequence of training, and benchmarks that score \"I don't know\" as zero reward confident guessing; the fix is scoring that rewards abstaining.",
+     "why_this_one": "Talk by a co-author of the OpenAI paper (Georgia Tech), on FAR.AI's research-workshop channel.",
+     "confidence": "medium",
+     "duration_source": "YouTube watch page (meta.json, read 2026-10-08)",
+     "published_source": "YouTube watch page (meta.json, read 2026-10-08)",
+     "views": 543,
+     "segment_source": null,
+     "effective_minutes": 5.1
+    }
+   ],
+   "no_video_reason": null,
+   "reference_keep": [
+    "https://openai.com/index/why-language-models-hallucinate/"
+   ],
+   "drop": [
+    "https://arxiv.org/abs/2509.04664"
+   ]
+  },
+  {
+   "section": "d2",
+   "part": "Deep practice · Deep Dive, part 2 of 4",
+   "day_title": "Transformers, attention and sampling",
+   "current_links": [
+    "https://www.youtube.com/watch?v=7xTGNNLPyMI&t=2572s"
+   ],
+   "videos": [
+    {
+     "url": "https://www.youtube.com/watch?v=7xTGNNLPyMI&t=2572s",
+     "oembed_title": "Deep Dive into LLMs like ChatGPT",
+     "channel": "Andrej Karpathy",
+     "duration": "3:31:23",
+     "published": "2025-02-05",
+     "segment": "42:52–1:41:46",
+     "watch_for": "A base model only continues documents; post-training on conversations makes the assistant; hallucinations are reduced with \"I don't know\" data and tools.",
+     "why_this_one": "Karpathy; existing link, verified; timestamps match chapters.",
+     "confidence": "high",
+     "duration_source": "YouTube watch page (meta.json, read 2026-10-08)",
+     "published_source": "YouTube watch page (meta.json, read 2026-10-08)",
+     "views": 9921500,
+     "segment_source": "uploader chapters in the video description (chapters.json, read 2026-10-08): Llama 3.1 base model to hallucinations/tool use",
+     "effective_minutes": 58.9
+    }
+   ],
+   "no_video_reason": null,
+   "reference_keep": [],
+   "drop": []
+  },
+  {
+   "section": "d2",
+   "part": "Enterprise · Picking use cases: value vs feasibility",
+   "day_title": "Transformers, attention and sampling",
+   "current_links": [
+    "https://cdn.openai.com/business-guides-and-resources/identifying-and-scaling-ai-use-cases.pdf"
+   ],
+   "videos": [],
+   "no_video_reason": "OpenAI business PDF; no matching OpenAI video found, and generic \"AI use-case prioritization\" videos come from consultancies selling services. Keep the PDF.",
+   "reference_keep": [
+    "https://cdn.openai.com/business-guides-and-resources/identifying-and-scaling-ai-use-cases.pdf"
+   ],
+   "drop": []
+  },
+  {
+   "section": "d2",
+   "part": "Enterprise · Picking use cases: value vs feasibility",
+   "day_title": "Transformers, attention and sampling",
+   "current_links": [
+    "https://cloud.google.com/transform/how-to-build-an-effective-ai-strategy"
+   ],
+   "videos": [],
+   "no_video_reason": "Google Cloud article; no matching Google video found. Keep the article (it has the worked value-vs-feasibility example).",
+   "reference_keep": [
+    "https://cloud.google.com/transform/how-to-build-an-effective-ai-strategy"
+   ],
+   "drop": []
+  },
+  {
+   "section": "d3",
+   "part": "Core · One idea, three APIs",
+   "day_title": "Calling OpenAI, Claude and Gemini",
+   "current_links": [
+    "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices"
+   ],
+   "videos": [
+    {
+     "url": "https://www.youtube.com/watch?v=ysPbXH0LpIE",
+     "oembed_title": "Prompting 101 | Code w/ Claude",
+     "channel": "Anthropic",
+     "duration": "24:52",
+     "published": "2025-07-31",
+     "segment": null,
+     "watch_for": "Anthropic's own prompt engineers build a prompt step by step: task context, background data, clear instructions, examples, and output format.",
+     "why_this_one": "Official Anthropic channel, from its developer conference.",
+     "confidence": "high",
+     "duration_source": "YouTube watch page (meta.json, read 2026-10-08)",
+     "published_source": "YouTube watch page (meta.json, read 2026-10-08)",
+     "views": 535189,
+     "segment_source": null,
+     "effective_minutes": 24.9
+    }
+   ],
+   "no_video_reason": null,
+   "reference_keep": [
+    "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices"
+   ],
+   "drop": []
+  },
+  {
+   "section": "d3",
+   "part": "Deep practice · Deep Dive, part 3 of 4",
+   "day_title": "Calling OpenAI, Claude and Gemini",
+   "current_links": [
+    "https://www.youtube.com/watch?v=7xTGNNLPyMI&t=6106s"
+   ],
+   "videos": [
+    {
+     "url": "https://www.youtube.com/watch?v=7xTGNNLPyMI&t=6106s",
+     "oembed_title": "Deep Dive into LLMs like ChatGPT",
+     "channel": "Andrej Karpathy",
+     "duration": "3:31:23",
+     "published": "2025-02-05",
+     "segment": "1:41:46–2:27:47",
+     "watch_for": "Models need tokens to think, which is why reasoning tokens exist and are billed; spelling is hard because models see tokens.",
+     "why_this_one": "Karpathy; existing link, verified.",
+     "confidence": "high",
+     "duration_source": "YouTube watch page (meta.json, read 2026-10-08)",
+     "published_source": "YouTube watch page (meta.json, read 2026-10-08)",
+     "views": 9921500,
+     "segment_source": "uploader chapters in the video description (chapters.json, read 2026-10-08): knowledge of self to reinforcement learning",
+     "effective_minutes": 46.0
+    }
+   ],
+   "no_video_reason": null,
+   "reference_keep": [],
+   "drop": []
+  },
+  {
+   "section": "d4",
+   "part": "Core · Embeddings: meaning as numbers",
+   "day_title": "Embeddings, cost and latency, prompt injection",
+   "current_links": [
+    "https://jalammar.github.io/illustrated-word2vec/"
+   ],
+   "videos": [
+    {
+     "url": "https://www.youtube.com/watch?v=ISPId9Lhc1g",
+     "oembed_title": "The Illustrated Word2vec - A Gentle Intro to Word Embeddings in Machine Learning",
+     "channel": "Jay Alammar",
+     "duration": "8:44",
+     "published": "2022-09-14",
+     "segment": null,
+     "watch_for": "Words become vectors whose directions capture meaning, and similarity between them is measured by comparing vectors (the idea behind cosine similarity and semantic search).",
+     "why_this_one": "The author of the current reading presenting the same material on his own channel.",
+     "confidence": "high",
+     "duration_source": "YouTube watch page (meta.json, read 2026-10-08)",
+     "published_source": "YouTube watch page (meta.json, read 2026-10-08)",
+     "views": 81661,
+     "segment_source": null,
+     "effective_minutes": 8.7
+    }
+   ],
+   "no_video_reason": null,
+   "reference_keep": [
+    "https://jalammar.github.io/illustrated-word2vec/"
+   ],
+   "drop": []
+  },
+  {
+   "section": "d4",
+   "part": "Core · A first look at prompt injection",
+   "day_title": "Embeddings, cost and latency, prompt injection",
+   "current_links": [
+    "https://genai.owasp.org/llmrisk/llm01-prompt-injection/"
+   ],
+   "videos": [
+    {
+     "url": "https://www.youtube.com/watch?v=jrHRe9lSqqA",
+     "oembed_title": "What Is a Prompt Injection Attack?",
+     "channel": "IBM Technology",
+     "duration": "10:57",
+     "published": "2024-05-30",
+     "segment": null,
+     "watch_for": "Direct vs indirect prompt injection, why the model cannot separate instructions from data, and why defenses are layered rather than a single filter.",
+     "why_this_one": "IBM Technology (proven explainer channel).",
+     "confidence": "medium",
+     "duration_source": "YouTube watch page (meta.json, read 2026-10-08)",
+     "published_source": "YouTube watch page (meta.json, read 2026-10-08)",
+     "views": 299588,
+     "segment_source": null,
+     "effective_minutes": 10.9
+    }
+   ],
+   "no_video_reason": null,
+   "reference_keep": [
+    "https://genai.owasp.org/llmrisk/llm01-prompt-injection/"
+   ],
+   "drop": []
+  },
+  {
+   "section": "d4",
+   "part": "Core · A first look at prompt injection",
+   "day_title": "Embeddings, cost and latency, prompt injection",
+   "current_links": [
+    "https://simonwillison.net/2025/Jun/16/the-lethal-trifecta/"
+   ],
+   "videos": [
+    {
+     "url": "https://www.youtube.com/watch?v=owmJyKVu5f8&t=772s",
+     "oembed_title": "Simon Willison: Engineering practices that make coding agents work - The Pragmatic Summit",
+     "channel": "The Pragmatic Engineer",
+     "duration": "28:20",
+     "published": "2026-03-19",
+     "segment": "12:52–21:31",
+     "watch_for": "The lethal trifecta in the words of the person who named it: private data + untrusted content + a way to send data out, and why you remove one leg.",
+     "why_this_one": "Simon Willison himself; his own post publishes the timestamps.",
+     "confidence": "high",
+     "duration_source": "YouTube watch page (meta.json, read 2026-10-08)",
+     "published_source": "YouTube watch page (meta.json, read 2026-10-08)",
+     "views": 42286,
+     "segment_source": "uploader chapters in the video description (chapters.json, read 2026-10-08): \"Prompt injection and security fundamentals\"",
+     "effective_minutes": 8.7
+    }
+   ],
+   "no_video_reason": null,
+   "reference_keep": [
+    "https://simonwillison.net/2025/Jun/16/the-lethal-trifecta/"
+   ],
+   "drop": []
+  },
+  {
+   "section": "d4",
+   "part": "Deep practice · Deep Dive, part 4 of 4",
+   "day_title": "Embeddings, cost and latency, prompt injection",
+   "current_links": [
+    "https://www.youtube.com/watch?v=7xTGNNLPyMI&t=8867s"
+   ],
+   "videos": [
+    {
+     "url": "https://www.youtube.com/watch?v=7xTGNNLPyMI&t=8867s",
+     "oembed_title": "Deep Dive into LLMs like ChatGPT",
+     "channel": "Andrej Karpathy",
+     "duration": "3:31:23",
+     "published": "2025-02-05",
+     "segment": "2:27:47–3:31:23",
+     "watch_for": "Reasoning models learn by reinforcement learning, RLHF has limits, and how to keep track of new models.",
+     "why_this_one": "Karpathy; existing link, verified.",
+     "confidence": "high",
+     "duration_source": "YouTube watch page (meta.json, read 2026-10-08)",
+     "published_source": "YouTube watch page (meta.json, read 2026-10-08)",
+     "views": 9921500,
+     "segment_source": "uploader chapters in the video description (chapters.json, read 2026-10-08): DeepSeek-R1 to the end (3:31:23 = full length)",
+     "effective_minutes": 63.6
+    }
+   ],
+   "no_video_reason": null,
+   "reference_keep": [],
+   "drop": []
+  },
+  {
+   "section": "d4",
+   "part": "Enterprise · Lessons from real deployments, and the one-page brief",
+   "day_title": "Embeddings, cost and latency, prompt injection",
+   "current_links": [
+    "https://cdn.openai.com/business-guides-and-resources/ai-in-the-enterprise.pdf"
+   ],
+   "videos": [],
+   "no_video_reason": "OpenAI business PDF; no matching OpenAI video found. Keep the PDF.",
+   "reference_keep": [
+    "https://cdn.openai.com/business-guides-and-resources/ai-in-the-enterprise.pdf"
+   ],
+   "drop": []
+  },
+  {
+   "section": "d5",
+   "part": "Deep practice · Walk through a model in 3D",
+   "day_title": "Readiness check",
+   "current_links": [
+    "https://bbycroft.net/llm"
+   ],
+   "videos": [],
+   "no_video_reason": "Interactive 3D visualization (Play); the tool is the activity. Keep as is.",
+   "reference_keep": [
+    "https://bbycroft.net/llm"
+   ],
+   "drop": []
+  },
+  {
+   "section": "w1",
+   "part": "Deep practice · Leaderboards vs your own numbers",
+   "day_title": "Build the Model Comparison Bench",
+   "current_links": [
+    "https://artificialanalysis.ai/"
+   ],
+   "videos": [],
+   "no_video_reason": "Live leaderboard data (Explore); a video would be out of date. Keep the site.",
+   "reference_keep": [
+    "https://artificialanalysis.ai/"
+   ],
+   "drop": []
+  },
+  {
+   "section": "w1",
+   "part": "Deep practice · Leaderboards vs your own numbers",
+   "day_title": "Build the Model Comparison Bench",
+   "current_links": [
+    "https://arena.ai/leaderboard"
+   ],
+   "videos": [],
+   "no_video_reason": "Live leaderboard data (Explore); a video would be out of date. Keep the site.",
+   "reference_keep": [
+    "https://arena.ai/leaderboard"
+   ],
+   "drop": []
+  }
+ ],
+ "checked": "2026-10-08 (pass 2: real lengths, dates, views)"
+}
